@@ -57,7 +57,7 @@ export default function Model(props) {
 
   // 3D model
   return (
-    <group onClick={handleAnimation} {...props} dispose={null}>
+    <group {...props} dispose={null}>
       {/* top case */}
       <a.group rotation={openCaseAnimation.rotation} position={[-1, 0, 0]}>
         <mesh
@@ -65,6 +65,7 @@ export default function Model(props) {
           material={materials.grey}
           position={[1, 0.05, 0]}
           scale={[0.9, -0.05, -1]}
+          onClick={handleAnimation}
         />
 
         <mesh
@@ -98,21 +99,25 @@ export default function Model(props) {
         </mesh>
       </a.group>
 
-      <mesh
-        geometry={nodes.back_case.geometry}
-        material={materials.grey}
-        position={[0, -0.05, 0]}
-        rotation={[-Math.PI, 0, -Math.PI]}
-        scale={[-0.9, -0.05, -1]}
-      />
-      <mesh
-        geometry={nodes.back_cover.geometry}
-        material={nodes.back_cover.material}
-        position={[-0.08, -0.103, 0]}
-        scale={[-0.9, -1, -0.97]}
-      >
-        <meshStandardMaterial map={foBack} />
-      </mesh>
+      {/* bottom case */}
+      <group>
+        <mesh
+          geometry={nodes.back_case.geometry}
+          material={materials.grey}
+          position={[0, -0.05, 0]}
+          rotation={[-Math.PI, 0, -Math.PI]}
+          scale={[-0.9, -0.05, -1]}
+        />
+
+        <mesh
+          geometry={nodes.back_cover.geometry}
+          material={nodes.back_cover.material}
+          position={[-0.08, -0.103, 0]}
+          scale={[-0.9, -1, -0.97]}
+        >
+          <meshStandardMaterial map={foBack} />
+        </mesh>
+      </group>
     </group>
   );
 }
