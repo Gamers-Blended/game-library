@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSnapshot } from "valtio";
 import { state } from "./store";
+import {
+  TransformWrapper,
+  TransformComponent,
+  useControls,
+} from "react-zoom-pan-pinch";
 
 import coverFlipSound from "../../assets/sound/page-flip-01a.mp3";
 
@@ -62,13 +67,8 @@ function UI() {
   const COVER_HEIGHT = "631";
   const [isFrontCover, setIsFrontCover] = useState(true);
   const [isTextViewerOpen, setIsTextViewerOpen] = useState(false);
-  const coverFlip = new Audio(coverFlipSound);
   const [text, setText] = useState("");
-
-  // function to toggle cover viewer interface
-  const handleClose = () => {
-    state.currentMode = CASE_MODE;
-  };
+  const coverFlip = new Audio(coverFlipSound);
 
   // function to toggle front and reverse covers
   const handleCoverFlip = () => {
@@ -77,16 +77,74 @@ function UI() {
     coverFlip.play();
   };
 
-  // function to toggle text viewer
-  const handleTextViewer = () => {
-    setIsTextViewerOpen((isTextViewerOpen) => !isTextViewerOpen);
-  };
-
   // function to display image based on state
   const handleCoverDisplay = () => {
     return isFrontCover
       ? "models/ps4_fallout4.jpg"
       : "models/ps4_mafia_de_reverse_cover.jpg";
+  };
+
+  // function to toggle text viewer
+  const handleTextViewer = () => {
+    setIsTextViewerOpen((isTextViewerOpen) => !isTextViewerOpen);
+  };
+
+  /* buttons for cover viewer
+  Zoom In - Zooms in cover (up to zoomLevelLimit)
+  Zoom Out - Zooms out cover
+  Go Back - Close interface
+  */
+  const CoverImageButtons = () => {
+    const { zoomIn, zoomOut } = useControls();
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const zoomLevelLimit = 3;
+
+    const handleZoomIn = () => {
+      if (zoomLevel < zoomLevelLimit) {
+        zoomIn();
+        setZoomLevel((prevZoom) => prevZoom + 1);
+      }
+    };
+
+    const handleZoomOut = () => {
+      if (zoomLevel > 1) {
+        zoomOut();
+        setZoomLevel((prevZoom) => prevZoom - 1);
+      }
+    };
+
+    // function to toggle cover viewer interface
+    const handleClose = () => {
+      state.currentMode = CASE_MODE;
+    };
+
+    const disabledButtonStyle = {
+      opacity: 0.5,
+      cursor: "not-allowed",
+    };
+
+    return (
+      <div className="buttons">
+        <button
+          onClick={handleZoomIn}
+          disabled={zoomLevel >= zoomLevelLimit}
+          style={zoomLevel >= zoomLevelLimit ? disabledButtonStyle : {}}
+        >
+          Zoom In
+        </button>
+        <button
+          onClick={handleZoomOut}
+          disabled={zoomLevel <= 1}
+          style={zoomLevel <= 1 ? disabledButtonStyle : {}}
+        >
+          Zoom Out
+        </button>
+
+        <button className="exit" onClick={handleClose}>
+          Back
+        </button>
+      </div>
+    );
   };
 
   /* key events
@@ -139,22 +197,21 @@ function UI() {
       )}
 
       <div className="coverImage">
-        <img
-          src={
-            isFrontCover
-              ? "models/ps4_fallout4.jpg"
-              : "models/ps4_mafia_de_reverse_cover.jpg"
-          }
-          alt="An image of the cover sheet."
-          width={COVER_WIDTH}
-          height={COVER_HEIGHT}
-        />
-      </div>
-
-      <div className="buttons">
-        <button className="exit" onClick={handleClose}>
-          Go back to Case
-        </button>
+        <TransformWrapper>
+          <TransformComponent>
+            <img
+              src={
+                isFrontCover
+                  ? "models/ps4_fallout4.jpg"
+                  : "models/ps4_mafia_de_reverse_cover.jpg"
+              }
+              alt="An image of the cover sheet."
+              width={COVER_WIDTH}
+              height={COVER_HEIGHT}
+            />
+          </TransformComponent>
+          <CoverImageButtons />
+        </TransformWrapper>
       </div>
     </div>
   );

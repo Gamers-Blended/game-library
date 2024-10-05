@@ -19,6 +19,7 @@
     "react-dom": "^18.3.1",
     "react-spring": "^9.7.4",
     "react-three-fiber": "^6.0.13",
+    "react-zoom-pan-pinch": "^3.6.1",
     "three": "^0.169.0",
     "valtio": "^2.0.0"
   },
