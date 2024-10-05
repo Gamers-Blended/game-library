@@ -66,15 +66,27 @@ function UI() {
   const COVER_WIDTH = "1065";
   const COVER_HEIGHT = "631";
   const [isFrontCover, setIsFrontCover] = useState(true);
+  // View Current Cover Text
   const [isTextViewerOpen, setIsTextViewerOpen] = useState(false);
   const [text, setText] = useState("");
+  // Flip Cover
   const coverFlip = new Audio(coverFlipSound);
+
+  // function to toggle text viewer
+  const handleTextViewer = () => {
+    setIsTextViewerOpen((isTextViewerOpen) => !isTextViewerOpen);
+  };
 
   // function to toggle front and reverse covers
   const handleCoverFlip = () => {
     setIsFrontCover((isFrontCover) => !isFrontCover);
     coverFlip.volume = 0.3;
     coverFlip.play();
+  };
+
+  // function to toggle cover viewer interface
+  const handleClose = () => {
+    state.currentMode = CASE_MODE;
   };
 
   // function to display image based on state
@@ -84,17 +96,15 @@ function UI() {
       : "models/ps4_mafia_de_reverse_cover.jpg";
   };
 
-  // function to toggle text viewer
-  const handleTextViewer = () => {
-    setIsTextViewerOpen((isTextViewerOpen) => !isTextViewerOpen);
-  };
-
   /* buttons for cover viewer
+  View Current Cover Text - View text
+  Flip Cover - Flip cover
   Zoom In - Zooms in cover (up to zoomLevelLimit)
   Zoom Out - Zooms out cover
   Go Back - Close interface
   */
   const CoverImageButtons = () => {
+    // Zoom In & Out
     const { zoomIn, zoomOut } = useControls();
     const [zoomLevel, setZoomLevel] = useState(1);
     const zoomLevelLimit = 3;
@@ -113,11 +123,6 @@ function UI() {
       }
     };
 
-    // function to toggle cover viewer interface
-    const handleClose = () => {
-      state.currentMode = CASE_MODE;
-    };
-
     const disabledButtonStyle = {
       opacity: 0.5,
       cursor: "not-allowed",
@@ -125,6 +130,10 @@ function UI() {
 
     return (
       <div className="buttons">
+        <button onClick={handleTextViewer}>View Current Cover Text</button>
+
+        <button onClick={handleCoverFlip}>Flip Cover</button>
+
         <button
           onClick={handleZoomIn}
           disabled={zoomLevel >= zoomLevelLimit}
@@ -140,9 +149,7 @@ function UI() {
           Zoom Out
         </button>
 
-        <button className="exit" onClick={handleClose}>
-          Back
-        </button>
+        <button onClick={handleClose}>Back</button>
       </div>
     );
   };
@@ -189,9 +196,10 @@ function UI() {
           style={{
             position: "absolute",
             top: 10,
-            left: 0,
-            width: "100%",
-            height: "100%",
+            left: 10,
+            width: "80%",
+            height: "80%",
+            zIndex: 10,
           }}
         />
       )}
