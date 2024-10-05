@@ -1,3 +1,7 @@
+html {
+  font-family: 'Inter', sans-serif;
+}
+
 html,
 body,
 #root {
@@ -12,3 +16,12 @@ body {
     overflow: hidden;
     margin: 0;
   }
+
+.coverTextViewer {
+  border: 10px ridge rgb(0, 0, 0);
+  background-color: rgb(169, 169, 161);
+  padding: 0.5rem;
+  font: 1.2rem sans-serif;
+  text-align: left;
+  color: white;
+}

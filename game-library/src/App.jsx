@@ -5,6 +5,7 @@ import "./assets/styles/App.scss";
 import Model from "./components/Three/case.jsx";
 import Lights from "./components/Three/lights.jsx";
 import HeaderUI from "./components/Three/headerUI.jsx";
+import CoverViewer from "./components/Three/coverViewer.jsx";
 
 function App() {
   // This flag controls open state, alternates between true & false
@@ -20,6 +21,7 @@ function App() {
           <OrbitControls />
         </Suspense>
       </Canvas>
+      <CoverViewer />
     </>
   );
 }
