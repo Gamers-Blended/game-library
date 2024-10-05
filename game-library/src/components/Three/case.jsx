@@ -21,7 +21,6 @@ export default function Model(props) {
   const closeCase = new Audio(caseCloseSound);
   const handleAnimation = () => {
     props.setOpen(!props.open);
-    console.log("is case opened: " + props.open);
 
     if (props.open) {
       closeCase.volume = 0.3;

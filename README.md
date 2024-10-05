@@ -4,39 +4,42 @@
 
 `npm create vite@latest`
 
-Framework: React
+Framework: React <br>
 Variant: JavaScript
 
 `cd game-library`
 
-Install all 3rd party dependencies:
+Install all 3rd party dependencies: <br>
 `npm install`
 
-Additional dependencies to install:
-`npm i three @react-three/fiber`
-`npm i three @react-three/drei`
-`npm i -D sass-embedded`
+Additional dependencies to install: <br>
 
-`node_modules` folder
-Contains all installed 3rd-party dependencies.
-When Vite builds application, it sees imports for 'three' and pulls three.js files automatically from this folder.
+<pre>
+npm i three @react-three/fiber
+npm i three @react-three/drei
+npm i -D sass-embedded
+</pre>
+
+`node_modules` folder <br>
+Contains all installed 3rd-party dependencies. <br>
+When Vite builds application, it sees imports for 'three' and pulls three.js files automatically from this folder. <br>
 This folder is used only during development, and shouldn't be uploaded to web hosting provider or committed.
 
-`public` folder
+`public` folder <br>
 Contains public assets like images.
 
-`index.html`
-div with id = root.
+`index.html` <br>
+div with id = root. <br>
 Container for application.
 
-`script` tag
+`script` tag <br>
 Entry point for application.
 
-`package.json`
-Information on which versions of each dependency installed in project.
+`package.json` <br>
+Information on which versions of each dependency installed in project. <br>
 Install the original versions of each dependency by running `npm install`.
 
-`devDependencies`
+`devDependencies` <br>
 Libraries used only in development, won't be deployed in application.
 
 ## Creating JSX Components
@@ -46,37 +49,37 @@ To convert a gltf/glb file to jsx component:
 
 Generated file will be placed in main directory.
 
-Example:
-model named `case.glb` inside public
+Example: <br>
+model named `case.glb` inside public: <br>
 `npx gltfjsx public/models/case.glb`
 
 ## Development
 
-Runs web server:
+Runs web server: <br>
 `npm run dev`
 
 Visit [http://localhost:5173/](http://localhost:5173/)
 
 ## Production
 
-Tell Vite to run a production build:
+Tell Vite to run a production build: <br>
 `npx vite build`
 
-When code is ready for production, run:
+When code is ready for production, run: <br>
 `npm run build`
 
-Everything used by the application will be compiled, optimized, and copied into the `dist/` folder.
+Everything used by the application will be compiled, optimized, and copied into the `dist/` folder. <br>
 The contents of that folder are ready to be hosted on your website.
 
-To run production build:
+To run production build: <br>
 `npm run preview`
 
 Visit [http://localhost:4173/](http://localhost:4173/)
 
 ## Dev Notes
 
-Multi cursor editing
-Highlight word.
+Multi cursor editing <br>
+Highlight word. <br>
 Ctrl + D
 
-A component cannot return more than 1 element.
+`-Math.PI / 2` = 90 degrees in radians
