@@ -117,7 +117,7 @@ function UI() {
   */
   const CoverImageButtons = () => {
     // Zoom In & Out
-    const { zoomIn, zoomOut } = useControls();
+    const { zoomIn, zoomOut, resetTransform } = useControls();
     const [zoomLevel, setZoomLevel] = useState(1);
     const zoomLevelLimit = 3;
 
@@ -133,6 +133,11 @@ function UI() {
         zoomOut();
         setZoomLevel((prevZoom) => prevZoom - 1);
       }
+    };
+
+    const handleReset = () => {
+      resetTransform();
+      setZoomLevel(1);
     };
 
     const disabledButtonStyle = {
@@ -160,7 +165,7 @@ function UI() {
         >
           Zoom Out
         </button>
-
+        <button onClick={handleReset}>Reset</button>
         <button onClick={handleClose}>Back</button>
       </div>
     );
@@ -236,7 +241,11 @@ function UI() {
       )}
 
       <div className="coverImage">
-        <TransformWrapper>
+        <TransformWrapper
+          doubleClick={{
+            disabled: true,
+          }}
+        >
           <TransformComponent>
             <img
               src={
