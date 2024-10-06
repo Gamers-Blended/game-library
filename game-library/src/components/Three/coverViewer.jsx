@@ -9,6 +9,7 @@ import {
 } from "react-zoom-pan-pinch";
 
 import coverFlipSound from "../../assets/sound/page-flip-01a.mp3";
+import textViewerOpenSound from "../../assets/sound/open-textviewer.mp3";
 
 export default function CoverViewer() {
   const COVER_MODE = "COVER";
@@ -68,20 +69,31 @@ function UI() {
   const [isFrontCover, setIsFrontCover] = useState(true);
   // View Current Cover Text
   const [isTextViewerOpen, setIsTextViewerOpen] = useState(false);
+  const [textSourcePath, setTextSourcePath] = useState("");
   const [text, setText] = useState("");
+  const textViewerOpenAudio = new Audio(textViewerOpenSound);
   // Flip Cover
-  const coverFlip = new Audio(coverFlipSound);
+  const coverFlipAudio = new Audio(coverFlipSound);
 
   // function to toggle text viewer
   const handleTextViewer = () => {
-    setIsTextViewerOpen((isTextViewerOpen) => !isTextViewerOpen);
+    // setIsTextViewerOpen((isTextViewerOpen) => !isTextViewerOpen);
+    setIsTextViewerOpen((isTextViewerOpen) => {
+      if (!isTextViewerOpen) {
+        textViewerOpenAudio.volume = 0.3;
+        textViewerOpenAudio.play();
+        return true;
+      } else {
+        return false;
+      }
+    });
   };
 
   // function to toggle front and reverse covers
   const handleCoverFlip = () => {
     setIsFrontCover((isFrontCover) => !isFrontCover);
-    coverFlip.volume = 0.3;
-    coverFlip.play();
+    coverFlipAudio.volume = 0.3;
+    coverFlipAudio.play();
   };
 
   // function to toggle cover viewer interface
@@ -179,8 +191,17 @@ function UI() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  // text dependent on front or back cover
   useEffect(() => {
-    fetch("/textData/ps4_fallout4_cover_text.txt")
+    if (isFrontCover) {
+      setTextSourcePath("/textData/ps4_fallout4_cover_text.txt");
+    } else {
+      setTextSourcePath("/textData/ps4_mafia_de_cover_reverse_text.txt");
+    }
+  });
+
+  useEffect(() => {
+    fetch(textSourcePath)
       .then((response) => response.text())
       .then((text) => {
         setText(text);
