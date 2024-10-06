@@ -213,7 +213,6 @@ function UI() {
       {isTextViewerOpen && (
         <div
           className="coverTextViewer"
-          dangerouslySetInnerHTML={{ __html: text }}
           style={{
             position: "absolute",
             top: 10,
@@ -222,7 +221,18 @@ function UI() {
             height: "80%",
             zIndex: 10,
           }}
-        />
+        >
+          <div
+            className="coverTextViewerTextArea"
+            dangerouslySetInnerHTML={{ __html: text }}
+          />
+          <div
+            className="coverTextViewerButton"
+            style={{ position: "absolute", bottom: 0, height: "10%" }}
+          >
+            <button onClick={handleTextViewer}>Close</button>
+          </div>
+        </div>
       )}
 
       <div className="coverImage">
