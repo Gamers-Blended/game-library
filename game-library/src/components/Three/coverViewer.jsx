@@ -113,6 +113,7 @@ function UI() {
   Flip Cover - Flip cover
   Zoom In - Zooms in cover (up to zoomLevelLimit)
   Zoom Out - Zooms out cover
+  Reset - Reset to original scale
   Go Back - Close interface
   */
   const CoverImageButtons = () => {
@@ -124,14 +125,14 @@ function UI() {
     const handleZoomIn = () => {
       if (zoomLevel < zoomLevelLimit) {
         zoomIn();
-        setZoomLevel((prevZoom) => prevZoom + 1);
+        setZoomLevel((zoomLevel) => zoomLevel + 1);
       }
     };
 
     const handleZoomOut = () => {
       if (zoomLevel > 1) {
         zoomOut();
-        setZoomLevel((prevZoom) => prevZoom - 1);
+        setZoomLevel((zoomLevel) => zoomLevel - 1);
       }
     };
 
@@ -144,6 +145,43 @@ function UI() {
       opacity: 0.5,
       cursor: "not-allowed",
     };
+
+    /* key events
+    Q - View text
+    E - Flip cover
+    Up Arrow - Zooms in cover (up to zoomLevelLimit)
+    Down Arrow - Zooms out cover
+    R - Reset to original scale
+    Esc - Close interface
+    */
+    useEffect(() => {
+      const onKeyDown = (e) => {
+        switch (e.key) {
+          case "q":
+            handleTextViewer();
+            break;
+          case "e":
+            handleCoverFlip();
+            // button grey out if not available
+            break;
+          case "ArrowUp":
+            handleZoomIn();
+            break;
+          case "ArrowDown":
+            handleZoomOut();
+            break;
+          case "r":
+            handleReset();
+            break;
+          case "Escape":
+            handleClose();
+            break;
+        }
+      };
+
+      window.addEventListener("keydown", onKeyDown);
+      return () => window.removeEventListener("keydown", onKeyDown);
+    }, [zoomLevel]);
 
     return (
       <div className="buttons">
@@ -165,36 +203,13 @@ function UI() {
         >
           Zoom Out
         </button>
+
         <button onClick={handleReset}>Reset</button>
+
         <button onClick={handleClose}>Back</button>
       </div>
     );
   };
-
-  /* key events
-  Q - View text
-  E - Flip cover
-  Esc - Close interface
-  */
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      switch (e.key) {
-        case "q":
-          handleTextViewer();
-          break;
-        case "e":
-          handleCoverFlip();
-          // button grey out if not available
-          break;
-        case "Escape":
-          handleClose();
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
 
   // text dependent on front or back cover
   useEffect(() => {
