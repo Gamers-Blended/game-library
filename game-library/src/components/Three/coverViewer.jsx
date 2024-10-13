@@ -260,6 +260,9 @@ function UI() {
           doubleClick={{
             disabled: true,
           }}
+          wheel={{
+            disabled: true,
+          }}
         >
           <TransformComponent>
             <img
