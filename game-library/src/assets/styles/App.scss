@@ -17,6 +17,12 @@ body {
     margin: 0;
   }
 
+.coverViewer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .coverTextViewer {
   border: 10px ridge rgb(0, 0, 0);
   background-color: rgb(169, 169, 161);
