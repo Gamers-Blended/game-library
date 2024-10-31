@@ -17,7 +17,7 @@ body {
     margin: 0;
   }
 
-.coverViewer {
+.coverViewer, #coverTextViewer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,4 +30,36 @@ body {
   font: 1.2rem sans-serif;
   text-align: left;
   color: white;
+  position: absolute;
+  top: 10;
+  left: 10;
+  width: 60%;
+  height: 80%;
+  z-Index: 10;
+}
+
+.coverTextViewerButton {
+   position: absolute;
+   bottom: 0;
+   height: 10%;
+}
+
+.subHeader {
+  font-weight: bold;
+  display: inline;
+  float:left;
+}
+
+.coverViewerButtons {
+  position: absolute;
+  display:inline;
+  float: right;
+  right:-210px;
+}
+
+.controlsKeys {
+  margin: 0;
+  transform: translateY(35%);
+  height: 5%;
+  width: 5%;
 }

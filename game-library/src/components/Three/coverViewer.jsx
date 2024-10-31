@@ -10,6 +10,12 @@ import {
 
 import coverFlipSound from "../../assets/sound/page-flip-01a.mp3";
 import textViewerOpenSound from "../../assets/sound/open-textviewer.mp3";
+import keyboardIconQ from "../../assets/icons/icons8-q-key-96.png";
+import keyboardIconE from "../../assets/icons/icons8-e-key-96.png";
+import keyboardIconR from "../../assets/icons/icons8-r-key-96.png";
+import keyboardIconEsc from "../../assets/icons/icons8-esc-96.png";
+import keyboardIconArrowUp from "../../assets/icons/icons8-page-up-button-96.png";
+import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96.png";
 
 export default function CoverViewer() {
   const COVER_MODE = "COVER";
@@ -189,11 +195,18 @@ function UI() {
     }, [zoomLevel]);
 
     return (
-      <div className="buttons">
+      <div className="coverViewerButtons">
+        <img src={keyboardIconQ} className="controlsKeys" alt="Q key" />
         <button onClick={handleTextViewer}>View Current Cover Text</button>
 
+        <img src={keyboardIconE} className="controlsKeys" alt="E key" />
         <button onClick={handleCoverFlip}>Flip Cover</button>
 
+        <img
+          src={keyboardIconArrowUp}
+          className="controlsKeys"
+          alt="Arrow up key"
+        />
         <button
           onClick={handleZoomIn}
           disabled={zoomLevel >= zoomLevelLimit}
@@ -201,6 +214,12 @@ function UI() {
         >
           Zoom In
         </button>
+
+        <img
+          src={keyboardIconArrowDown}
+          className="controlsKeys"
+          alt="Arrow down key"
+        />
         <button
           onClick={handleZoomOut}
           disabled={zoomLevel <= 1}
@@ -209,8 +228,10 @@ function UI() {
           Zoom Out
         </button>
 
+        <img src={keyboardIconR} className="controlsKeys" alt="R key" />
         <button onClick={handleReset}>Reset</button>
 
+        <img src={keyboardIconEsc} className="controlsKeys" alt="Esc key" />
         <button onClick={handleClose}>Back</button>
       </div>
     );
@@ -236,25 +257,12 @@ function UI() {
   return (
     <div className="coverViewer">
       {isTextViewerOpen && (
-        <div
-          className="coverTextViewer"
-          style={{
-            position: "absolute",
-            top: 10,
-            left: 10,
-            width: "80%",
-            height: "80%",
-            zIndex: 10,
-          }}
-        >
+        <div className="coverTextViewer">
           <div
             className="coverTextViewerTextArea"
             dangerouslySetInnerHTML={{ __html: text }}
           />
-          <div
-            className="coverTextViewerButton"
-            style={{ position: "absolute", bottom: 0, height: "10%" }}
-          >
+          <div className="coverTextViewerButton">
             <button onClick={handleTextViewer}>Close</button>
           </div>
         </div>
@@ -281,7 +289,7 @@ function UI() {
               height={COVER_HEIGHT}
             />
           </TransformComponent>
-          <div>{getHeaderText()}</div>
+          <div className="subHeader">{getHeaderText()}</div>
           <CoverImageButtons />
         </TransformWrapper>
       </div>
