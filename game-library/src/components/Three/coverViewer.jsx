@@ -197,7 +197,9 @@ function UI() {
     return (
       <div className="coverViewerButtons">
         <img src={keyboardIconQ} className="controlsKeys" alt="Q key" />
-        <button onClick={handleTextViewer}>View Current Cover Text</button>
+        <button onClick={handleTextViewer}>
+          {isTextViewerOpen ? "Close Cover Text" : "View Cover Text"}
+        </button>
 
         <img src={keyboardIconE} className="controlsKeys" alt="E key" />
         <button onClick={handleCoverFlip}>Flip Cover</button>
@@ -262,9 +264,6 @@ function UI() {
             className="coverTextViewerTextArea"
             dangerouslySetInnerHTML={{ __html: text }}
           />
-          <div className="coverTextViewerButton">
-            <button onClick={handleTextViewer}>Close</button>
-          </div>
         </div>
       )}
 
