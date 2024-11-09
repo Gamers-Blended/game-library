@@ -34,15 +34,7 @@ export default function CoverViewer() {
   };
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 10,
-        left: 0,
-        width: "100%",
-        height: getHeight,
-      }}
-    >
+    <div className="coverViewerContainer" style={{ height: getHeight() }}>
       <AnimatePresence>
         {snap.currentMode != COVER_MODE ? (
           <motion.section key="main" {...config}>
@@ -58,7 +50,11 @@ export default function CoverViewer() {
             </div>
           </motion.section>
         ) : (
-          <motion.section key="custom" {...config}>
+          <motion.section
+            className="coverViewerUIContainer"
+            key="custom"
+            {...config}
+          >
             <UI />
           </motion.section>
         )}
@@ -258,8 +254,9 @@ function UI() {
 
   return (
     <div className="coverViewer">
+      {/* text viewer */}
       {isTextViewerOpen && (
-        <div className="coverTextViewer">
+        <div className="coverTextViewerBackground">
           <div
             className="coverTextViewerTextArea"
             dangerouslySetInnerHTML={{ __html: text }}
@@ -267,6 +264,7 @@ function UI() {
         </div>
       )}
 
+      {/* cover viewer */}
       <div className="coverImage">
         <TransformWrapper
           doubleClick={{
@@ -288,7 +286,11 @@ function UI() {
               height={COVER_HEIGHT}
             />
           </TransformComponent>
+
+          {/* sub header */}
           <div className="subHeader">{getHeaderText()}</div>
+
+          {/* buttons */}
           <CoverImageButtons />
         </TransformWrapper>
       </div>
