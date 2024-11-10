@@ -17,6 +17,38 @@ body {
     margin: 0;
   }
 
+  ///////////////////
+  // MODE SELECTOR //
+  ///////////////////
+  .modeSelectorContainer {
+    position: absolute;
+    right: 10px;
+    width: 15%;
+    height: 50%;
+    border:1px solid red;
+    z-index: 1;
+    margin: 5px;
+
+    pointer-events: none;
+  }
+
+  // SUBPART - BUTTONS //
+  .modelSelectorRow {
+    width: 90%;
+    float: left;
+  }
+
+  .modeSelectorControlsKeys {
+    height: 25%;
+    width: 25%;
+    float: left;
+  }
+
+  .modeSelectorButtons {
+    pointer-events: auto;
+    transform: translateY(60%);
+  }
+
   //////////////////
   // COVER VIEWER //
   //////////////////
