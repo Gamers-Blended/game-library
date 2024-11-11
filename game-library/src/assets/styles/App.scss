@@ -23,23 +23,22 @@ body {
   .modeSelectorContainer {
     position: absolute;
     right: 10px;
-    width: 15%;
-    height: 50%;
-    border:1px solid red;
+    width: 200px;
+    height: 200px;
+    // border:1px solid red;
     z-index: 1;
-    margin: 5px;
-
+    margin: 10px;
     pointer-events: none;
   }
 
   // SUBPART - BUTTONS //
   .modelSelectorRow {
     width: 90%;
+    height: 20%;
     float: left;
   }
 
   .modeSelectorControlsKeys {
-    height: 25%;
     width: 25%;
     float: left;
   }
