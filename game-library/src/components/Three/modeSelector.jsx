@@ -12,65 +12,67 @@ export default function ModeSelector() {
   };
 
   return (
-    <div className="modeSelectorContainer">
-      <div className="modelSelectorRow">
-        <img
-          src={keyboardIcon1}
-          className="modeSelectorControlsKeys"
-          alt="1 key"
-        />
+    <div className="modeSelectorContainerParent">
+      <div className="modeSelectorContainer">
+        <div className="modelSelectorRow">
+          <img
+            src={keyboardIcon1}
+            className="modeSelectorControlsKeys"
+            alt="1 key"
+          />
 
-        <button className="modeSelectorButtons" onClick={handleCoverFlip}>
-          Case
-        </button>
-      </div>
+          <button className="modeSelectorButtons" onClick={handleCoverFlip}>
+            Case
+          </button>
+        </div>
 
-      <div className="modelSelectorRow">
-        <img
-          src={keyboardIcon2}
-          className="modeSelectorControlsKeys"
-          alt="2 key"
-        />
+        <div className="modelSelectorRow">
+          <img
+            src={keyboardIcon2}
+            className="modeSelectorControlsKeys"
+            alt="2 key"
+          />
 
-        <button className="modeSelectorButtons" onClick={handleCoverFlip}>
-          Cover
-        </button>
-      </div>
+          <button className="modeSelectorButtons" onClick={handleCoverFlip}>
+            Cover
+          </button>
+        </div>
 
-      <div className="modelSelectorRow">
-        <img
-          src={keyboardIcon3}
-          className="modeSelectorControlsKeys"
-          alt="3 key"
-        />
+        <div className="modelSelectorRow">
+          <img
+            src={keyboardIcon3}
+            className="modeSelectorControlsKeys"
+            alt="3 key"
+          />
 
-        <button className="modeSelectorButtons" onClick={handleCoverFlip}>
-          Disc
-        </button>
-      </div>
+          <button className="modeSelectorButtons" onClick={handleCoverFlip}>
+            Disc
+          </button>
+        </div>
 
-      <div className="modelSelectorRow">
-        <img
-          src={keyboardIcon4}
-          className="modeSelectorControlsKeys"
-          alt="4 key"
-        />
+        <div className="modelSelectorRow">
+          <img
+            src={keyboardIcon4}
+            className="modeSelectorControlsKeys"
+            alt="4 key"
+          />
 
-        <button className="modeSelectorButtons" onClick={handleCoverFlip}>
-          Manual
-        </button>
-      </div>
+          <button className="modeSelectorButtons" onClick={handleCoverFlip}>
+            Manual
+          </button>
+        </div>
 
-      <div className="modelSelectorRow">
-        <img
-          src={keyboardIcon5}
-          className="modeSelectorControlsKeys"
-          alt="5 key"
-        />
+        <div className="modelSelectorRow">
+          <img
+            src={keyboardIcon5}
+            className="modeSelectorControlsKeys"
+            alt="5 key"
+          />
 
-        <button className="modeSelectorButtons" onClick={handleCoverFlip}>
-          Additional Material
-        </button>
+          <button className="modeSelectorButtons" onClick={handleCoverFlip}>
+            Additional Material
+          </button>
+        </div>
       </div>
     </div>
   );

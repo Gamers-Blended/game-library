@@ -20,14 +20,26 @@ body {
   ///////////////////
   // MODE SELECTOR //
   ///////////////////
-  .modeSelectorContainer {
+  .modeSelectorContainerParent {
     position: absolute;
     right: 10px;
     width: 200px;
     height: 200px;
-    // border:1px solid red;
     z-index: 1;
+  }
+  
+  .modeSelectorContainer {
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s, opacity 0.5s linear;
+}
+  
+  .modeSelectorContainerParent:hover
+  .modeSelectorContainer {
     margin: 10px;
+    display: block;
+    visibility: visible;
+    opacity: 1;
     pointer-events: none;
   }
 
