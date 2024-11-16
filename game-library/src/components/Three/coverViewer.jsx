@@ -18,9 +18,6 @@ import keyboardIconArrowUp from "../../assets/icons/icons8-page-up-button-96.png
 import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96.png";
 
 export default function CoverViewer() {
-  const COVER_MODE = "COVER";
-  const snap = useSnapshot(state);
-
   const transition = { type: "spring", duration: 0.8 };
   const config = {
     initial: { x: -100, opacity: 0, transition: { ...transition, delay: 0.5 } },
@@ -28,36 +25,16 @@ export default function CoverViewer() {
     exit: { x: -100, opacity: 0, transition: { ...transition, delay: 0 } },
   };
 
-  // window height changes when interface is opened
-  const getHeight = () => {
-    return snap.currentMode == COVER_MODE ? "100%" : "10%";
-  };
-
   return (
-    <div className="coverViewerContainer" style={{ height: getHeight() }}>
+    <div className="coverViewerContainer">
       <AnimatePresence>
-        {snap.currentMode != COVER_MODE ? (
-          <motion.section key="main" {...config}>
-            <div className="support--content">
-              <button
-                style={{ background: snap.color }}
-                onClick={() => {
-                  state.currentMode = COVER_MODE;
-                }}
-              >
-                View Cover
-              </button>
-            </div>
-          </motion.section>
-        ) : (
-          <motion.section
-            className="coverViewerUIContainer"
-            key="custom"
-            {...config}
-          >
-            <UI />
-          </motion.section>
-        )}
+        <motion.section
+          className="coverViewerUIContainer"
+          key="custom"
+          {...config}
+        >
+          <UI />
+        </motion.section>
       </AnimatePresence>
     </div>
   );
