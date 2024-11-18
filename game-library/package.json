@@ -17,6 +17,7 @@
     "keyboard-css": "^1.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-select": "^5.8.3",
     "react-spring": "^9.7.4",
     "react-three-fiber": "^6.0.13",
     "react-zoom-pan-pinch": "^3.6.1",

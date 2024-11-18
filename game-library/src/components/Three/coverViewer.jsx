@@ -169,12 +169,14 @@ function UI() {
     return (
       <div className="coverViewerButtons">
         <img src={keyboardIconQ} className="controlsKeys" alt="Q key" />
-        <button onClick={handleTextViewer}>
+        <button className="buttonText" onClick={handleTextViewer}>
           {isTextViewerOpen ? "Close Cover Text" : "View Cover Text"}
         </button>
 
         <img src={keyboardIconE} className="controlsKeys" alt="E key" />
-        <button onClick={handleCoverFlip}>Flip Cover</button>
+        <button className="buttonText" onClick={handleCoverFlip}>
+          Flip Cover
+        </button>
 
         <img
           src={keyboardIconArrowUp}
@@ -182,6 +184,7 @@ function UI() {
           alt="Arrow up key"
         />
         <button
+          className="buttonText"
           onClick={handleZoomIn}
           disabled={zoomLevel >= zoomLevelLimit}
           style={zoomLevel >= zoomLevelLimit ? disabledButtonStyle : {}}
@@ -195,6 +198,7 @@ function UI() {
           alt="Arrow down key"
         />
         <button
+          className="buttonText"
           onClick={handleZoomOut}
           disabled={zoomLevel <= 1}
           style={zoomLevel <= 1 ? disabledButtonStyle : {}}
@@ -203,10 +207,14 @@ function UI() {
         </button>
 
         <img src={keyboardIconR} className="controlsKeys" alt="R key" />
-        <button onClick={handleReset}>Reset</button>
+        <button className="buttonText" onClick={handleReset}>
+          Reset
+        </button>
 
         <img src={keyboardIconEsc} className="controlsKeys" alt="Esc key" />
-        <button onClick={handleClose}>Back</button>
+        <button className="buttonText" onClick={handleClose}>
+          Back
+        </button>
       </div>
     );
   };

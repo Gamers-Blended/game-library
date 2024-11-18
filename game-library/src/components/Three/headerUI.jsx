@@ -1,5 +1,13 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { state } from "./store";
+import { useSnapshot } from "valtio";
+
+// img
+import keyboardIconLeftClick from "../../assets/icons/icons8-left-click-96.png";
+import keyboardIconRightClick from "../../assets/icons/icons8-right-click-96.png";
+import keyboardIconScrollUp from "../../assets/icons/icons8-scroll-up-96.png";
+import keyboardIconScrollDown from "../../assets/icons/icons8-scroll-down-96.png";
 
 export default function HeaderUI() {
   const transition = { type: "spring", duration: 0.8 };
@@ -9,16 +17,13 @@ export default function HeaderUI() {
     exit: { x: -100, opacity: 0, transition: { ...transition, delay: 0 } },
   };
 
+  const snap = useSnapshot(state);
+  const getHeaderText = () => {
+    return snap.currentMode;
+  };
+
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "10%",
-      }}
-    >
+    <div className="headerUIContainer">
       <motion.header
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -44,6 +49,23 @@ export default function HeaderUI() {
           </div>
         </motion.section>
       </AnimatePresence>
+      <div className="subHeader">{getHeaderText()}</div>
+      {snap.currentMode == "CASE" && <CaseButtons />}
+    </div>
+  );
+}
+
+function CaseButtons() {
+  return (
+    <div className="caseButtons">
+      <img src={keyboardIconLeftClick} className="caseControlsKeys" />
+      (Hold) Rotate
+      <img src={keyboardIconRightClick} className="caseControlsKeys" />
+      (Hold) Drag
+      <img src={keyboardIconScrollUp} className="caseControlsKeys" />
+      Zoom In
+      <img src={keyboardIconScrollDown} className="caseControlsKeys" />
+      Zoom Out
     </div>
   );
 }
