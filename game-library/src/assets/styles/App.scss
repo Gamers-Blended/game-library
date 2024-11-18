@@ -15,72 +15,96 @@ body {
     background: linear-gradient(#bccae4, #9b9ca2);
     overflow: hidden;
     margin: 0;
-  }
+}
 
-  ///////////////////
-  // MODE SELECTOR //
-  ///////////////////
-  .modeSelectorContainerParent {
-    position: absolute;
-    right: 10px;
-    width: 200px;
-    height: 200px;
-    z-index: 1;
-  }
+
+//////////////////////
+// METADATA HANDLER //
+//////////////////////
+.metadataHandlerContainer {
+  left:0;
+  right:0;
+  margin: auto;
+  position: absolute;
+  width: 1500px;
+  pointer-events: none;
+  visibility: hidden;
   
-  .modeSelectorContainer {
-    opacity: 0;
-    visibility: hidden;
-    transition: visibility 0s, opacity 0.5s linear;
+}
+
+.metadataHandlerSelectBox {
+  width: 20%;
+  margin: auto;
+  pointer-events: auto;
+  visibility: visible;
+  z-index: 20;
+}
+
+
+///////////////////
+// MODE SELECTOR //
+///////////////////
+.modeSelectorContainerParent {
+  position: absolute;
+  right: 10px;
+  width: 200px;
+  // height: 200px;
+  z-index: 1;
 }
   
-  .modeSelectorContainerParent:hover
-  .modeSelectorContainer {
-    margin: 10px;
-    display: block;
-    visibility: visible;
-    opacity: 1;
-    pointer-events: none;
-  }
+.modeSelectorContainer {
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0s, opacity 0.5s linear;
+}
+  
+.modeSelectorContainerParent:hover
+.modeSelectorContainer {
+  margin: 10px;
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: none;
+}
 
-  // SUBPART - BUTTONS //
-  .modelSelectorRow {
-    width: 90%;
-    height: 20%;
-    float: left;
-  }
+// SUBPART - BUTTONS //
+.modelSelectorRow {
+  width: 90%;
+  height: 20%;
+  float: left;
+}
 
-  .modeSelectorControlsKeys {
-    width: 25%;
-    float: left;
-  }
+.modeSelectorControlsKeys {
+  width: 25%;
+  float: left;
+}
 
-  .modeSelectorButtons {
-    pointer-events: auto;
-    transform: translateY(60%);
-  }
+.modeSelectorButtons {
+  pointer-events: auto;
+  transform: translateY(60%);
+}
 
-  //////////////////
-  // COVER VIEWER //
-  //////////////////
-  .coverViewerContainer {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0%;
-  }
-
-  .coverViewerUIContainer {
-    width: 100%;
-    height: 100%;
-  }
-
-.coverViewer, .coverTextViewerBackground {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+//////////////////
+// COVER VIEWER //
+//////////////////
+.coverViewerContainer {
   width: 100%;
   height: 100%;
+  position: absolute;
+  top: 0%;
+}
+
+.coverViewerUIContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.coverViewer, .coverTextViewerBackground {
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+height: 100%;
 }
 
 // SUBPART - TEXT VIEWER //

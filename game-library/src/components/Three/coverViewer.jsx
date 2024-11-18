@@ -61,7 +61,6 @@ function UI() {
 
   // function to toggle text viewer
   const handleTextViewer = () => {
-    // setIsTextViewerOpen((isTextViewerOpen) => !isTextViewerOpen);
     setIsTextViewerOpen((isTextViewerOpen) => {
       if (!isTextViewerOpen) {
         textViewerOpenAudio.volume = 0.3;
