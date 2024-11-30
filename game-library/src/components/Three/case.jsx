@@ -7,22 +7,27 @@ import React from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { useSpring, a } from "@react-spring/three";
 import * as THREE from "three";
+import { state } from "./store";
+import { useSnapshot } from "valtio";
 
 // sounds
 import caseOpenSound from "../../assets/sound/open-case.mp3";
 import caseCloseSound from "../../assets/sound/close-case.mp3";
 
-export default function Model(props) {
+export default function Model() {
+  const snap = useSnapshot(state);
+
   // model
   const { nodes, materials } = useGLTF("../../../models/case.glb");
 
   // case open and close audio
   const openCase = new Audio(caseOpenSound);
   const closeCase = new Audio(caseCloseSound);
-  const handleAnimation = () => {
-    props.setOpen(!props.open);
 
-    if (props.open) {
+  const handleAnimation = () => {
+    state.open = !state.open;
+
+    if (snap.open) {
       closeCase.volume = 0.3;
       closeCase.play();
     } else {
@@ -34,14 +39,14 @@ export default function Model(props) {
   // top case open animation
   const openCaseAnimation = useSpring({
     // open : close
-    rotation: props.open ? [0, 0, 3] : [0, 0, 0],
+    rotation: snap.open ? [0, 0, 3] : [0, 0, 0],
   });
 
   // spine open animation
   const openSpineAnimation = useSpring({
     // open : close
-    rotation: props.open ? [0, 0, 1.61] : [0, 0, 0],
-    position: props.open ? [-1, -0.05, 0] : [-0.942, 0, 0],
+    rotation: snap.open ? [0, 0, 1.61] : [0, 0, 0],
+    position: snap.open ? [-1, -0.05, 0] : [-0.942, 0, 0],
   });
 
   // game cover
@@ -56,7 +61,7 @@ export default function Model(props) {
 
   // 3D model
   return (
-    <group {...props} dispose={null}>
+    <group dispose={null}>
       {/* top case */}
       <a.group rotation={openCaseAnimation.rotation} position={[-1, 0, 0]}>
         <mesh

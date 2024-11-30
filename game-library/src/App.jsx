@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useSnapshot } from "valtio";
@@ -12,7 +12,6 @@ import ModeSelector from "./components/Three/modeSelector.jsx";
 import CoverViewer from "./components/Three/coverViewer.jsx";
 
 function App() {
-  const [open, setOpen] = useState(false);
   const snap = useSnapshot(state);
 
   return (
@@ -23,7 +22,7 @@ function App() {
       <Canvas shadows camera={{ position: [0, 4, 8], fov: 35 }}>
         <Lights />
         <Suspense fallback={null}>
-          <Model open={open} setOpen={setOpen} />
+          <Model />
           <OrbitControls />
         </Suspense>
       </Canvas>
