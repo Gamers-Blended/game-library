@@ -55,9 +55,6 @@ function UI() {
   const coverFlipAudio = new Audio(coverFlipSound);
 
   const snap = useSnapshot(state);
-  const getHeaderText = () => {
-    return snap.currentMode;
-  };
 
   // function to toggle text viewer
   const handleTextViewer = () => {
@@ -270,9 +267,6 @@ function UI() {
               height={COVER_HEIGHT}
             />
           </TransformComponent>
-
-          {/* sub header */}
-          <div className="subHeader">{getHeaderText()}</div>
 
           {/* buttons */}
           <CoverImageButtons />
