@@ -35,16 +35,34 @@ export default function HeaderUI() {
     return snap.currentMode;
   };
 
+  // function to toggle information text on and off
+  const handleInformationBoxToggle = () => {
+    setShouldRenderInfoBox((shouldRenderInfoBox) => !shouldRenderInfoBox);
+  };
+
+  // function to toggle case open and close
+  const handleOpenCloseCase = () => {
+    state.open = !state.open;
+
+    if (snap.open) {
+      closeCase.volume = 0.3;
+      closeCase.play();
+    } else {
+      openCase.volume = 0.3;
+      openCase.play();
+    }
+  };
+
   function InformationBox() {
     return (
       <div className="informationBox">
         <div className="informationText">
           <img src={infoIcon} className="informationIcon" />
-          Click on the front cover to open and close the case.
+          Click on the front cover to {snap.open ? "close" : "open"} the case.
         </div>
         <div className="informationText">
           <img src={infoIcon} className="informationIcon" />
-          Hover cursor to the top right to show mode selector.
+          Hover cursor over to the top right to show mode selector.
         </div>
 
         {snap.open && (
@@ -64,24 +82,6 @@ export default function HeaderUI() {
   }
 
   function CaseButtons() {
-    // function to toggle case open and close
-    const handleInformationBoxToggle = () => {
-      setShouldRenderInfoBox((shouldRenderInfoBox) => !shouldRenderInfoBox);
-    };
-
-    // function to toggle case open and close
-    const handleOpenCloseCase = () => {
-      state.open = !state.open;
-
-      if (snap.open) {
-        closeCase.volume = 0.3;
-        closeCase.play();
-      } else {
-        openCase.volume = 0.3;
-        openCase.play();
-      }
-    };
-
     /* key events
     Q - Toggle information box
     E - Open/close case
@@ -113,9 +113,13 @@ export default function HeaderUI() {
         <img src={keyboardIconScrollDown} className="caseControlsKeys" />
         Zoom Out
         <img src={keyboardIconE} className="caseControlsKeys" />
-        {snap.open ? "Close Case" : "Open Case"}
+        <button className="buttonText" onClick={handleOpenCloseCase}>
+          {snap.open ? "Close Case" : "Open Case"}
+        </button>
         <img src={keyboardIconQ} className="caseControlsKeys" />
-        {shouldRenderInfoBox ? "Hide Information" : "Show Information"}
+        <button className="buttonText" onClick={handleInformationBoxToggle}>
+          {shouldRenderInfoBox ? "Hide Information" : "Show Information"}
+        </button>
       </div>
     );
   }
@@ -148,7 +152,7 @@ export default function HeaderUI() {
         </motion.section>
       </AnimatePresence>
       <div className="subHeader">{getHeaderText()}</div>
-      {shouldRenderInfoBox && <InformationBox />}
+      {shouldRenderInfoBox && snap.currentMode == "CASE" && <InformationBox />}
       {snap.currentMode == "CASE" && <CaseButtons />}
     </div>
   );
