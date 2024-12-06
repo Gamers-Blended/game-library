@@ -84,17 +84,20 @@ body {
   transform: translateY(60%);
 }
 
-/////////////////
-// CASE HEADER //
-/////////////////
-.headerUIContainer {
+////////
+// UI //
+////////
+.UIContainer {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
 }
 
-.caseButtons {
+.UIcontrols > div {
+  display: inline-block;
+}
+.UIcontrols {
   position: absolute;
   display:inline;
   float: right;
@@ -104,7 +107,7 @@ body {
   z-index: 15;
 }
 
-.caseControlsKeys {
+.UIcontrolsKeys {
   margin-left: 3px;
   width: 50px;
   height: 50px;
@@ -191,7 +194,7 @@ body {
   z-index: 15;
 }
 
-.controlsKeys {
+.coverViewercontrolsKeys {
   margin: 0;
   transform: translateY(35%);
   height: 5%;
