@@ -4,7 +4,7 @@ import { OrbitControls } from "@react-three/drei";
 import { useSnapshot } from "valtio";
 import { state } from "./components/Three/store";
 import "./assets/styles/App.scss";
-import Model from "./components/Three/case.jsx";
+import ModelSelector from "./components/Three/modelSelector.jsx";
 import Lights from "./components/Three/lights.jsx";
 import HeaderUI from "./components/Three/headerUI.jsx";
 import MetaDataHandler from "./components/Three/metaDataHandler.jsx";
@@ -22,7 +22,7 @@ function App() {
       <Canvas shadows camera={{ position: [0, 4, 8], fov: 35 }}>
         <Lights />
         <Suspense fallback={null}>
-          <Model />
+          <ModelSelector />
           <OrbitControls />
         </Suspense>
       </Canvas>
