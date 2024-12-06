@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Loader, OrbitControls } from "@react-three/drei";
 import { useSnapshot } from "valtio";
 import { state } from "./components/Three/store";
 import "./assets/styles/App.scss";
@@ -19,6 +19,7 @@ function App() {
       <MetaDataHandler />
       <ModeSelector />
       <HeaderUI />
+      <Loader />
       <Canvas shadows camera={{ position: [0, 4, 8], fov: 35 }}>
         <Lights />
         <Suspense fallback={null}>
