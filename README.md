@@ -83,3 +83,22 @@ Highlight word. <br>
 Ctrl + D
 
 `-Math.PI / 2` = 90 degrees in radians
+
+## Problems
+
+- flip animation
+- how glfx works (coverting a .glb file into separate mesh components)
+- how to darken background when a div appears
+- unable to use mouse scroll for zooming in/out while maintaining button active condition when limit is reached
+- unable to map a .jpg filr to a circular geometry exported from .glb file
+- unable to map each face of CylinderGeometry created from `three-bvh-csg`
+
+## Tried
+
+- Using a plane geometry and converting it into a circular plane, export it to glfx
+- Using `discFrontImage.wrapS = discFrontImage.wrapT = THREE.ClampToEdgeWrapping`
+- Unable to save material into exported .glb file inside Blender
+- Difficulty in finding a suitable library to subtract geometries (`ThreeBSP`, `three-js-csg`, `THREE-CSGMESH`)
+- Passing an array of jpgs to `material` parameter in `geometry`
+- Using `attach = "material-n"` inside `geometry` component (works in normal threejs geometries, but not those from bvh)
+- Adding a `side="THREE.FrontSide / THREE.BackSide"` to material components

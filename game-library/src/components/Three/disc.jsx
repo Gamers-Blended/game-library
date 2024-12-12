@@ -13,26 +13,56 @@ export default function Model() {
   discFrontImage.repeat.set(1, 1);
   discBackImage.repeat.set(1, 1);
 
-  const brush1 = new Brush(new THREE.CylinderGeometry(1, 1, 0.01, 64));
-  brush1.updateMatrixWorld();
+  const brushWholeDisc = new Brush(new THREE.CylinderGeometry(1, 1, 0.01, 64));
+  brushWholeDisc.updateMatrixWorld();
 
-  const brush2 = new Brush(new THREE.CylinderGeometry(0.15, 0.15));
-  brush2.updateMatrixWorld();
+  const brushInnerDisc = new Brush(new THREE.CylinderGeometry(0.15, 0.15));
+  brushInnerDisc.updateMatrixWorld();
 
   const evaluator = new Evaluator();
-  const result = evaluator.evaluate(brush1, brush2, SUBTRACTION);
-  const discGeometry = result.geometry;
+  const discGeometry = evaluator.evaluate(
+    brushWholeDisc,
+    brushInnerDisc,
+    SUBTRACTION
+  ).geometry;
+
+  const brushWholeRing = new Brush(
+    new THREE.CylinderGeometry(0.1499, 0.1499, 0.02, 64)
+  );
+  brushWholeRing.updateMatrixWorld();
+
+  const brushInnerRing = new Brush(
+    new THREE.CylinderGeometry(0.149, 0.149, 0.02, 64)
+  );
+  brushInnerRing.updateMatrixWorld();
+
+  const innerRing = evaluator.evaluate(
+    brushWholeRing,
+    brushInnerRing,
+    SUBTRACTION
+  ).geometry;
 
   return (
     <group dispose={null}>
+      {/* disc front */}
       <mesh geometry={discGeometry} rotation={[Math.PI / 2, Math.PI / 2, 0]}>
         <meshStandardMaterial map={discFrontImage} />
       </mesh>
 
+      {/* disc back */}
       <mesh
         geometry={discGeometry}
         position={[0, 0, -0.01]}
         scale={[-1, 1, -1]}
+        rotation={[Math.PI / 2, 0, 0]}
+      >
+        <meshStandardMaterial map={discBackImage} />
+      </mesh>
+
+      {/* disc inner ring */}
+      <mesh
+        geometry={innerRing}
+        position={[0, 0, -0.005]}
         rotation={[Math.PI / 2, 0, 0]}
       >
         <meshStandardMaterial map={discBackImage} />
