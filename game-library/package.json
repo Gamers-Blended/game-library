@@ -22,6 +22,7 @@
     "react-three-fiber": "^6.0.13",
     "react-zoom-pan-pinch": "^3.6.1",
     "three": "^0.169.0",
+    "three-bvh-csg": "^0.0.16",
     "valtio": "^2.0.0"
   },
   "devDependencies": {
