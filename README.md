@@ -80,7 +80,8 @@ Visit [http://localhost:4173/](http://localhost:4173/)
 
 Multi cursor editing <br>
 Highlight word. <br>
-Ctrl + D
+Ctrl + D <br>
+Shortcut to import libraries Ctrl + Space
 
 `-Math.PI / 2` = 90 degrees in radians
 

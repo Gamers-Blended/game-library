@@ -1,0 +1,211 @@
+import { useHelper, useTexture } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import {
+  Bone,
+  BoxGeometry,
+  Color,
+  Float32BufferAttribute,
+  MeshStandardMaterial,
+  Skeleton,
+  SkeletonHelper,
+  SkinnedMesh,
+  SRGBColorSpace,
+  Uint16BufferAttribute,
+  Vector3,
+} from "three";
+
+export default function Model() {
+  const PAGE_WIDTH = 1.28;
+  const PAGE_HEIGHT = 1.71; // 4:3 aspect ratio
+  const PAGE_DEPTH = 0.003;
+  const PAGE_SEGMENTS = 30;
+  const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
+
+  const pageGeometry = new BoxGeometry(
+    PAGE_WIDTH,
+    PAGE_HEIGHT,
+    PAGE_DEPTH,
+    PAGE_SEGMENTS,
+    2
+  );
+
+  // push pageGeometry such that side is at origin (instead of middle of page)
+  pageGeometry.translate(PAGE_WIDTH / 2, 0, 0);
+
+  const position = pageGeometry.attributes.position;
+  const vertex = new Vector3();
+  const skinIndexes = []; // bones
+  const skinWeights = [];
+
+  // allow pages to bend by adding bones
+  for (let i = 0; i < position.count; i++) {
+    // go through all positions
+    // for each vertex
+    // ALL VERTICES
+    vertex.fromBufferAttribute(position, i); // get the vertex
+    const x = vertex.x; // get the x position of the vertex
+
+    // if near 0 -> 1st bone, further away -> last bone
+    const skinIndex = Math.max(0, Math.floor(x / SEGMENT_WIDTH)); // calculate the skin index
+    let skinWeight = (x % SEGMENT_WIDTH) / SEGMENT_WIDTH; // calculate the skin weight
+
+    // (1st bone that has impact on vertex, 2nd bone that has impact)
+    skinIndexes.push(skinIndex, skinIndex + 1, 0, 0); // set the skin indexes
+    skinWeights.push(1 - skinWeight, skinWeight, 0, 0); // set the skin weights
+  }
+
+  pageGeometry.setAttribute(
+    "skinIndex",
+    new Uint16BufferAttribute(skinIndexes, 4)
+  );
+  pageGeometry.setAttribute(
+    "skinWeight",
+    new Float32BufferAttribute(skinWeights, 4) // between 0 & 1
+  );
+
+  const whiteColor = new Color("white");
+
+  // 6 materials for 6 faces
+  // last two will be created dynamically since front and back will change based on page number
+  const pageMaterials = [
+    new MeshStandardMaterial({
+      color: whiteColor,
+    }),
+    // left side
+    new MeshStandardMaterial({
+      color: "#111",
+    }),
+    new MeshStandardMaterial({
+      color: whiteColor,
+    }),
+    new MeshStandardMaterial({
+      color: whiteColor,
+    }),
+  ];
+
+  const manualPages = [
+    "ps4_wolfenstein_young_blood_manual_2",
+    "ps4_wolfenstein_young_blood_manual_3",
+  ];
+
+  // front page
+  const pages = [
+    {
+      front: "ps4_wolfenstein_young_blood_manual_1",
+      back: manualPages[0],
+    },
+  ];
+
+  // middle pages
+  for (let i = 1; i < manualPages.length - 1; i += 2) {
+    pages.push({
+      front: manualPages[i % manualPages.length],
+      back: manualPages[(i + 1) % manualPages.length],
+    });
+  }
+
+  // back page
+  pages.push({
+    front: manualPages[manualPages.length - 1],
+    back: "ps4_wolfenstein_young_blood_manual_4",
+  });
+
+  // // play a sound whenever a page is flipped
+  // useEffect(() => {
+  //   const audio = new Audio("../../assets/sound/open-textviewer.mp3");
+  //   audio.play();
+  // }, [pages]);
+
+  pages.forEach((page) => {
+    useTexture.preload(`/models/${page.front}.jpg`);
+    useTexture.preload(`/models/${page.back}.jpg`);
+  });
+
+  const Page = ({ number, front, back, ...props }) => {
+    const [pictureFront, pictureBack] = useTexture([
+      `/models/${front}.jpg`,
+      `/models/${back}.jpg`,
+    ]);
+
+    pictureFront.colorSpace = pictureBack.colorSpace = SRGBColorSpace;
+    const group = useRef();
+    const skinnedMeshRef = useRef();
+
+    const manualSkinnedMesh = useMemo(() => {
+      const bones = []; // number of bones = number of segments
+      for (let i = 0; i <= PAGE_SEGMENTS; i++) {
+        // for each segment, create a bone
+        let bone = new Bone();
+        bones.push(bone);
+        if (i === 0) {
+          // 1st bone
+          bone.position.x = 0;
+        } else {
+          bone.position.x = SEGMENT_WIDTH;
+        }
+        // if not 1st bone, attach new bone to previous bone
+        if (i > 0) {
+          bones[i - 1].add(bone); // attach the new bone to the previous bone
+        }
+      }
+
+      const skeleton = new Skeleton(bones);
+
+      // 4 side faces + front + back
+      const materials = [
+        ...pageMaterials,
+        // front page
+        new MeshStandardMaterial({
+          color: whiteColor,
+          map: pictureFront,
+          roughness: 0.1, // 0 for glossy surfaces
+        }),
+        // back page
+        new MeshStandardMaterial({
+          color: whiteColor,
+          map: pictureBack,
+          roughness: 1, // 0 for glossy surfaces
+        }),
+      ];
+      const mesh = new SkinnedMesh(pageGeometry, materials);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.frustumCulled = false;
+      mesh.add(skeleton.bones[0]); // add root bone to mesh
+      mesh.bind(skeleton);
+      return mesh;
+    }, []);
+
+    // useHelper(skinnedMeshRef, SkeletonHelper, "red");
+
+    useFrame(() => {
+      if (!skinnedMeshRef.current) {
+        return;
+      }
+
+      const bones = skinnedMeshRef.current.skeleton.bones;
+    });
+
+    return (
+      <group {...props} ref={group}>
+        <primitive object={manualSkinnedMesh} ref={skinnedMeshRef} />
+      </group>
+    );
+  };
+
+  return (
+    <group>
+      {[...pages].map((pageData, index) =>
+        index === 0 ? (
+          <Page
+            position-x={index * 0.1}
+            key={index}
+            number={index}
+            {...pageData}
+          />
+        ) : null
+      )}
+    </group>
+  );
+}
