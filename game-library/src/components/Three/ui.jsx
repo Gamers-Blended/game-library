@@ -122,15 +122,20 @@ export default function UI() {
 
   function ManualModeButtons() {
     const handleFlipBack = () => {
-      if (snap.manualCurrentPage - 1 >= 1) {
+      if (snap.manualCurrentPage > 1) {
         state.manualCurrentPage -= 1;
       }
     };
 
     const handleFlipForward = () => {
-      if (snap.manualCurrentPage + 1 <= snap.manualPageNumber) {
+      if (snap.manualCurrentPage < snap.manualPageNumber) {
         state.manualCurrentPage += 1;
       }
+    };
+
+    const disabledButtonStyle = {
+      opacity: 0.5,
+      cursor: "not-allowed",
     };
 
     /* key events
@@ -156,11 +161,25 @@ export default function UI() {
     return (
       <div>
         <img src={keyboardIconE} className="UIcontrolsKeys" />
-        <button className="buttonText" onClick={handleFlipForward}>
+        <button
+          className="buttonText"
+          onClick={handleFlipForward}
+          disabled={snap.manualCurrentPage >= snap.manualPageNumber}
+          style={
+            snap.manualCurrentPage >= snap.manualPageNumber
+              ? disabledButtonStyle
+              : {}
+          }
+        >
           Flip Forward
         </button>
         <img src={keyboardIconQ} className="UIcontrolsKeys" />
-        <button className="buttonText" onClick={handleFlipBack}>
+        <button
+          className="buttonText"
+          onClick={handleFlipBack}
+          disabled={snap.manualCurrentPage <= 1}
+          style={snap.manualCurrentPage <= 1 ? disabledButtonStyle : {}}
+        >
           Flip Back
         </button>
       </div>
