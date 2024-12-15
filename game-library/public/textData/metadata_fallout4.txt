@@ -9,5 +9,6 @@
     "coverText": "nil",
     "additional": [
         "Manual"
-        ]
+        ],
+    "manualPageNumber": 4
 }

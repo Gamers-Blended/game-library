@@ -81,7 +81,11 @@ export default function UI() {
     );
   }
 
-  function UIControls() {
+  function ManualUI() {
+    return <div>Current page number: {snap.manualCurrentPage}</div>;
+  }
+
+  function CaseModeButtons() {
     /* key events (for CASE mode only)
     Q - Toggle information box
     E - Open/close case
@@ -103,6 +107,68 @@ export default function UI() {
     }, []);
 
     return (
+      <div>
+        <img src={keyboardIconE} className="UIcontrolsKeys" />
+        <button className="buttonText" onClick={handleOpenCloseCase}>
+          {snap.open ? "Close Case" : "Open Case"}
+        </button>
+        <img src={keyboardIconQ} className="UIcontrolsKeys" />
+        <button className="buttonText" onClick={handleInformationBoxToggle}>
+          {shouldRenderInfoBox ? "Hide Information" : "Show Information"}
+        </button>
+      </div>
+    );
+  }
+
+  function ManualModeButtons() {
+    const handleFlipBack = () => {
+      if (snap.manualCurrentPage - 1 >= 1) {
+        state.manualCurrentPage -= 1;
+      }
+    };
+
+    const handleFlipForward = () => {
+      if (snap.manualCurrentPage + 1 <= snap.manualPageNumber) {
+        state.manualCurrentPage += 1;
+      }
+    };
+
+    /* key events
+        Q - Flip back 1 page
+        E - Flip forward 1 page
+        */
+    useEffect(() => {
+      const onKeyDown = (e) => {
+        switch (e.key) {
+          case "q":
+            handleFlipBack();
+            break;
+          case "e":
+            handleFlipForward();
+            break;
+        }
+      };
+
+      window.addEventListener("keydown", onKeyDown);
+      return () => window.removeEventListener("keydown", onKeyDown);
+    }, []);
+
+    return (
+      <div>
+        <img src={keyboardIconE} className="UIcontrolsKeys" />
+        <button className="buttonText" onClick={handleFlipForward}>
+          Flip Forward
+        </button>
+        <img src={keyboardIconQ} className="UIcontrolsKeys" />
+        <button className="buttonText" onClick={handleFlipBack}>
+          Flip Back
+        </button>
+      </div>
+    );
+  }
+
+  function UIControls() {
+    return (
       <div className="UIcontrols">
         <img src={keyboardIconLeftClick} className="UIcontrolsKeys" />
         (Hold) Rotate
@@ -112,18 +178,8 @@ export default function UI() {
         Zoom In
         <img src={keyboardIconScrollDown} className="UIcontrolsKeys" />
         Zoom Out
-        {snap.currentMode == "CASE" && (
-          <div>
-            <img src={keyboardIconE} className="UIcontrolsKeys" />
-            <button className="buttonText" onClick={handleOpenCloseCase}>
-              {snap.open ? "Close Case" : "Open Case"}
-            </button>
-            <img src={keyboardIconQ} className="UIcontrolsKeys" />
-            <button className="buttonText" onClick={handleInformationBoxToggle}>
-              {shouldRenderInfoBox ? "Hide Information" : "Show Information"}
-            </button>
-          </div>
-        )}
+        {snap.currentMode == "CASE" && <CaseModeButtons />}
+        {snap.currentMode == "MANUAL" && <ManualModeButtons />}
       </div>
     );
   }
@@ -157,9 +213,8 @@ export default function UI() {
       </AnimatePresence>
       <div className="subHeader">{getHeaderText()}</div>
       {shouldRenderInfoBox && snap.currentMode == "CASE" && <InformationBox />}
-      {(snap.currentMode == "CASE" || snap.currentMode == "DISC") && (
-        <UIControls />
-      )}
+      {snap.currentMode != "COVER" && <UIControls />}
+      {snap.currentMode == "MANUAL" && <ManualUI />}
     </div>
   );
 }

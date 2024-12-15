@@ -5,6 +5,8 @@ const state = proxy({
   title: "default",
   additional: "",
   open: false,
+  manualPageNumber: 0,
+  manualCurrentPage: 0,
 });
 
 export { state };

@@ -29,11 +29,16 @@ export default function MetaDataHandler() {
         })
         .then((textParsed) => {
           state.additional = textParsed.additional;
+          state.manualPageNumber = textParsed.manualPageNumber
+            ? textParsed.manualPageNumber
+            : 0;
           console.log(
             "Successfully set additional materials for " +
               snap.title +
-              ": " +
-              snap.additional
+              ": \n" +
+              snap.additional +
+              "\nNumber of pages for manual: " +
+              snap.manualPageNumber
           );
         })
         .catch((jsonError) => {
