@@ -121,14 +121,16 @@ export default function UI() {
   }
 
   function ManualModeButtons() {
-    const handleFlipBack = () => {
+    // if manual has 4 pages, it has 3 forms: (page1), (page2 + page3), (page4) -> n pages, n/2 + 1 forms
+    const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
+    const handlePreviousPage = () => {
       if (snap.manualCurrentPage > 1) {
         state.manualCurrentPage -= 1;
       }
     };
 
-    const handleFlipForward = () => {
-      if (snap.manualCurrentPage < snap.manualPageNumber) {
+    const handleNextPage = () => {
+      if (snap.manualCurrentPage < manualPageUpperLimit) {
         state.manualCurrentPage += 1;
       }
     };
@@ -146,10 +148,10 @@ export default function UI() {
       const onKeyDown = (e) => {
         switch (e.key) {
           case "q":
-            handleFlipBack();
+            handlePreviousPage();
             break;
           case "e":
-            handleFlipForward();
+            handleNextPage();
             break;
         }
       };
@@ -163,24 +165,24 @@ export default function UI() {
         <img src={keyboardIconE} className="UIcontrolsKeys" />
         <button
           className="buttonText"
-          onClick={handleFlipForward}
-          disabled={snap.manualCurrentPage >= snap.manualPageNumber}
+          onClick={handleNextPage}
+          disabled={snap.manualCurrentPage >= manualPageUpperLimit}
           style={
-            snap.manualCurrentPage >= snap.manualPageNumber
+            snap.manualCurrentPage >= manualPageUpperLimit
               ? disabledButtonStyle
               : {}
           }
         >
-          Flip Forward
+          Next Page
         </button>
         <img src={keyboardIconQ} className="UIcontrolsKeys" />
         <button
           className="buttonText"
-          onClick={handleFlipBack}
+          onClick={handlePreviousPage}
           disabled={snap.manualCurrentPage <= 1}
           style={snap.manualCurrentPage <= 1 ? disabledButtonStyle : {}}
         >
-          Flip Back
+          Previous Page
         </button>
       </div>
     );

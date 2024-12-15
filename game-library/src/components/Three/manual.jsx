@@ -1,6 +1,8 @@
 import { useHelper, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
+import { state } from "./store";
+import { useSnapshot } from "valtio";
 import {
   Bone,
   BoxGeometry,
@@ -14,6 +16,7 @@ import {
   Uint16BufferAttribute,
   Vector3,
 } from "three";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 export default function Model() {
   const PAGE_WIDTH = 1.28;
@@ -21,6 +24,8 @@ export default function Model() {
   const PAGE_DEPTH = 0.003;
   const PAGE_SEGMENTS = 30;
   const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
+
+  const snap = useSnapshot(state);
 
   const pageGeometry = new BoxGeometry(
     PAGE_WIDTH,
@@ -122,7 +127,7 @@ export default function Model() {
     useTexture.preload(`/models/${page.back}.jpg`);
   });
 
-  const Page = ({ number, front, back, ...props }) => {
+  const Page = ({ number, front, back, pageNumber, opened, ...props }) => {
     const [pictureFront, pictureBack] = useTexture([
       `/models/${front}.jpg`,
       `/models/${back}.jpg`,
@@ -184,28 +189,36 @@ export default function Model() {
         return;
       }
 
+      let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
+      targetRotation += degToRad(number * 0.8);
+
       const bones = skinnedMeshRef.current.skeleton.bones;
+      bones[0].rotation.y = targetRotation;
     });
 
     return (
-      <group {...props} ref={group}>
-        <primitive object={manualSkinnedMesh} ref={skinnedMeshRef} />
+      // each page takes a different z location
+      <group {...props} ref={group} rotation-y={-Math.PI / 2}>
+        <primitive
+          object={manualSkinnedMesh}
+          ref={skinnedMeshRef}
+          position-z={-number * PAGE_DEPTH + pageNumber * PAGE_DEPTH}
+        />
       </group>
     );
   };
 
   return (
     <group>
-      {[...pages].map((pageData, index) =>
-        index === 0 ? (
-          <Page
-            position-x={index * 0.1}
-            key={index}
-            number={index}
-            {...pageData}
-          />
-        ) : null
-      )}
+      {[...pages].map((pageData, index) => (
+        <Page
+          key={index}
+          number={index}
+          pageNumber={snap.manualCurrentPage}
+          opened={snap.manualCurrentPage > index + 1}
+          {...pageData}
+        />
+      ))}
     </group>
   );
 }
