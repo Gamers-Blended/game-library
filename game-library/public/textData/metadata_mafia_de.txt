@@ -1,5 +1,5 @@
 {
-    "title": "fallout4",
+    "title": "mafia_de",
     "platforms": [
         "ps4",
         "xboxOne",
@@ -8,6 +8,8 @@
     "region": "US",
     "coverText": "nil",
     "additional": [
-        "Manual"
+        "Manual",
+        "Leaflet1",
+        "Leaflet2"
         ]
 }

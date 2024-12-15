@@ -89,7 +89,7 @@ function ExtraButtons() {
   const MANUAL_MODE = "MANUAL";
   const ADDITIONAL_MODE = "ADDITIONAL MATERIAL";
   const keyboardIconArray = [keyboardIcon4, keyboardIcon5];
-  const additionalMaterials = snap.additional.split(",");
+  const additionalMaterials = snap.additional;
   let additionalMaterialsToRender = [];
 
   const handleModeManual = () => {

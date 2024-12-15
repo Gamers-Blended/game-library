@@ -5,8 +5,8 @@ import Select from "react-select";
 
 export default function MetaDataHandler() {
   const TXT_EXT = ".txt";
-  const ADDITIONAL = "additional:";
   const [textSourcePath, setTextSourcePath] = useState("");
+  const [isTitleSet, setIsTitleSet] = useState(false);
   const snap = useSnapshot(state);
 
   const titleOptions = [
@@ -17,33 +17,33 @@ export default function MetaDataHandler() {
   const handleSelect = (option) => {
     state.title = option.value;
     setTextSourcePath("/textData/metadata_" + state.title + TXT_EXT);
+    setIsTitleSet(true);
   };
 
   useEffect(() => {
-    fetch(textSourcePath)
-      .then((response) => response.text())
-      .then((text) => {
-        if (text.includes('<html lang="en">')) {
-          return Promise.reject(text);
-        } else {
-          return text;
-        }
-      })
-      .then((text) => {
-        let additionalElements = text.indexOf(ADDITIONAL) + ADDITIONAL.length;
-        const trimmed = text.slice(additionalElements);
-        state.additional = trimmed;
-        console.log(
-          "Successfully set additional materials for " +
-            snap.title +
-            ": " +
-            snap.additional
-        );
-      })
-      .catch(() => {
-        state.additional = "";
-        console.log("The metadata file for " + snap.title + " is not found");
-      });
+    if (isTitleSet) {
+      fetch(textSourcePath)
+        .then((response) => response.text())
+        .then((text) => {
+          return JSON.parse(text);
+        })
+        .then((textParsed) => {
+          state.additional = textParsed.additional;
+          console.log(
+            "Successfully set additional materials for " +
+              snap.title +
+              ": " +
+              snap.additional
+          );
+        })
+        .catch((jsonError) => {
+          console.error(
+            "Error in parsing JSON for " + textSourcePath + ": " + jsonError
+          );
+        });
+    } else {
+      console.error("No title selected");
+    }
   });
 
   return (
