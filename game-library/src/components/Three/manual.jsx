@@ -1,4 +1,4 @@
-import { useHelper, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { state } from "./store";
@@ -10,15 +10,17 @@ import {
   Float32BufferAttribute,
   MeshStandardMaterial,
   Skeleton,
-  SkeletonHelper,
   SkinnedMesh,
   SRGBColorSpace,
   Uint16BufferAttribute,
   Vector3,
 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
+import { easing } from "maath";
 
 export default function Model() {
+  const easingFactor = 0.5; // Controls speed of easing
+
   const PAGE_WIDTH = 1.28;
   const PAGE_HEIGHT = 1.71; // 4:3 aspect ratio
   const PAGE_DEPTH = 0.003;
@@ -69,6 +71,7 @@ export default function Model() {
     new Float32BufferAttribute(skinWeights, 4) // between 0 & 1
   );
 
+  // texture and material of a page
   const whiteColor = new Color("white");
 
   // 6 materials for 6 faces
@@ -127,7 +130,15 @@ export default function Model() {
     useTexture.preload(`/models/${page.back}.jpg`);
   });
 
-  const Page = ({ number, front, back, pageNumber, opened, ...props }) => {
+  const Page = ({
+    number,
+    front,
+    back,
+    pageNumber,
+    opened,
+    manualClosed,
+    ...props
+  }) => {
     const [pictureFront, pictureBack] = useTexture([
       `/models/${front}.jpg`,
       `/models/${back}.jpg`,
@@ -174,31 +185,34 @@ export default function Model() {
         }),
       ];
       const mesh = new SkinnedMesh(pageGeometry, materials);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
       mesh.frustumCulled = false;
       mesh.add(skeleton.bones[0]); // add root bone to mesh
       mesh.bind(skeleton);
       return mesh;
     }, []);
 
-    // useHelper(skinnedMeshRef, SkeletonHelper, "red");
-
-    useFrame(() => {
-      if (!skinnedMeshRef.current) {
-        return;
-      }
+    useFrame((_, delta) => {
+      if (!skinnedMeshRef.current) return;
 
       let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
-      targetRotation += degToRad(number * 0.8);
+      if (!manualClosed) {
+        targetRotation += degToRad(number * 0.8);
+      }
 
       const bones = skinnedMeshRef.current.skeleton.bones;
-      bones[0].rotation.y = targetRotation;
+
+      easing.dampAngle(
+        bones[0].rotation,
+        "y",
+        targetRotation,
+        easingFactor,
+        delta
+      );
     });
 
     return (
       // each page takes a different z location
-      <group {...props} ref={group} rotation-y={-Math.PI / 2}>
+      <group {...props} ref={group}>
         <primitive
           object={manualSkinnedMesh}
           ref={skinnedMeshRef}
@@ -209,13 +223,17 @@ export default function Model() {
   };
 
   return (
-    <group>
+    <group rotation-y={-Math.PI / 2}>
       {[...pages].map((pageData, index) => (
         <Page
           key={index}
           number={index}
           pageNumber={snap.manualCurrentPage}
           opened={snap.manualCurrentPage > index + 1}
+          manualClosed={
+            snap.manualCurrentPage == 1 ||
+            snap.manualCurrentPage == pages.length + 1
+          }
           {...pageData}
         />
       ))}
