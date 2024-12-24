@@ -204,6 +204,10 @@ export default function Model() {
       let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
       if (!manualClosed) {
         targetRotation += degToRad(number * 0.8);
+      } else if (pageNumber == snap.manualPageNumber / 2 + 1) {
+        targetRotation = -Math.PI / 2 + degToRad(number);
+      } else {
+        targetRotation = Math.PI / 2 + degToRad(number);
       }
 
       const bones = skinnedMeshRef.current.skeleton.bones;
