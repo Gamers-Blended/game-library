@@ -82,24 +82,6 @@ export default function Model() {
   // texture and material of a page
   const whiteColor = new Color("white");
 
-  // 6 materials for 6 faces
-  // last two will be created dynamically since front and back will change based on page number
-  const pageMaterials = [
-    new MeshStandardMaterial({
-      color: whiteColor,
-    }),
-    // left side
-    new MeshStandardMaterial({
-      color: "#111",
-    }),
-    new MeshStandardMaterial({
-      color: whiteColor,
-    }),
-    new MeshStandardMaterial({
-      color: whiteColor,
-    }),
-  ];
-
   const manualPages = [
     "ps4_wolfenstein_young_blood_manual_2",
     "ps4_wolfenstein_young_blood_manual_3",
@@ -155,6 +137,33 @@ export default function Model() {
     const group = useRef();
     const skinnedMeshRef = useRef();
 
+    // 6 materials for 6 faces
+    // last two will be created dynamically since front and back will change based on page number
+    // Create materials with unique IDs for face detection
+    const pageMaterials = useMemo(() => {
+      const sideMaterials = [
+        new MeshStandardMaterial({ color: whiteColor }),
+        new MeshStandardMaterial({ color: "#111" }),
+        new MeshStandardMaterial({ color: whiteColor }),
+        new MeshStandardMaterial({ color: whiteColor }),
+        // Front page material with unique ID
+        new MeshStandardMaterial({
+          color: whiteColor,
+          map: pictureFront,
+          roughness: 0.1,
+          userData: { isFrontFace: true },
+        }),
+        // Back page material with unique ID
+        new MeshStandardMaterial({
+          color: whiteColor,
+          map: pictureBack,
+          roughness: 0.1,
+          userData: { isBackFace: true },
+        }),
+      ];
+      return sideMaterials;
+    }, [pictureFront, pictureBack]);
+
     const manualSkinnedMesh = useMemo(() => {
       const bones = []; // number of bones = number of segments
       for (let i = 0; i <= PAGE_SEGMENTS; i++) {
@@ -196,7 +205,30 @@ export default function Model() {
       mesh.add(skeleton.bones[0]); // add root bone to mesh
       mesh.bind(skeleton);
       return mesh;
-    }, []);
+    }, [pageMaterials]);
+
+    // Next page if front face clicked
+    // Previous page if back face clicked
+    const handleClickPage = (event) => {
+      event.stopPropagation();
+      const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
+
+      if (event.face) {
+        const clickedMaterial = pageMaterials[event.face.materialIndex];
+
+        if (
+          clickedMaterial.userData.isFrontFace &&
+          snap.manualCurrentPage < manualPageUpperLimit
+        ) {
+          state.manualCurrentPage += 1;
+        } else if (
+          clickedMaterial.userData.isBackFace &&
+          snap.manualCurrentPage > 1
+        ) {
+          state.manualCurrentPage -= 1;
+        }
+      }
+    };
 
     useFrame((_, delta) => {
       if (!skinnedMeshRef.current) return;
@@ -228,6 +260,7 @@ export default function Model() {
           object={manualSkinnedMesh}
           ref={skinnedMeshRef}
           position-z={-number * PAGE_DEPTH + pageNumber * PAGE_DEPTH}
+          onClick={handleClickPage}
         />
       </group>
     );
