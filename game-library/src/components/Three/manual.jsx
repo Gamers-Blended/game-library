@@ -1,6 +1,6 @@
-import { useTexture } from "@react-three/drei";
+import { useCursor, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef, useEffect } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 import { state } from "./store";
 import { useSnapshot } from "valtio";
 import {
@@ -253,9 +253,24 @@ export default function Model() {
       );
     });
 
+    // cursor icon changes when hovering over Pages
+    const [highlighted, setHighlighted] = useState(false);
+    useCursor(highlighted);
+
     return (
       // each page takes a different z location
-      <group {...props} ref={group}>
+      <group
+        {...props}
+        ref={group}
+        onPointerEnter={(event) => {
+          event.stopPropagation();
+          setHighlighted(true);
+        }}
+        onPointerLeave={(event) => {
+          event.stopPropagation();
+          setHighlighted(false);
+        }}
+      >
         <primitive
           object={manualSkinnedMesh}
           ref={skinnedMeshRef}
