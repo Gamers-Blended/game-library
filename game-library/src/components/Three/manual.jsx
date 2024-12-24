@@ -1,6 +1,6 @@
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import { state } from "./store";
 import { useSnapshot } from "valtio";
 import {
@@ -18,16 +18,24 @@ import {
 import { degToRad } from "three/src/math/MathUtils.js";
 import { easing } from "maath";
 
-export default function Model() {
-  const easingFactor = 0.5; // Controls speed of easing
+// sounds
+import pageFlipSound from "../../assets/sound/page-flip-01a.mp3";
 
+export default function Model() {
+  const snap = useSnapshot(state);
+
+  // page geometry
   const PAGE_WIDTH = 1.28;
   const PAGE_HEIGHT = 1.71; // 4:3 aspect ratio
   const PAGE_DEPTH = 0.003;
   const PAGE_SEGMENTS = 30;
   const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
 
-  const snap = useSnapshot(state);
+  // page open animation speed
+  const easingFactor = 0.5;
+
+  // page flip sound
+  const pageFlip = new Audio(pageFlipSound);
 
   const pageGeometry = new BoxGeometry(
     PAGE_WIDTH,
@@ -119,16 +127,15 @@ export default function Model() {
     back: "ps4_wolfenstein_young_blood_manual_4",
   });
 
-  // // play a sound whenever a page is flipped
-  // useEffect(() => {
-  //   const audio = new Audio("../../assets/sound/open-textviewer.mp3");
-  //   audio.play();
-  // }, [pages]);
-
   pages.forEach((page) => {
     useTexture.preload(`/models/${page.front}.jpg`);
     useTexture.preload(`/models/${page.back}.jpg`);
   });
+
+  // play a sound whenever a page is flipped
+  useEffect(() => {
+    pageFlip.play();
+  }, [snap.manualCurrentPage]);
 
   const Page = ({
     number,
