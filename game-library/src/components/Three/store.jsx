@@ -7,6 +7,7 @@ const state = proxy({
   open: false,
   manualPageNumber: 0,
   manualCurrentPage: 1,
+  isManualViewerOpened: false,
 });
 
 export { state };

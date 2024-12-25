@@ -1,6 +1,20 @@
 export default function Credits() {
   return (
     <div>
+      <a target="_blank" href="https://icons8.com/icon/MxxmxF6hyMwz/a-key">
+        A Key
+      </a>{" "}
+      icon by{" "}
+      <a target="_blank" href="https://icons8.com">
+        Icons8
+      </a>
+      <a target="_blank" href="https://icons8.com/icon/TZOYuLKRl67x/d-key">
+        D Key
+      </a>{" "}
+      icon by{" "}
+      <a target="_blank" href="https://icons8.com">
+        Icons8
+      </a>
       <a target="_blank" href="https://icons8.com/icon/aoAAiANuQlrH/q-key">
         Q Key
       </a>{" "}

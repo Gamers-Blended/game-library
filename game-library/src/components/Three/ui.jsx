@@ -4,6 +4,8 @@ import { state } from "./store";
 import { useSnapshot } from "valtio";
 
 // img
+import keyboardIconA from "../../assets/icons/icons8-a-key-96.png";
+import keyboardIconD from "../../assets/icons/icons8-d-key-96.png";
 import keyboardIconQ from "../../assets/icons/icons8-q-key-96.png";
 import keyboardIconE from "../../assets/icons/icons8-e-key-96.png";
 import keyboardIconLeftClick from "../../assets/icons/icons8-left-click-96.png";
@@ -123,6 +125,11 @@ export default function UI() {
   function ManualModeButtons() {
     // if manual has 4 pages, it has 3 forms: (page1), (page2 + page3), (page4) -> n pages, n/2 + 1 forms
     const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
+
+    const handleManualImageViewerToggle = () => {
+      state.isManualViewerOpened = !snap.isManualViewerOpened;
+    };
+
     const handlePreviousPage = () => {
       if (snap.manualCurrentPage > 1) {
         state.manualCurrentPage -= 1;
@@ -141,16 +148,20 @@ export default function UI() {
     };
 
     /* key events
-        Q - Flip back 1 page
-        E - Flip forward 1 page
+      Q - Toggle manual image viewer
+      A - Flip back 1 page
+      D - Flip forward 1 page
         */
     useEffect(() => {
       const onKeyDown = (e) => {
         switch (e.key) {
           case "q":
+            handleManualImageViewerToggle();
+            break;
+          case "a":
             handlePreviousPage();
             break;
-          case "e":
+          case "d":
             handleNextPage();
             break;
         }
@@ -162,7 +173,12 @@ export default function UI() {
 
     return (
       <div>
-        <img src={keyboardIconE} className="UIcontrolsKeys" />
+        <img src={keyboardIconQ} className="UIcontrolsKeys" />
+        <button className="buttonText" onClick={handleManualImageViewerToggle}>
+          {snap.isManualViewerOpened ? "Close Viewer" : "View Contents"}
+        </button>
+
+        <img src={keyboardIconD} className="UIcontrolsKeys" />
         <button
           className="buttonText"
           onClick={handleNextPage}
@@ -175,7 +191,7 @@ export default function UI() {
         >
           Next Page
         </button>
-        <img src={keyboardIconQ} className="UIcontrolsKeys" />
+        <img src={keyboardIconA} className="UIcontrolsKeys" />
         <button
           className="buttonText"
           onClick={handlePreviousPage}
