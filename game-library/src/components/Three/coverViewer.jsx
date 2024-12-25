@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useSnapshot } from "valtio";
 import { state } from "./store";
 import {
@@ -18,30 +17,6 @@ import keyboardIconArrowUp from "../../assets/icons/icons8-page-up-button-96.png
 import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96.png";
 
 export default function CoverViewer() {
-  const transition = { type: "spring", duration: 0.8 };
-  const config = {
-    initial: { x: -100, opacity: 0, transition: { ...transition, delay: 0.5 } },
-    animate: { x: 0, opacity: 1, transition: { ...transition, delay: 0 } },
-    exit: { x: -100, opacity: 0, transition: { ...transition, delay: 0 } },
-  };
-
-  return (
-    <div className="coverViewerContainer">
-      <AnimatePresence>
-        <motion.section
-          className="coverViewerUIContainer"
-          key="custom"
-          {...config}
-        >
-          <UI />
-        </motion.section>
-      </AnimatePresence>
-    </div>
-  );
-}
-
-// interface for viewing cover sheet (front and back)
-function UI() {
   const CASE_MODE = "CASE";
   const COVER_WIDTH = "1065";
   const COVER_HEIGHT = "631";

@@ -21,6 +21,7 @@ export default function ModeSelector() {
 
   const handleModeCover = () => {
     state.currentMode = COVER_MODE;
+    state.isImageViewerOpened = true;
   };
 
   const handleModeDisc = () => {

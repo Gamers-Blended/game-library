@@ -127,7 +127,7 @@ export default function UI() {
     const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
 
     const handleManualImageViewerToggle = () => {
-      state.isManualViewerOpened = !snap.isManualViewerOpened;
+      state.isImageViewerOpened = !snap.isImageViewerOpened;
     };
 
     const handlePreviousPage = () => {
