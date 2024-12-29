@@ -52,14 +52,33 @@ export default function ManualViewer() {
   };
 
   /* buttons for cover viewer
-  Previous Page - Go back 1 page
-  Next Page - Go forward 1 page
+  Previous Page - Flip back 1 page
+  Next Page - Flip forward 1 page
   Zoom In - Zooms in pages (up to zoomLevelLimit)
   Zoom Out - Zooms out pages
   Reset - Reset to original scale
   Close Viewer - Close interface
   */
   const ManualImageButtons = () => {
+    // if manual has 4 pages, it has 3 forms: (page1), (page2 + page3), (page4) -> n pages, n/2 + 1 forms
+    const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
+
+    const handleManualImageViewerToggle = () => {
+      state.isImageViewerOpened = true;
+    };
+
+    const handlePreviousPage = () => {
+      if (snap.manualCurrentPage > 1) {
+        state.manualCurrentPage -= 1;
+      }
+    };
+
+    const handleNextPage = () => {
+      if (snap.manualCurrentPage < manualPageUpperLimit) {
+        state.manualCurrentPage += 1;
+      }
+    };
+
     // Zoom In & Out
     const { zoomIn, zoomOut, resetTransform } = useControls();
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -91,6 +110,8 @@ export default function ManualViewer() {
 
     /* key events
       Q - Close viewer
+      A - Flip back 1 page
+      D - Flip forward 1 page
       Up Arrow - Zooms in cover (up to zoomLevelLimit)
       Down Arrow - Zooms out cover
       R - Reset to original scale
@@ -100,6 +121,12 @@ export default function ManualViewer() {
         switch (e.key) {
           case "q":
             handleImageViewerClose();
+            break;
+          case "a":
+            handlePreviousPage();
+            break;
+          case "d":
+            handleNextPage();
             break;
           case "ArrowUp":
             handleZoomIn();
@@ -124,14 +151,28 @@ export default function ManualViewer() {
           Close Viewer
         </button>
 
-        {/* <img
-          src={keyboardIconE}
-          className="coverViewercontrolsKeys"
-          alt="E key"
-        />
-        <button className="buttonText" onClick={handleCoverFlip}>
-          Flip Cover
-        </button> */}
+        <img src={keyboardIconD} className="UIcontrolsKeys" />
+        <button
+          className="buttonText"
+          onClick={handleNextPage}
+          disabled={snap.manualCurrentPage >= manualPageUpperLimit}
+          style={
+            snap.manualCurrentPage >= manualPageUpperLimit
+              ? disabledButtonStyle
+              : {}
+          }
+        >
+          Next Page
+        </button>
+        <img src={keyboardIconA} className="UIcontrolsKeys" />
+        <button
+          className="buttonText"
+          onClick={handlePreviousPage}
+          disabled={snap.manualCurrentPage <= 1}
+          style={snap.manualCurrentPage <= 1 ? disabledButtonStyle : {}}
+        >
+          Previous Page
+        </button>
 
         <img
           src={keyboardIconArrowUp}
