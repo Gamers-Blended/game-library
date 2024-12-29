@@ -12,12 +12,10 @@ import textViewerOpenSound from "../../assets/sound/open-textviewer.mp3";
 import keyboardIconQ from "../../assets/icons/icons8-q-key-96.png";
 import keyboardIconE from "../../assets/icons/icons8-e-key-96.png";
 import keyboardIconR from "../../assets/icons/icons8-r-key-96.png";
-import keyboardIconEsc from "../../assets/icons/icons8-esc-96.png";
 import keyboardIconArrowUp from "../../assets/icons/icons8-page-up-button-96.png";
 import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96.png";
 
 export default function CoverViewer() {
-  const CASE_MODE = "CASE";
   const COVER_WIDTH = "1065";
   const COVER_HEIGHT = "631";
   const [isFrontCover, setIsFrontCover] = useState(true);
@@ -49,12 +47,6 @@ export default function CoverViewer() {
     setIsFrontCover((isFrontCover) => !isFrontCover);
     coverFlipAudio.volume = 0.3;
     coverFlipAudio.play();
-  };
-
-  // function to toggle cover viewer interface
-  const handleClose = () => {
-    state.currentMode = CASE_MODE;
-    state.isImageViewerOpened = false;
   };
 
   // function to display image based on state
@@ -108,7 +100,6 @@ export default function CoverViewer() {
     Up Arrow - Zooms in cover (up to zoomLevelLimit)
     Down Arrow - Zooms out cover
     R - Reset to original scale
-    Esc - Close interface
     */
     useEffect(() => {
       const onKeyDown = (e) => {
@@ -128,9 +119,6 @@ export default function CoverViewer() {
           case "r":
             handleReset();
             break;
-          case "Escape":
-            handleClose();
-            break;
         }
       };
 
@@ -139,7 +127,7 @@ export default function CoverViewer() {
     }, [zoomLevel]);
 
     return (
-      <div className="imageViewerButtons">
+      <div className="coverViewerButtons">
         <img
           src={keyboardIconQ}
           className="coverViewercontrolsKeys"
@@ -194,15 +182,6 @@ export default function CoverViewer() {
         <button className="buttonText" onClick={handleReset}>
           Reset
         </button>
-
-        <img
-          src={keyboardIconEsc}
-          className="coverViewercontrolsKeys"
-          alt="Esc key"
-        />
-        <button className="buttonText" onClick={handleClose}>
-          Back
-        </button>
       </div>
     );
   };
@@ -253,8 +232,7 @@ export default function CoverViewer() {
                   ? "models/ps4_fallout4.jpg"
                   : "models/ps4_mafia_de_reverse_cover.jpg"
               }
-              width={COVER_WIDTH}
-              height={COVER_HEIGHT}
+              className="coverPage"
             />
           </TransformComponent>
 

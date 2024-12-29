@@ -187,13 +187,27 @@ body {
   color: white;
 }
 
+.coverPage {
+  width: 1065px;
+  height: 631px;
+}
+
 // SUBPART - BUTTONS //
-.imageViewerButtons {
-  position: absolute;
-  display:inline;
+.coverViewerButtons {
+  position: fixed;
+  display: inline;
   float: right;
   right: 20px;
   bottom: 10px;
+  z-index: 15;
+}
+
+.imageViewerButtons {
+  position: fixed;
+  display: inline;
+  float: right;
+  right: 20px;
+  bottom: 50px;
   z-index: 15;
 }
 
