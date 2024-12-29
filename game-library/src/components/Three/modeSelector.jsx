@@ -17,6 +17,7 @@ export default function ModeSelector() {
 
   const handleModeCase = () => {
     state.currentMode = CASE_MODE;
+    state.isImageViewerOpened = false;
   };
 
   const handleModeCover = () => {
@@ -26,6 +27,7 @@ export default function ModeSelector() {
 
   const handleModeDisc = () => {
     state.currentMode = DISC_MODE;
+    state.isImageViewerOpened = false;
   };
 
   /* key events

@@ -54,6 +54,7 @@ export default function CoverViewer() {
   // function to toggle cover viewer interface
   const handleClose = () => {
     state.currentMode = CASE_MODE;
+    state.isImageViewerOpened = false;
   };
 
   // function to display image based on state
@@ -117,7 +118,6 @@ export default function CoverViewer() {
             break;
           case "e":
             handleCoverFlip();
-            // button grey out if not available
             break;
           case "ArrowUp":
             handleZoomIn();
@@ -139,7 +139,7 @@ export default function CoverViewer() {
     }, [zoomLevel]);
 
     return (
-      <div className="coverViewerButtons">
+      <div className="imageViewerButtons">
         <img
           src={keyboardIconQ}
           className="coverViewercontrolsKeys"
@@ -253,7 +253,6 @@ export default function CoverViewer() {
                   ? "models/ps4_fallout4.jpg"
                   : "models/ps4_mafia_de_reverse_cover.jpg"
               }
-              alt="An image of the cover sheet."
               width={COVER_WIDTH}
               height={COVER_HEIGHT}
             />

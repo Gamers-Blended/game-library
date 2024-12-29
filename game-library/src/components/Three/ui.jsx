@@ -127,7 +127,7 @@ export default function UI() {
     const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
 
     const handleManualImageViewerToggle = () => {
-      state.isImageViewerOpened = !snap.isImageViewerOpened;
+      state.isImageViewerOpened = true;
     };
 
     const handlePreviousPage = () => {
@@ -175,7 +175,7 @@ export default function UI() {
       <div>
         <img src={keyboardIconQ} className="UIcontrolsKeys" />
         <button className="buttonText" onClick={handleManualImageViewerToggle}>
-          {snap.isManualViewerOpened ? "Close Viewer" : "View Contents"}
+          {snap.isImageViewerOpened ? "Close Viewer" : "View Contents"}
         </button>
 
         <img src={keyboardIconD} className="UIcontrolsKeys" />
@@ -250,8 +250,12 @@ export default function UI() {
       </AnimatePresence>
       <div className="subHeader">{getHeaderText()}</div>
       {shouldRenderInfoBox && snap.currentMode == "CASE" && <InformationBox />}
-      {snap.currentMode != "COVER" && <UIControls />}
-      {snap.currentMode == "MANUAL" && <ManualUI />}
+      {snap.currentMode != "COVER" && !snap.isImageViewerOpened && (
+        <UIControls />
+      )}
+      {snap.currentMode == "MANUAL" && !snap.isImageViewerOpened && (
+        <ManualUI />
+      )}
     </div>
   );
 }
