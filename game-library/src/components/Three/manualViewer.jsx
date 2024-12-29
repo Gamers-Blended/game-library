@@ -7,7 +7,6 @@ import {
   useControls,
 } from "react-zoom-pan-pinch";
 
-import flipSound from "../../assets/sound/page-flip-01a.mp3";
 import keyboardIconA from "../../assets/icons/icons8-a-key-96.png";
 import keyboardIconD from "../../assets/icons/icons8-d-key-96.png";
 import keyboardIconQ from "../../assets/icons/icons8-q-key-96.png";
@@ -17,21 +16,23 @@ import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96
 
 export default function ManualViewer() {
   const snap = useSnapshot(state);
+  const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
 
-  const manualPages = [
-    "models/" +
-      snap.platform +
-      "_" +
-      snap.title +
-      "_manual_" +
-      snap.manualCurrentPage +
-      ".jpg",
-  ];
-
-  if (
-    snap.manualCurrentPage != 1 &&
-    snap.manualCurrentPage != snap.manualPageNumber / 2 + 1
-  ) {
+  const manualPages = [];
+  // 1st and last page should only have 1 page displayed
+  // 1st page
+  if (snap.manualCurrentPage == 1) {
+    manualPages.push(
+      "models/" +
+        snap.platform +
+        "_" +
+        snap.title +
+        "_manual_" +
+        snap.manualCurrentPage +
+        ".jpg"
+    );
+    // last page
+  } else if (snap.manualCurrentPage == manualPageUpperLimit) {
     manualPages.push(
       "models/" +
         snap.platform +
@@ -42,14 +43,28 @@ export default function ManualViewer() {
         ".jpg"
     );
   }
-
-  const handleImageChange = (newImageUrl) => {
-    setImageUrl(newImageUrl);
-  };
-
-  const handleImageViewerClose = () => {
-    state.isImageViewerOpened = false;
-  };
+  // 2 pages displayed
+  if (
+    snap.manualCurrentPage != 1 &&
+    snap.manualCurrentPage != manualPageUpperLimit
+  ) {
+    manualPages.push(
+      "models/" +
+        snap.platform +
+        "_" +
+        snap.title +
+        "_manual_" +
+        snap.manualCurrentPage +
+        ".jpg",
+      "models/" +
+        snap.platform +
+        "_" +
+        snap.title +
+        "_manual_" +
+        (snap.manualCurrentPage + 1) +
+        ".jpg"
+    );
+  }
 
   /* buttons for cover viewer
   Previous Page - Flip back 1 page
@@ -61,10 +76,10 @@ export default function ManualViewer() {
   */
   const ManualImageButtons = () => {
     // if manual has 4 pages, it has 3 forms: (page1), (page2 + page3), (page4) -> n pages, n/2 + 1 forms
-    const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
+    // const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
 
-    const handleManualImageViewerToggle = () => {
-      state.isImageViewerOpened = true;
+    const handleImageViewerClose = () => {
+      state.isImageViewerOpened = false;
     };
 
     const handlePreviousPage = () => {
