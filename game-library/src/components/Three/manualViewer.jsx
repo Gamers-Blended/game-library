@@ -18,7 +18,30 @@ import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96
 export default function ManualViewer() {
   const snap = useSnapshot(state);
 
-  const [imageUrl, setImageUrl] = useState("models/ps4_fallout4.jpg");
+  const manualPages = [
+    "models/" +
+      snap.platform +
+      "_" +
+      snap.title +
+      "_manual_" +
+      snap.manualCurrentPage +
+      ".jpg",
+  ];
+
+  if (
+    snap.manualCurrentPage != 1 &&
+    snap.manualCurrentPage != snap.manualPageNumber / 2 + 1
+  ) {
+    manualPages.push(
+      "models/" +
+        snap.platform +
+        "_" +
+        snap.title +
+        "_manual_" +
+        (snap.manualCurrentPage + 1) +
+        ".jpg"
+    );
+  }
 
   const handleImageChange = (newImageUrl) => {
     setImageUrl(newImageUrl);
@@ -165,8 +188,13 @@ export default function ManualViewer() {
           }}
         >
           <TransformComponent>
-            <img src={imageUrl} className="manualPage" />
-            <img src={imageUrl} className="manualPage" />
+            {[...manualPages].map((_, index) => (
+              <img
+                key={index}
+                src={manualPages[index]}
+                className="manualPage"
+              />
+            ))}
           </TransformComponent>
 
           {/* buttons */}

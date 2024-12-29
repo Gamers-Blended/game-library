@@ -12,6 +12,7 @@ export default function MetaDataHandler() {
   const titleOptions = [
     { value: "fallout4", label: "Fallout 4" },
     { value: "mafia_de", label: "Mafia Definite Edition" },
+    { value: "wolfenstein_young_blood", label: "Wolfenstein Young Blood" },
   ];
 
   const handleSelect = (option) => {
@@ -28,6 +29,7 @@ export default function MetaDataHandler() {
           return JSON.parse(text);
         })
         .then((textParsed) => {
+          state.platform = textParsed.platforms[0];
           state.additional = textParsed.additional;
           state.manualPageNumber = textParsed.manualPageNumber
             ? textParsed.manualPageNumber
@@ -38,7 +40,9 @@ export default function MetaDataHandler() {
               ": \n" +
               snap.additional +
               "\nNumber of pages for manual: " +
-              snap.manualPageNumber
+              snap.manualPageNumber +
+              "\nPlatform: " +
+              snap.platform
           );
         })
         .catch((jsonError) => {
