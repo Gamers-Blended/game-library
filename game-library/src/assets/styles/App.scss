@@ -234,9 +234,11 @@ body {
   height: 100%;
 }
 
-.pageInfo {
+.pageNavigationContainer {
   display: flex;
+  gap: 0.5rem; 
   justify-content: center;
+  align-items: center; 
   margin-top: 40px;
 }
 

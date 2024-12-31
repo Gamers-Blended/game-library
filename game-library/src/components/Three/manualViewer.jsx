@@ -6,6 +6,12 @@ import {
   TransformComponent,
   useControls,
 } from "react-zoom-pan-pinch";
+import {
+  ChevronsLeft,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsRight,
+} from "lucide-react";
 
 import keyboardIconA from "../../assets/icons/icons8-a-key-96.png";
 import keyboardIconD from "../../assets/icons/icons8-d-key-96.png";
@@ -13,6 +19,64 @@ import keyboardIconQ from "../../assets/icons/icons8-q-key-96.png";
 import keyboardIconR from "../../assets/icons/icons8-r-key-96.png";
 import keyboardIconArrowUp from "../../assets/icons/icons8-page-up-button-96.png";
 import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96.png";
+
+const PageNavigation = ({ totalPages }) => {
+  const snap = useSnapshot(state);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      state.manualCurrentPage = newPage;
+    }
+  };
+
+  return (
+    <div className="pageNavigationContainer">
+      <button
+        onClick={() => handlePageChange(1)}
+        className="buttonText"
+        disabled={snap.manualCurrentPage === 1}
+      >
+        <ChevronsLeft size={20} />
+      </button>
+
+      <button
+        onClick={() => handlePageChange(snap.manualCurrentPage - 1)}
+        className="buttonText"
+        disabled={snap.manualCurrentPage === 1}
+      >
+        <ChevronLeft size={20} />
+      </button>
+
+      <select
+        value={snap.manualCurrentPage}
+        onChange={(e) => handlePageChange(parseInt(e.target.value))}
+      >
+        {Array.from({ length: totalPages }, (_, i) => (
+          <option key={i + 1} value={i + 1}>
+            {i + 1}
+          </option>
+        ))}
+      </select>
+      <span className="text-gray-600">of {totalPages}</span>
+
+      <button
+        onClick={() => handlePageChange(snap.manualCurrentPage + 1)}
+        className="buttonText"
+        disabled={snap.manualCurrentPage === totalPages}
+      >
+        <ChevronRight size={20} />
+      </button>
+
+      <button
+        onClick={() => handlePageChange(totalPages)}
+        className="buttonText"
+        disabled={snap.manualCurrentPage === totalPages}
+      >
+        <ChevronsRight size={20} />
+      </button>
+    </div>
+  );
+};
 
 export default function ManualViewer() {
   const snap = useSnapshot(state);
@@ -231,9 +295,7 @@ export default function ManualViewer() {
 
   return (
     <div className="manualViewerContainer">
-      <div className="pageInfo">
-        Current page number: {snap.manualCurrentPage}
-      </div>
+      <PageNavigation totalPages={snap.manualPageNumber / 2 + 1} />
       <div className="manualViewer">
         <TransformWrapper
           doubleClick={{
