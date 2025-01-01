@@ -41,6 +41,17 @@ export default function MetaDataHandler() {
     }
   }, [textSourcePath]);
 
+  const CloseButton = () => {
+    const handleClose = () => {
+      state.isMetaDataHandlerOpened = !snap.isMetaDataHandlerOpened;
+    };
+
+    return (
+      <button className="buttonText" onClick={handleClose}>
+        Close
+      </button>
+    );
+  };
   const Selector = () => {
     const titleOptions = [
       { value: "fallout4", label: "Fallout 4" },
@@ -121,16 +132,17 @@ export default function MetaDataHandler() {
   };
 
   return (
-    snap.isMetaDataHandlerOpened && (
-      <div className="metadataHandlerContainer">
-        <div className="metadataContent">
-          <div className="instructionText">
-            Welcome to the Game Library! <br />
-            Please select the title you wish to view.
+    <div className="metadataHandlerContainer">
+      <div className="metadataContent">
+        <div className="instructionText">
+          Welcome to the Game Library! <br />
+          Please select the title you wish to view.
+          <div className="closeButtonContainer">
+            <CloseButton />
           </div>
-          <Selector />
         </div>
+        <Selector />
       </div>
-    )
+    </div>
   );
 }

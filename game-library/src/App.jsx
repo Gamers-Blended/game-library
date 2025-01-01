@@ -1,6 +1,8 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Loader, OrbitControls } from "@react-three/drei";
+import { state } from "./components/Three/store";
+import { useSnapshot } from "valtio";
 import "./assets/styles/App.scss";
 import Lights from "./components/Three/lights.jsx";
 import UI from "./components/Three/ui.jsx";
@@ -10,9 +12,11 @@ import ModelSelector from "./components/Three/modelSelector.jsx";
 import ImageModeSelector from "./components/Three/imageModeSelector.jsx";
 
 function App() {
+  const snap = useSnapshot(state);
+
   return (
     <>
-      <MetaDataHandler />
+      {snap.isMetaDataHandlerOpened && <MetaDataHandler />}
       <ModeSelector />
       <UI />
       <Loader />

@@ -55,6 +55,12 @@ body {
   padding: 10px 0;
 }
 
+.closeButtonContainer {
+  transform: translateY(-80%);
+  float: right;
+  padding: 0;
+}
+
 .metadataHandlerSelector {
   display: flex;
   justify-content: center;
@@ -255,7 +261,7 @@ body {
   transform: translateY(35%);
   width: 50px;
   height: 50px;
-  object-fit: contain; /* maintains aspect ratio */
+  object-fit: contain; // maintains aspect ratio
 }
 
 .buttonText {
