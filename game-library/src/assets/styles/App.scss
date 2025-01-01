@@ -31,24 +31,55 @@ body {
 // METADATA HANDLER //
 //////////////////////
 .metadataHandlerContainer {
-  left:0;
-  right:0;
+  justify-content: center;
+  align-items: center; 
+  display: flex;
+  position: relative;
+  width: 100%;
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.5);
   margin: auto;
-  position: absolute;
-  width: 1500px;
-  pointer-events: none;
-  visibility: hidden;
-  
+}
+
+.metadataContent {
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 80%;
+  max-width: 800px; // Prevents content from becoming too wide on large screens
+  margin: 0 auto; // Centers content horizontally
+  padding: 20px;
+}
+
+.instructionText {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px 0;
+}
+
+.metadataHandlerSelector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px; // Adds space between labels and Select boxes
+  margin-top: 20px; // Adds space between instructionText and metadataHandlerSelector
+  width: 100%;
+}
+
+.selectorRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.selectorLabel {
+  min-width: 80px;
+  text-align: right;
 }
 
 .metadataHandlerSelectBox {
-  width: 20%;
-  margin: auto;
-  pointer-events: auto;
-  visibility: visible;
-  z-index: 20;
+  width: 200px;
 }
-
 
 ///////////////////
 // MODE SELECTOR //
@@ -57,7 +88,6 @@ body {
   position: absolute;
   right: 10px;
   width: 200px;
-  // height: 200px;
   z-index: 1;
 }
   
