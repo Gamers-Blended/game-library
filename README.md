@@ -87,12 +87,15 @@ Shortcut to import libraries Ctrl + Space
 
 ## Problems
 
-- flip animation
-- how glfx works (coverting a .glb file into separate mesh components)
-- how to darken background when a div appears
-- unable to use mouse scroll for zooming in/out while maintaining button active condition when limit is reached
-- unable to map a .jpg filr to a circular geometry exported from .glb file
-- unable to map each face of CylinderGeometry created from `three-bvh-csg`
+- Figuring out how to rotate the edge of a mesh instead of its origin
+- Learning how glfx works (coverting a .glb file into separate mesh components)
+- How to darken background whenever a div appears
+- Unable to use mouse scroll for zooming in/out while maintaining button active condition when limit is reached
+- Unable to map a .jpg file to a circular geometry exported from a .glb file
+- Unable to map each face of CylinderGeometry created from `three-bvh-csg`
+- Unable to persist y-positions of each Manual Page upon a page flip (unresolved)
+- The number of pages a manual will not tally with the last page number in the UI (e.g. manual has page 1-4, UI will only have 3 states [pg1, pg2-pg3, pg4])
+- Selected value in Dropdown box in MetaDataHandler does not persist upon selection (only persists when same option selected twice)
 
 ## Tried
 
@@ -103,3 +106,5 @@ Shortcut to import libraries Ctrl + Space
 - Passing an array of jpgs to `material` parameter in `geometry`
 - Using `attach = "material-n"` inside `geometry` component (works in normal threejs geometries, but not those from bvh)
 - Adding a `side="THREE.FrontSide / THREE.BackSide"` to material components
+- Using (number of pages/2 + 1) to get the number of states the UI will have for a manual
+- Use the value prop of Select to get the current selected option based on the value from Valtio state
