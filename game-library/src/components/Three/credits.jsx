@@ -56,8 +56,8 @@ export default function Credits() {
       <a target="_blank" href="https://icons8.com">
         Icons8
       </a>
-      <a target="_blank" href="https://icons8.com/icon/17809/esc">
-        Esc
+      <a target="_blank" href="https://icons8.com/icon/3rd8LUA6qPyl/tab-key">
+        Tab Key
       </a>{" "}
       icon by{" "}
       <a target="_blank" href="https://icons8.com">

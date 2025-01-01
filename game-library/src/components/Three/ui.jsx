@@ -12,6 +12,7 @@ import keyboardIconLeftClick from "../../assets/icons/icons8-left-click-96.png";
 import keyboardIconRightClick from "../../assets/icons/icons8-right-click-96.png";
 import keyboardIconScrollUp from "../../assets/icons/icons8-scroll-up-96.png";
 import keyboardIconScrollDown from "../../assets/icons/icons8-scroll-down-96.png";
+import keyboardIconTab from "../../assets/icons/icons8-tab-key-96.png";
 import infoIcon from "../../assets/icons/icons8-info-96.png";
 
 // sounds
@@ -55,6 +56,38 @@ export default function UI() {
     }
   };
 
+  function MetaDataHandlerToggle() {
+    const handleMetaDataHandlerToggle = () => {
+      state.isMetaDataHandlerOpened = !snap.isMetaDataHandlerOpened;
+      console.log("chk: " + snap.isMetaDataHandlerOpened);
+    };
+
+    /* key event
+    Tab - Toggle metaDataHandler
+    */
+    useEffect(() => {
+      const onKeyDown = (e) => {
+        switch (e.key) {
+          case "Tab":
+            handleMetaDataHandlerToggle();
+            break;
+        }
+      };
+
+      window.addEventListener("keydown", onKeyDown);
+      return () => window.removeEventListener("keydown", onKeyDown);
+    }, []);
+
+    return (
+      <div className="metaDataHandlerToggle">
+        <img src={keyboardIconTab} className="UIcontrolsKeys" />
+        <button className="buttonText" onClick={handleMetaDataHandlerToggle}>
+          Change Title
+        </button>
+      </div>
+    );
+  }
+
   function InformationBox() {
     return (
       <div className="informationBox">
@@ -81,10 +114,6 @@ export default function UI() {
         )}
       </div>
     );
-  }
-
-  function ManualUI() {
-    return <div>Current page number: {snap.manualCurrentPage}</div>;
   }
 
   function CaseModeButtons() {
@@ -223,6 +252,7 @@ export default function UI() {
 
   return (
     <div className="UIContainer">
+      <MetaDataHandlerToggle />
       <motion.header
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -252,9 +282,6 @@ export default function UI() {
       {shouldRenderInfoBox && snap.currentMode == "CASE" && <InformationBox />}
       {snap.currentMode != "COVER" && !snap.isImageViewerOpened && (
         <UIControls />
-      )}
-      {snap.currentMode == "MANUAL" && !snap.isImageViewerOpened && (
-        <ManualUI />
       )}
     </div>
   );

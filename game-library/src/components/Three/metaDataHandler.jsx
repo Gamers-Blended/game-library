@@ -57,11 +57,13 @@ export default function MetaDataHandler() {
 
   return (
     <div className="metadataHandlerContainer">
-      <Select
-        className="metadataHandlerSelectBox"
-        onChange={handleSelect}
-        options={titleOptions}
-      />
+      {snap.isMetaDataHandlerOpened && (
+        <Select
+          className="metadataHandlerSelectBox"
+          onChange={handleSelect}
+          options={titleOptions}
+        />
+      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ const state = proxy({
   manualPageNumber: 0,
   manualCurrentPage: 1,
   isImageViewerOpened: false,
+  isMetaDataHandlerOpened: false,
 });
 
 export { state };
