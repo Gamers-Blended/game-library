@@ -24,6 +24,7 @@ body {
 .metaDataHandlerToggle {
   position: relative;
   z-index: 15;
+  width: 150px;
 }
 
 //////////////////////
@@ -215,7 +216,7 @@ body {
   display: inline;
   float: right;
   right: 20px;
-  bottom: 50px;
+  bottom: 20px;
   z-index: 15;
 }
 
@@ -247,7 +248,7 @@ body {
   gap: 0.5rem; 
   justify-content: center;
   align-items: center; 
-  margin-top: 40px;
+  margin-top: 10px;
 }
 
 .manualPage {
