@@ -59,7 +59,6 @@ export default function UI() {
   function MetaDataHandlerToggle() {
     const handleMetaDataHandlerToggle = () => {
       state.isMetaDataHandlerOpened = !snap.isMetaDataHandlerOpened;
-      console.log("chk: " + snap.isMetaDataHandlerOpened);
     };
 
     /* key event
