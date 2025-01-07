@@ -20,7 +20,8 @@ function App() {
       <ModeSelector />
       <UI />
       <Loader />
-      <Canvas shadows camera={{ position: [0, 4, 8], fov: 35 }}>
+      {/* position: [x (left/right), y (up/down), z (forward/backward)] */}
+      <Canvas shadows camera={{ position: [0, 1, 4], fov: 35 }}>
         <Lights />
         <Suspense fallback={null}>
           <ModelSelector />
