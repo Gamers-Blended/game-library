@@ -61,7 +61,7 @@ export default function Model() {
 
   // 3D model
   return (
-    <group dispose={null}>
+    <group dispose={null} rotation-x={Math.PI / 2}>
       {/* top case */}
       <a.group rotation={openCaseAnimation.rotation} position={[-1, 0, 0]}>
         <mesh
