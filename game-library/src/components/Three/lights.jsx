@@ -6,11 +6,23 @@ import React from "react";
 const Lights = () => {
   return (
     <>
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[-8, 16, -8]} intensity={2.5} />
-      <directionalLight position={[2, 5, 2]} intensity={2.5} />
-      <pointLight position={[0, 50, 0]} intensity={2} />
-      <pointLight position={[0, -1, 0]} intensity={2} />
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[10, 10, 10]} intensity={2.5} /> //
+      Top-right-front
+      <directionalLight position={[-10, 10, -10]} intensity={2.5} /> //
+      Top-left-back
+      {/* Fill lights for softer shadows */}
+      <directionalLight position={[-10, 10, 10]} intensity={1} /> //
+      Top-left-front
+      <directionalLight position={[10, 10, -10]} intensity={1} /> //
+      Top-right-back
+      {/* Point lights for additional dimension */}
+      <pointLight position={[0, 15, 0]} intensity={2} /> // Top
+      <pointLight position={[0, -15, 0]} intensity={2} /> // Bottom
+      <pointLight position={[15, 0, 0]} intensity={2} /> // Right
+      <pointLight position={[-15, 0, 0]} intensity={2} /> // Left
+      <pointLight position={[0, 0, 15]} intensity={2} /> // Front
+      <pointLight position={[0, 0, -15]} intensity={2} /> // Back
     </>
   );
 };
