@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { state } from "./store";
 import { useSnapshot } from "valtio";
 import Select from "react-select";
+import supabase from "../../config/supabase";
 
 export default function MetaDataHandler() {
   const TXT_EXT = ".txt";
@@ -21,11 +22,39 @@ export default function MetaDataHandler() {
     edition: null,
   });
 
-  const titleOptions = [
-    { value: "fallout4", label: "Fallout 4" },
-    { value: "mafia_de", label: "Mafia Definite Edition" },
-    { value: "wolfenstein_young_blood", label: "Wolfenstein Young Blood" },
-  ];
+  const [fetchError, setFetchError] = useState(null);
+  const [titleOptions, setTitleOptions] = useState(null);
+
+  // get title options from database
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("games")
+          .select("title, title_text");
+
+        if (error) throw error;
+        if (data) {
+          const transformedData = data.map((item) => ({
+            value: item.title,
+            label: item.title_text,
+          }));
+
+          setTitleOptions(transformedData);
+          setFetchError(null);
+          console.log(
+            "Data successfully retrieved from database: ",
+            transformedData
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching game titles from database:", error);
+        setTitleOptions(null);
+        setFetchError("Unable to fetch game data");
+      }
+    };
+    fetchData();
+  }, []);
 
   const platformOptions = [
     { value: "ps3", label: "PlayStation 3" },
@@ -298,6 +327,14 @@ export default function MetaDataHandler() {
     <div className="metadataHandlerContainer">
       <div className="metadataContent">
         <div className="instructionText">
+          {fetchError && <p>{fetchError}</p>}
+          {titleOptions && (
+            <div>
+              {titleOptions.map((q) => (
+                <p>{q.label}</p>
+              ))}
+            </div>
+          )}
           Welcome to the Game Library! <br />
           Please select the title you wish to view.
           <div className="closeButtonContainer">

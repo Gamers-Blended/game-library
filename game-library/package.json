@@ -13,6 +13,7 @@
     "@react-spring/three": "^9.7.4",
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.8",
+    "@supabase/supabase-js": "^2.47.10",
     "framer-motion": "^11.9.0",
     "keyboard-css": "^1.2.4",
     "lucide-react": "^0.469.0",
