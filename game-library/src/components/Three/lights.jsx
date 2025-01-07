@@ -7,9 +7,9 @@ const Lights = () => {
   return (
     <>
       <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 10, 10]} intensity={2.5} /> //
+      <directionalLight position={[10, 10, 10]} intensity={3} /> //
       Top-right-front
-      <directionalLight position={[-10, 10, -10]} intensity={2.5} /> //
+      <directionalLight position={[-10, 10, -10]} intensity={3} /> //
       Top-left-back
       {/* Fill lights for softer shadows */}
       <directionalLight position={[-10, 10, 10]} intensity={1} /> //
