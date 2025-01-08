@@ -7,22 +7,29 @@ const Lights = () => {
   return (
     <>
       <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 10, 10]} intensity={3} /> //
-      Top-right-front
-      <directionalLight position={[-10, 10, -10]} intensity={3} /> //
-      Top-left-back
+      {/* Top-right-front */}
+      <directionalLight position={[10, 10, 10]} intensity={3} />
+      {/* Top-left-back */}
+      <directionalLight position={[-10, 10, -10]} intensity={3} />
       {/* Fill lights for softer shadows */}
-      <directionalLight position={[-10, 10, 10]} intensity={1} /> //
-      Top-left-front
-      <directionalLight position={[10, 10, -10]} intensity={1} /> //
-      Top-right-back
+      {/* Top-left-front */}
+      <directionalLight position={[-10, 10, 10]} intensity={1} />
+      {/* Top-right-back */}
+      <directionalLight position={[10, 10, -10]} intensity={1} />
+
       {/* Point lights for additional dimension */}
-      <pointLight position={[0, 15, 0]} intensity={2} /> // Top
-      <pointLight position={[0, -15, 0]} intensity={2} /> // Bottom
-      <pointLight position={[15, 0, 0]} intensity={2} /> // Right
-      <pointLight position={[-15, 0, 0]} intensity={2} /> // Left
-      <pointLight position={[0, 0, 15]} intensity={2} /> // Front
-      <pointLight position={[0, 0, -15]} intensity={2} /> // Back
+      {/* Top */}
+      <pointLight position={[0, 15, 0]} intensity={2} />
+      {/* Bottom */}
+      <pointLight position={[0, -15, 0]} intensity={2} />
+      {/* Right */}
+      <pointLight position={[15, 0, 0]} intensity={2} />
+      {/* Left */}
+      <pointLight position={[-15, 0, 0]} intensity={2} />
+      {/* Front */}
+      <pointLight position={[0, 0, 15]} intensity={2} />
+      {/* Back */}
+      <pointLight position={[0, 0, -15]} intensity={2} />
     </>
   );
 };
