@@ -6,8 +6,13 @@ import supabase from "../../config/supabase";
 
 export default function MetaDataHandler() {
   const TXT_EXT = ".txt";
-  const [textSourcePath, setTextSourcePath] = useState("");
   const snap = useSnapshot(state);
+
+  const [textSourcePath, setTextSourcePath] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+  const [titleOptions, setTitleOptions] = useState(null);
+
   const isUserInteraction = useRef(false);
   const prevSnapValues = useRef({
     title: snap.title,
@@ -22,12 +27,10 @@ export default function MetaDataHandler() {
     edition: null,
   });
 
-  const [fetchError, setFetchError] = useState(null);
-  const [titleOptions, setTitleOptions] = useState(null);
-
   // get title options from database
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const { data, error } = await supabase
           .from("games")
@@ -48,9 +51,11 @@ export default function MetaDataHandler() {
           );
         }
       } catch (error) {
-        console.error("Error fetching game titles from database:", error);
+        console.error("Error fetching game titles from database: ", error);
         setTitleOptions(null);
         setFetchError("Unable to fetch game data");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -245,6 +250,7 @@ export default function MetaDataHandler() {
             options={titleOptions}
             value={selectionsCache.title}
             menuPlacement="auto"
+            isDisabled={isLoading}
           />
         </div>
 
@@ -257,6 +263,7 @@ export default function MetaDataHandler() {
             options={platformOptions}
             value={selectionsCache.platform}
             menuPlacement="auto"
+            isDisabled={isLoading}
           />
         </div>
 
@@ -269,6 +276,7 @@ export default function MetaDataHandler() {
             options={regionOptions}
             value={selectionsCache.region}
             menuPlacement="auto"
+            isDisabled={isLoading}
           />
         </div>
 
@@ -281,6 +289,7 @@ export default function MetaDataHandler() {
             options={editionOptions}
             value={selectionsCache.edition}
             menuPlacement="auto"
+            isDisabled={isLoading}
           />
         </div>
 
@@ -327,16 +336,20 @@ export default function MetaDataHandler() {
     <div className="metadataHandlerContainer">
       <div className="metadataContent">
         <div className="instructionText">
-          {fetchError && <p>{fetchError}</p>}
-          {titleOptions && (
-            <div>
-              {titleOptions.map((q) => (
-                <p>{q.label}</p>
-              ))}
-            </div>
+          {isLoading && (
+            <p>
+              Loading game titles...
+              <br />
+              Please wait...
+            </p>
           )}
-          Welcome to the Game Library! <br />
-          Please select the title you wish to view.
+          {fetchError && <p>{fetchError}</p>}
+          {!isLoading && !fetchError && (
+            <>
+              Welcome to the Game Library! <br />
+              Please select the title you wish to view.
+            </>
+          )}
           <div className="closeButtonContainer">
             <CloseButton />
           </div>
