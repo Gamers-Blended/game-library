@@ -34,7 +34,8 @@ export default function MetaDataHandler() {
       try {
         const { data, error } = await supabase
           .from("games")
-          .select("title, title_text");
+          .select("title, title_text")
+          .order("title_text", { ascending: true });
 
         if (error) throw error;
         if (data) {
@@ -83,7 +84,7 @@ export default function MetaDataHandler() {
 
   useEffect(() => {
     // Initialise only if a selection has been made before
-    if (snap.title !== "default") {
+    if (titleOptions && snap.title !== "default") {
       const initialSelections = {
         title: getCurrentOption(titleOptions, snap.title),
         platform: getCurrentOption(platformOptions, snap.platform),
@@ -100,7 +101,7 @@ export default function MetaDataHandler() {
         edition: snap.edition,
       });
     }
-  }, []); // Empty dependency array -> runs once on mount
+  }, [titleOptions]);
 
   const createMetaDataPath = async (newState) => {
     try {
@@ -118,11 +119,21 @@ export default function MetaDataHandler() {
     isUserInteraction.current = true;
     console.log("Selection changed:", selectedOption, actionMeta.name);
 
-    // Update cache
-    setSelectionsCache((prev) => ({
-      ...prev,
-      [actionMeta.name]: selectedOption,
-    }));
+    // If title is changed, reset other selections
+    if (actionMeta.name === "title") {
+      setSelectionsCache((prev) => ({
+        title: selectedOption,
+        platform: null,
+        region: null,
+        edition: null,
+      }));
+    } else {
+      // Update cache
+      setSelectionsCache((prev) => ({
+        ...prev,
+        [actionMeta.name]: selectedOption,
+      }));
+    }
   }, []);
 
   const areAllSelectionsChosen = () => {
@@ -253,6 +264,11 @@ export default function MetaDataHandler() {
             isDisabled={isLoading}
           />
         </div>
+        {isLoading && (
+          <div className="loadingRow">
+            Loading game titles... Please wait...
+          </div>
+        )}
 
         <div className="selectorRow">
           <span className="selectorLabel">Platform: </span>
@@ -263,7 +279,7 @@ export default function MetaDataHandler() {
             options={platformOptions}
             value={selectionsCache.platform}
             menuPlacement="auto"
-            isDisabled={isLoading}
+            isDisabled={isLoading || !selectionsCache.title}
           />
         </div>
 
@@ -276,7 +292,7 @@ export default function MetaDataHandler() {
             options={regionOptions}
             value={selectionsCache.region}
             menuPlacement="auto"
-            isDisabled={isLoading}
+            isDisabled={isLoading || !selectionsCache.platform}
           />
         </div>
 
@@ -289,7 +305,7 @@ export default function MetaDataHandler() {
             options={editionOptions}
             value={selectionsCache.edition}
             menuPlacement="auto"
-            isDisabled={isLoading}
+            isDisabled={isLoading || !selectionsCache.region}
           />
         </div>
 
@@ -336,13 +352,6 @@ export default function MetaDataHandler() {
     <div className="metadataHandlerContainer">
       <div className="metadataContent">
         <div className="instructionText">
-          {isLoading && (
-            <p>
-              Loading game titles...
-              <br />
-              Please wait...
-            </p>
-          )}
           {fetchError && <p>{fetchError}</p>}
           {!isLoading && !fetchError && (
             <>
