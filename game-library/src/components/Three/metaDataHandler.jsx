@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
+import { mapper } from "./optionMapper";
 import { state } from "./store";
 import { useSnapshot } from "valtio";
 import Select from "react-select";
@@ -10,6 +11,7 @@ export default function MetaDataHandler() {
 
   const [textSourcePath, setTextSourcePath] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingOptions, setIsLoadingOptions] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [dataRetrievedFromDb, setDataRetrievedFromDb] = useState(null);
   const [titleOptions, setTitleOptions] = useState(null);
@@ -65,14 +67,6 @@ export default function MetaDataHandler() {
     fetchData();
   }, []);
 
-  // const platformOptions = [
-  //   { value: "ps3", label: "PlayStation 3" },
-  //   { value: "ps4", label: "PlayStation 4" },
-  //   { value: "xbox360", label: "Xbox 360" },
-  //   { value: "xboxone", label: "Xbox One" },
-  //   { value: "pc", label: "PC" },
-  // ];
-
   const regionOptions = [
     { value: "us", label: "US" },
     { value: "eur", label: "EUR" },
@@ -124,7 +118,8 @@ export default function MetaDataHandler() {
 
     // If title is changed, reset other selections
     if (actionMeta.name === "title") {
-      console.log("check this: ", selectedOption.gameId);
+      console.log("querying database for: ", selectedOption.value);
+      setIsLoadingOptions(true);
 
       // Get available options for selected gameId
       const fetchAvailableOptions = async () => {
@@ -143,16 +138,22 @@ export default function MetaDataHandler() {
 
             const platformOptions = data.map((item) => ({
               value: item.platform,
-              label: "PS4",
+              label: mapper(item.platform),
             }));
+
             setPlatformOptions(platformOptions);
+            setFetchError(null);
             console.log("Available platformOptions: ", platformOptions);
           }
         } catch (error) {
+          setPlatformOptions(null);
+          setFetchError("Unable to fetch options for :", selectedOption.title);
           console.error(
-            `Error fetching related data for ${selectedOption.gameId}:`,
+            `Error fetching related data for ${selectedOption.title}:`,
             error
           );
+        } finally {
+          setIsLoadingOptions(false);
         }
       };
 
@@ -316,9 +317,12 @@ export default function MetaDataHandler() {
             options={platformOptions}
             value={selectionsCache.platform}
             menuPlacement="auto"
-            isDisabled={isLoading || !selectionsCache.title}
+            isDisabled={isLoading || isLoadingOptions || !selectionsCache.title}
           />
         </div>
+        {isLoadingOptions && (
+          <div className="loadingRow">Loading options... Please wait...</div>
+        )}
 
         <div className="selectorRow">
           <span className="selectorLabel">Region: </span>
