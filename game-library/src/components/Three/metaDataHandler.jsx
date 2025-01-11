@@ -13,6 +13,7 @@ export default function MetaDataHandler() {
   const [fetchError, setFetchError] = useState(null);
   const [dataRetrievedFromDb, setDataRetrievedFromDb] = useState(null);
   const [titleOptions, setTitleOptions] = useState(null);
+  const [platformOptions, setPlatformOptions] = useState(null);
 
   const isUserInteraction = useRef(false);
   const prevSnapValues = useRef({
@@ -41,18 +42,19 @@ export default function MetaDataHandler() {
         if (error) throw error;
         if (dataFromDb) {
           const titleOptions = dataFromDb.map((item) => ({
+            gameId: item.game_id,
             value: item.title,
             label: item.title_text,
           }));
 
-          setTitleOptions(dataFromDb);
+          setDataRetrievedFromDb(dataFromDb);
           setTitleOptions(titleOptions);
           setFetchError(null);
           console.log("Complete data from supabase: ", dataFromDb);
           console.log("Transformed titleOptions: ", titleOptions);
         }
       } catch (error) {
-        setTitleOptions(null);
+        setDataRetrievedFromDb(null);
         setTitleOptions(null);
         setFetchError("Unable to fetch game data");
         console.error("Error fetching game titles from database: ", error);
@@ -63,13 +65,13 @@ export default function MetaDataHandler() {
     fetchData();
   }, []);
 
-  const platformOptions = [
-    { value: "ps3", label: "PlayStation 3" },
-    { value: "ps4", label: "PlayStation 4" },
-    { value: "xbox360", label: "Xbox 360" },
-    { value: "xboxone", label: "Xbox One" },
-    { value: "pc", label: "PC" },
-  ];
+  // const platformOptions = [
+  //   { value: "ps3", label: "PlayStation 3" },
+  //   { value: "ps4", label: "PlayStation 4" },
+  //   { value: "xbox360", label: "Xbox 360" },
+  //   { value: "xboxone", label: "Xbox One" },
+  //   { value: "pc", label: "PC" },
+  // ];
 
   const regionOptions = [
     { value: "us", label: "US" },
@@ -122,6 +124,40 @@ export default function MetaDataHandler() {
 
     // If title is changed, reset other selections
     if (actionMeta.name === "title") {
+      console.log("check this: ", selectedOption.gameId);
+
+      // Get available options for selected gameId
+      const fetchAvailableOptions = async () => {
+        try {
+          const { data, error } = await supabase
+            .from("game_releases")
+            .select("*")
+            .eq("game_id", selectedOption.gameId);
+
+          if (error) throw error;
+          if (data) {
+            console.log(
+              `Related data for gameId ${selectedOption.gameId}:`,
+              data
+            );
+
+            const platformOptions = data.map((item) => ({
+              value: item.platform,
+              label: "PS4",
+            }));
+            setPlatformOptions(platformOptions);
+            console.log("Available platformOptions: ", platformOptions);
+          }
+        } catch (error) {
+          console.error(
+            `Error fetching related data for ${selectedOption.gameId}:`,
+            error
+          );
+        }
+      };
+
+      fetchAvailableOptions();
+
       setSelectionsCache((prev) => ({
         title: selectedOption,
         platform: null,
