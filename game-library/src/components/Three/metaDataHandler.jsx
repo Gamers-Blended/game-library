@@ -11,6 +11,7 @@ export default function MetaDataHandler() {
   const [textSourcePath, setTextSourcePath] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
+  const [dataRetrievedFromDb, setDataRetrievedFromDb] = useState(null);
   const [titleOptions, setTitleOptions] = useState(null);
 
   const isUserInteraction = useRef(false);
@@ -32,29 +33,29 @@ export default function MetaDataHandler() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
+        const { data: dataFromDb, error } = await supabase
           .from("games")
-          .select("title, title_text")
+          .select("*")
           .order("title_text", { ascending: true });
 
         if (error) throw error;
-        if (data) {
-          const transformedData = data.map((item) => ({
+        if (dataFromDb) {
+          const titleOptions = dataFromDb.map((item) => ({
             value: item.title,
             label: item.title_text,
           }));
 
-          setTitleOptions(transformedData);
+          setTitleOptions(dataFromDb);
+          setTitleOptions(titleOptions);
           setFetchError(null);
-          console.log(
-            "Data successfully retrieved from database: ",
-            transformedData
-          );
+          console.log("Complete data from supabase: ", dataFromDb);
+          console.log("Transformed titleOptions: ", titleOptions);
         }
       } catch (error) {
-        console.error("Error fetching game titles from database: ", error);
+        setTitleOptions(null);
         setTitleOptions(null);
         setFetchError("Unable to fetch game data");
+        console.error("Error fetching game titles from database: ", error);
       } finally {
         setIsLoading(false);
       }
@@ -352,13 +353,9 @@ export default function MetaDataHandler() {
     <div className="metadataHandlerContainer">
       <div className="metadataContent">
         <div className="instructionText">
+          Welcome to the Game Library! <br />
+          Please select the title you wish to view.
           {fetchError && <p>{fetchError}</p>}
-          {!isLoading && !fetchError && (
-            <>
-              Welcome to the Game Library! <br />
-              Please select the title you wish to view.
-            </>
-          )}
           <div className="closeButtonContainer">
             <CloseButton />
           </div>
