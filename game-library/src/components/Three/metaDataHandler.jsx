@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { mapper } from "./optionMapper";
+import {
+  PlatformTypes,
+  RegionTypes,
+  EditionTypes,
+  mapItemToLabel,
+} from "./optionMapper";
 import { state } from "./store";
 import { useSnapshot } from "valtio";
 import Select from "react-select";
@@ -11,11 +16,13 @@ export default function MetaDataHandler() {
 
   const [textSourcePath, setTextSourcePath] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingOptions, setIsLoadingOptions] = useState(true);
+  const [isLoadingOptions, setIsLoadingOptions] = useState(false);
   const [fetchError, setFetchError] = useState(null);
   const [dataRetrievedFromDb, setDataRetrievedFromDb] = useState(null);
   const [titleOptions, setTitleOptions] = useState(null);
   const [platformOptions, setPlatformOptions] = useState(null);
+  const [regionOptions, setRegionOptions] = useState(null);
+  const [editionOptions, setEditionOptions] = useState(null);
 
   const isUserInteraction = useRef(false);
   const prevSnapValues = useRef({
@@ -66,15 +73,6 @@ export default function MetaDataHandler() {
     };
     fetchData();
   }, []);
-
-  const regionOptions = [
-    { value: "us", label: "US" },
-    { value: "eur", label: "EUR" },
-    { value: "asia", label: "ASIA" },
-    { value: "jp", label: "JP" },
-  ];
-
-  const editionOptions = [{ value: "std", label: "Standard" }];
 
   const getCurrentOption = (options, value) =>
     options.find((option) => option.value == value) || null;
@@ -136,17 +134,50 @@ export default function MetaDataHandler() {
               data
             );
 
-            const platformOptions = data.map((item) => ({
-              value: item.platform,
-              label: mapper(item.platform),
+            const platformOptions = [
+              ...new Set(
+                data
+                  .filter((item) => item.platform)
+                  .map((item) => item.platform)
+              ),
+            ].map((platform) => ({
+              value: platform,
+              label: mapItemToLabel(platform, PlatformTypes),
+            }));
+
+            const regionOptions = [
+              ...new Set(
+                data.filter((item) => item.region).map((item) => item.region)
+              ),
+            ].map((region) => ({
+              value: region,
+              label: mapItemToLabel(region, RegionTypes),
+            }));
+
+            const editionOptions = [
+              ...new Set(
+                data.filter((item) => item.edition).map((item) => item.edition)
+              ),
+            ].map((edition) => ({
+              value: edition,
+              label: mapItemToLabel(edition, EditionTypes),
             }));
 
             setPlatformOptions(platformOptions);
+            setRegionOptions(regionOptions);
+            setEditionOptions(editionOptions);
             setFetchError(null);
-            console.log("Available platformOptions: ", platformOptions);
+            console.log(
+              "Available options: ",
+              platformOptions,
+              regionOptions,
+              editionOptions
+            );
           }
         } catch (error) {
           setPlatformOptions(null);
+          setRegionOptions(null);
+          setEditionOptions(null);
           setFetchError("Unable to fetch options for :", selectedOption.title);
           console.error(
             `Error fetching related data for ${selectedOption.title}:`,

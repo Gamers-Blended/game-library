@@ -37,6 +37,9 @@ INSERT INTO game_releases (game_id, platform, region, edition, included_items) V
 (1, 'ps4', 'us', 'std', '{"items": ["Manual"]}');
 
 INSERT INTO game_releases (game_id, platform, region, edition, included_items) VALUES 
+(1, 'switch', 'us', 'std', '{"items": ["Manual"]}');
+
+INSERT INTO game_releases (game_id, platform, region, edition, included_items) VALUES 
 (2, 'ps4', 'us', 'std', '{"items": []}');
 
 INSERT INTO game_releases (game_id, platform, region, edition, included_items) VALUES 
@@ -44,3 +47,6 @@ INSERT INTO game_releases (game_id, platform, region, edition, included_items) V
 
 INSERT INTO game_releases (game_id, platform, region, edition, included_items) VALUES 
 (4, 'ps4', 'eur', 'std', '{"items": ["Manual"]}');
+
+INSERT INTO game_releases (game_id, platform, region, edition, included_items) VALUES 
+(4, 'xboxone', 'us', 'std', '{"items": ["Manual"]}');

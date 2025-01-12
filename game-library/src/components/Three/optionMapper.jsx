@@ -33,17 +33,49 @@ const PlatformTypes = {
   },
 };
 
-function mapper(input) {
+const RegionTypes = {
+  US: {
+    id: "us",
+    displayName: "United States",
+  },
+  EUR: {
+    id: "eur",
+    displayName: "Europe",
+  },
+  ASIA: {
+    id: "asia",
+    displayName: "Asia",
+  },
+  JP: {
+    id: "jp",
+    displayName: "Japan",
+  },
+};
+
+const EditionTypes = {
+  STANDARD: {
+    id: "std",
+    displayName: "Standard",
+  },
+  LIMITED: {
+    id: "le",
+    displayName: "Limited",
+  },
+  COLLECTORS: {
+    id: "ce",
+    displayName: "Collector's",
+  },
+};
+
+function mapItemToLabel(input, itemType) {
   // Account for case-insensitive matching
   const normalizedInput = input.toLowerCase();
-  const matchedPlatform = Object.values(PlatformTypes).find(
-    (platform) => platform.id === normalizedInput
+  const matchedItem = Object.values(itemType).find(
+    (item) => item.id === normalizedInput
   );
 
   // Return display name if found, otherwise return original input
-  return matchedPlatform ? matchedPlatform.displayName : input;
+  return matchedItem ? matchedItem.displayName : input;
 }
 
-export { PlatformTypes, mapper };
-
-// export default function OptionMapper() {}
+export { PlatformTypes, RegionTypes, EditionTypes, mapItemToLabel };
