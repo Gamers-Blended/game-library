@@ -6,6 +6,7 @@ import {
   TransformComponent,
   useControls,
 } from "react-zoom-pan-pinch";
+import supabase from "../../config/supabase";
 
 import coverFlipSound from "../../assets/sound/page-flip-01a.mp3";
 import textViewerOpenSound from "../../assets/sound/open-textviewer.mp3";
@@ -18,6 +19,7 @@ import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96
 export default function CoverViewer() {
   const COVER_WIDTH = "1065";
   const COVER_HEIGHT = "631";
+  const JPG = "jpg";
   const [isFrontCover, setIsFrontCover] = useState(true);
   // View Current Cover Text
   const [isTextViewerOpen, setIsTextViewerOpen] = useState(false);
@@ -28,6 +30,30 @@ export default function CoverViewer() {
   const coverFlipAudio = new Audio(coverFlipSound);
 
   const snap = useSnapshot(state);
+
+  // Utility to get base URL pattern
+  async function getStorageBaseUrl() {
+    const { data } = await supabase.storage.from("game_data").getPublicUrl("");
+
+    // Remove the trailing slash if any
+    return data.publicUrl.replace(/\/$/, "");
+  }
+
+  function useSupabaseImage(path) {
+    const [baseUrl, setBaseUrl] = useState("");
+
+    useEffect(() => {
+      getStorageBaseUrl().then(setBaseUrl);
+    }, []);
+
+    return baseUrl ? `${baseUrl}/${path}` : null;
+  }
+
+  // Optimize image loading
+  function preloadImage(url) {
+    const img = new Image();
+    img.src = url;
+  }
 
   // function to toggle text viewer
   const handleTextViewer = () => {
@@ -186,6 +212,16 @@ export default function CoverViewer() {
     );
   };
 
+  const frontCoverImageUrl = useSupabaseImage(
+    `images/${snap.platform}/${snap.region}/cover/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}.${JPG}`
+  );
+
+  useEffect(() => {
+    if (frontCoverImageUrl) {
+      preloadImage(frontCoverImageUrl);
+    }
+  }, [frontCoverImageUrl]);
+
   // text dependent on front or back cover
   useEffect(() => {
     if (isFrontCover) {
@@ -229,7 +265,7 @@ export default function CoverViewer() {
             <img
               src={
                 isFrontCover
-                  ? "models/ps4_fallout4.jpg"
+                  ? frontCoverImageUrl
                   : "models/ps4_mafia_de_reverse_cover.jpg"
               }
               className="coverPage"
