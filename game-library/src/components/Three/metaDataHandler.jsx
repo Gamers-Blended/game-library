@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   PlatformTypes,
   RegionTypes,
@@ -64,8 +64,6 @@ export default function MetaDataHandler() {
         }));
         setTitleOptions(options);
         setIsLoadingTitleData(false);
-
-        console.log("titleOptions from cache: ", titleOptions);
         return;
       }
 
@@ -129,14 +127,6 @@ export default function MetaDataHandler() {
             label: mapItemToLabel(platform, PlatformTypes),
           }))
         );
-
-        console.log(
-          "Available options: ",
-          platformOptions,
-          regionOptions,
-          editionOptions
-        );
-
         setIsLoadingGameReleases(false);
         return;
       }
@@ -167,13 +157,6 @@ export default function MetaDataHandler() {
           value: platform,
           label: mapItemToLabel(platform, PlatformTypes),
         }))
-      );
-
-      console.log(
-        "Available options: ",
-        platformOptions,
-        regionOptions,
-        editionOptions
       );
     } catch (error) {
       setPlatformOptions(null);
@@ -242,7 +225,7 @@ export default function MetaDataHandler() {
     if (snap.title !== "default" && titleOptions) {
       const currentTitle = getCurrentOption(titleOptions, snap.title);
       if (currentTitle) {
-        console.log(`Setting current title: ${currentTitle}`);
+        console.log(`Setting current title: ${currentTitle.value}`);
         setSelections({
           title: currentTitle,
           platform: null,
@@ -263,7 +246,7 @@ export default function MetaDataHandler() {
     ) {
       const currentPlatform = getCurrentOption(platformOptions, snap.platform);
       if (currentPlatform) {
-        console.log(`Setting current platform: ${currentPlatform}`);
+        console.log(`Setting current platform: ${currentPlatform.value}`);
         setSelections((prev) => ({ ...prev, platform: currentPlatform }));
       }
     }
@@ -273,7 +256,7 @@ export default function MetaDataHandler() {
     if (!isTitleChange.current && snap.region !== "default" && regionOptions) {
       const currentRegion = getCurrentOption(regionOptions, snap.region);
       if (currentRegion) {
-        console.log(`Setting current region: ${currentRegion}`);
+        console.log(`Setting current region: ${currentRegion.value}`);
         setSelections((prev) => ({ ...prev, region: currentRegion }));
       }
     }
@@ -287,11 +270,29 @@ export default function MetaDataHandler() {
     ) {
       const currentEdition = getCurrentOption(editionOptions, snap.edition);
       if (currentEdition) {
-        console.log(`Setting current edition: ${currentEdition}`);
+        console.log(`Setting current edition: ${currentEdition.value}`);
         setSelections((prev) => ({ ...prev, edition: currentEdition }));
       }
     }
   }, [editionOptions]);
+
+  // For logs
+  useEffect(() => {
+    if (titleOptions) {
+      console.log("titleOptions updated: ", titleOptions);
+    }
+  }, [titleOptions]);
+
+  useEffect(() => {
+    if (platformOptions && regionOptions && editionOptions) {
+      console.log(
+        "Available options: ",
+        platformOptions,
+        regionOptions,
+        editionOptions
+      );
+    }
+  }, [platformOptions, regionOptions, editionOptions]);
 
   const createMetaDataPath = async (newState) => {
     try {
