@@ -76,6 +76,10 @@ To run production build: <br>
 
 Visit [http://localhost:4173/](http://localhost:4173/)
 
+## Technical Design
+
+TODO
+
 ## Dev Notes
 
 Multi cursor editing <br>

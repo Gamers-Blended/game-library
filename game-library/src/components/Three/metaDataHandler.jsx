@@ -360,6 +360,8 @@ export default function MetaDataHandler() {
           `Region: ${state.region}\n` +
           `Edition: ${state.edition}\n`
       );
+
+      state.isMetaDataHandlerOpened = false;
     } catch (error) {
       console.error("Error updating state:", error);
     }
