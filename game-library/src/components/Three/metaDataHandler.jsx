@@ -15,16 +15,17 @@ export default function MetaDataHandler() {
   const snap = useSnapshot(state);
 
   const [textSourcePath, setTextSourcePath] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingOptions, setIsLoadingOptions] = useState(false);
+  const [isLoadingTitleData, setIsLoadingTitleData] = useState(false);
+  const [isLoadingGameReleases, setIsLoadingGameReleases] = useState(false);
   const [fetchError, setFetchError] = useState(null);
-  const [dataRetrievedFromDb, setDataRetrievedFromDb] = useState(null);
+
   const [titleOptions, setTitleOptions] = useState(null);
   const [platformOptions, setPlatformOptions] = useState(null);
   const [regionOptions, setRegionOptions] = useState(null);
   const [editionOptions, setEditionOptions] = useState(null);
 
   const isUserInteraction = useRef(false);
+  const isTitleChange = useRef(false);
   const prevSnapValues = useRef({
     title: snap.title,
     platform: snap.platform,
@@ -38,65 +39,247 @@ export default function MetaDataHandler() {
     edition: null,
   });
 
-  // get title options from database
+  // Current selections
+  const [selections, setSelections] = useState({
+    title: null,
+    platform: null,
+    region: null,
+    edition: null,
+  });
+
+  // Initial title data load
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
+    const loadTitleData = async () => {
+      setIsLoadingTitleData(true);
+
+      // Set options from if cache exists
+      if (state.metadataCache.titleInfo) {
+        console.log(
+          "Game data has been retrieved before, using cache instead of calling database..."
+        );
+        const options = state.metadataCache.titleInfo.map((item) => ({
+          gameId: item.game_id,
+          value: item.title,
+          label: item.title_text,
+        }));
+        setTitleOptions(options);
+        setIsLoadingTitleData(false);
+
+        console.log("titleOptions from cache: ", titleOptions);
+        return;
+      }
+
+      // Fetch from database if not cached
       try {
-        const { data: dataFromDb, error } = await supabase
+        console.log(
+          "Game data cache is empty, retrieving data from database..."
+        );
+        const { data, error } = await supabase
           .from("games")
           .select("*")
           .order("title_text", { ascending: true });
 
         if (error) throw error;
-        if (dataFromDb) {
-          const titleOptions = dataFromDb.map((item) => ({
-            gameId: item.game_id,
-            value: item.title,
-            label: item.title_text,
-          }));
 
-          setDataRetrievedFromDb(dataFromDb);
-          setTitleOptions(titleOptions);
-          setFetchError(null);
-          console.log("Complete data from supabase: ", dataFromDb);
-          console.log("Transformed titleOptions: ", titleOptions);
-        }
+        // Update cache and state
+        state.metadataCache.titleInfo = data;
+        const options = data.map((item) => ({
+          gameId: item.game_id,
+          value: item.title,
+          label: item.title_text,
+        }));
+        setTitleOptions(options);
       } catch (error) {
-        setDataRetrievedFromDb(null);
         setTitleOptions(null);
-        setFetchError("Unable to fetch game data");
+        setFetchError("Unable to fetch game titles");
         console.error("Error fetching game titles from database: ", error);
       } finally {
-        setIsLoading(false);
+        setIsLoadingTitleData(false);
       }
     };
-    fetchData();
+    loadTitleData();
   }, []);
 
-  const getCurrentOption = (options, value) =>
-    options.find((option) => option.value == value) || null;
+  const loadGameReleases = async (gameId) => {
+    setIsLoadingGameReleases(true);
+    setPlatformOptions(null);
+    setRegionOptions(null);
+    setEditionOptions(null);
 
+    // Check cache first
+    if (state.metadataCache.gameReleases) {
+      // Cache needs to contain current game_id info
+      const releases = state.metadataCache.gameReleases.filter(
+        (release) => release.game_id === gameId
+      );
+      if (releases.length > 0) {
+        console.log(
+          `Current cache has gameId = ${gameId} data, skipping database...`
+        );
+        const platforms = [
+          ...new Set(
+            releases
+              .filter((item) => item.platform)
+              .map((item) => item.platform)
+          ),
+        ];
+        setPlatformOptions(
+          platforms.map((platform) => ({
+            value: platform,
+            label: mapItemToLabel(platform, PlatformTypes),
+          }))
+        );
+        setIsLoadingGameReleases(false);
+        return;
+      }
+    }
+
+    // Cache does not exist or does not contain gameId data, fetch game releases from database when title changes
+    try {
+      console.log(
+        `Game releases cache is empty or does not contain gameId = ${gameId} data, retrieving data from database...`
+      );
+      const { data, error } = await supabase
+        .from("game_releases")
+        .select("*")
+        .eq("game_id", gameId);
+
+      if (error) throw error;
+
+      state.metadataCache.gameReleases = [];
+      state.metadataCache.gameReleases.push(...data);
+
+      const platforms = [
+        ...new Set(
+          data.filter((item) => item.platform).map((item) => item.platform)
+        ),
+      ];
+      setPlatformOptions(
+        platforms.map((platform) => ({
+          value: platform,
+          label: mapItemToLabel(platform, PlatformTypes),
+        }))
+      );
+    } catch (error) {
+      setPlatformOptions(null);
+      setFetchError("Unable to fetch game releases");
+      console.error(
+        `Error fetching game releases for gameId = ${gameId} from database: `,
+        error
+      );
+    } finally {
+      setIsLoadingGameReleases(false);
+    }
+  };
+
+  // Update region options when platform is selected
   useEffect(() => {
-    // Initialise only if a selection has been made before
-    if (titleOptions && snap.title !== "default") {
-      const initialSelections = {
-        title: getCurrentOption(titleOptions, snap.title),
-        platform: getCurrentOption(platformOptions, snap.platform),
-        region: getCurrentOption(regionOptions, snap.region),
-        edition: getCurrentOption(editionOptions, snap.edition),
-      };
-      setSelectionsCache(initialSelections); // update cache
+    if (!selections.platform || !state.metadataCache.gameReleases) return;
 
-      // Update previous values to match current values
-      Object.assign(prevSnapValues.current, {
-        title: snap.title,
-        platform: snap.platform,
-        region: snap.region,
-        edition: snap.edition,
-      });
+    const releases = state.metadataCache.gameReleases.filter(
+      (release) =>
+        release.game_id === selections.title.gameId &&
+        release.platform === selections.platform.value
+    );
+
+    const regions = [
+      ...new Set(
+        releases.filter((item) => item.region).map((item) => item.region)
+      ),
+    ];
+    setRegionOptions(
+      regions.map((region) => ({
+        value: region,
+        label: mapItemToLabel(region, RegionTypes),
+      }))
+    );
+
+    console.log(
+      "Available options: ",
+      platformOptions,
+      regionOptions,
+      editionOptions
+    );
+  }, [selections.platform]);
+
+  // Update edition options when region is selected
+  useEffect(() => {
+    if (!selections.region || !state.metadataCache.gameReleases) return;
+
+    const releases = state.metadataCache.gameReleases.filter(
+      (release) =>
+        release.game_id === selections.title.gameId &&
+        release.platform === selections.platform.value &&
+        release.region === selections.region.value
+    );
+
+    const editions = [
+      ...new Set(
+        releases.filter((item) => item.edition).map((item) => item.edition)
+      ),
+    ];
+    setEditionOptions(
+      editions.map((edition) => ({
+        value: edition,
+        label: mapItemToLabel(edition, EditionTypes),
+      }))
+    );
+  }, [selections.region]);
+
+  const getCurrentOption = (options, value) =>
+    options?.find((option) => option.value == value) || null;
+
+  // Load game release options for submitted title (if any) upon mount
+  useEffect(() => {
+    if (snap.title !== "default" && titleOptions) {
+      const currentTitle = getCurrentOption(titleOptions, snap.title);
+      if (currentTitle) {
+        console.log(`Setting current title: ${currentTitle}`);
+        setSelections({
+          title: currentTitle,
+          platform: null,
+          region: null,
+          edition: null,
+        });
+        loadGameReleases(currentTitle.gameId);
+      }
     }
   }, [titleOptions]);
+
+  // Restore submitted platform, region, and edition selections (if any)
+  useEffect(() => {
+    if (
+      snap.platform !== "default" &&
+      platformOptions &&
+      !isTitleChange.current
+    ) {
+      const currentPlatform = getCurrentOption(platformOptions, snap.platform);
+      if (currentPlatform) {
+        console.log(`Setting current platform: ${currentPlatform}`);
+        setSelections((prev) => ({ ...prev, platform: currentPlatform }));
+      }
+    }
+  }, [platformOptions]);
+
+  useEffect(() => {
+    if (snap.region !== "default" && regionOptions) {
+      const currentRegion = getCurrentOption(regionOptions, snap.region);
+      if (currentRegion) {
+        console.log(`Setting current region: ${currentRegion}`);
+        setSelections((prev) => ({ ...prev, region: currentRegion }));
+      }
+    }
+  }, [regionOptions]);
+
+  useEffect(() => {
+    if (snap.edition !== "default" && editionOptions) {
+      const currentEdition = getCurrentOption(editionOptions, snap.edition);
+      if (currentEdition) {
+        console.log(`Setting current edition: ${currentEdition}`);
+        setSelections((prev) => ({ ...prev, edition: currentEdition }));
+      }
+    }
+  }, [editionOptions]);
 
   const createMetaDataPath = async (newState) => {
     try {
@@ -109,141 +292,61 @@ export default function MetaDataHandler() {
     }
   };
 
-  // Memoised handler to prevent recreation on renders
-  const handleSelectionChange = useCallback((selectedOption, actionMeta) => {
-    isUserInteraction.current = true;
-    console.log("Selection changed:", selectedOption, actionMeta.name);
-
-    // If title is changed, reset other selections
-    if (actionMeta.name === "title") {
-      console.log("querying database for: ", selectedOption.value);
-      setIsLoadingOptions(true);
-
-      // Get available options for selected gameId
-      const fetchAvailableOptions = async () => {
-        try {
-          const { data, error } = await supabase
-            .from("game_releases")
-            .select("*")
-            .eq("game_id", selectedOption.gameId);
-
-          if (error) throw error;
-          if (data) {
-            console.log(
-              `Related data for gameId ${selectedOption.gameId}:`,
-              data
-            );
-
-            const platformOptions = [
-              ...new Set(
-                data
-                  .filter((item) => item.platform)
-                  .map((item) => item.platform)
-              ),
-            ].map((platform) => ({
-              value: platform,
-              label: mapItemToLabel(platform, PlatformTypes),
-            }));
-
-            const regionOptions = [
-              ...new Set(
-                data.filter((item) => item.region).map((item) => item.region)
-              ),
-            ].map((region) => ({
-              value: region,
-              label: mapItemToLabel(region, RegionTypes),
-            }));
-
-            const editionOptions = [
-              ...new Set(
-                data.filter((item) => item.edition).map((item) => item.edition)
-              ),
-            ].map((edition) => ({
-              value: edition,
-              label: mapItemToLabel(edition, EditionTypes),
-            }));
-
-            setPlatformOptions(platformOptions);
-            setRegionOptions(regionOptions);
-            setEditionOptions(editionOptions);
-            setFetchError(null);
-            console.log(
-              "Available options: ",
-              platformOptions,
-              regionOptions,
-              editionOptions
-            );
-          }
-        } catch (error) {
-          setPlatformOptions(null);
-          setRegionOptions(null);
-          setEditionOptions(null);
-          setFetchError("Unable to fetch options for :", selectedOption.title);
-          console.error(
-            `Error fetching related data for ${selectedOption.title}:`,
-            error
-          );
-        } finally {
-          setIsLoadingOptions(false);
-        }
-      };
-
-      fetchAvailableOptions();
-
-      setSelectionsCache((prev) => ({
+  // Handle selection changes
+  const handleSelectionChange = (selectedOption, { name }) => {
+    if (name === "title") {
+      isTitleChange.current = true; // When title changes
+      // Reset other selections whenever title changes & set available options for selected title
+      setSelections({
         title: selectedOption,
         platform: null,
         region: null,
         edition: null,
-      }));
+      });
+      loadGameReleases(selectedOption.gameId);
     } else {
-      // Update cache
-      setSelectionsCache((prev) => ({
+      // Set selected option (that's not title)
+      setSelections((prev) => ({
         ...prev,
-        [actionMeta.name]: selectedOption,
+        [name]: selectedOption,
       }));
     }
-  }, []);
+  };
 
-  const areAllSelectionsChosen = () => {
+  const isAllSelectionChosen = () => {
     return (
-      selectionsCache.title &&
-      selectionsCache.platform &&
-      selectionsCache.region &&
-      selectionsCache.edition
+      selections.title &&
+      selections.platform &&
+      selections.region &&
+      selections.edition
     );
   };
 
-  // Save cache to state only when View button is clicked
-  const handleView = async () => {
-    if (!areAllSelectionsChosen()) return;
+  const handleView = () => {
+    if (!isAllSelectionChosen) return;
 
+    console.log("Attempting to update state with:", {
+      title: selections.title.value,
+      platform: selections.platform.value,
+      region: selections.region.value,
+      edition: selections.edition.value,
+    });
+
+    // Update global state
     try {
-      // Update state immediately with cache values
-      const newState = {
-        title: selectionsCache.title.value,
-        platform: selectionsCache.platform.value,
-        region: selectionsCache.region.value,
-        edition: selectionsCache.edition.value,
-      };
-
-      // Fetch metadata before updating state
-      const metadata = await createMetaDataPath(newState);
-
-      // Update state with new selections
       Object.assign(state, {
-        ...newState,
+        title: selections.title.value,
+        platform: selections.platform.value,
+        region: selections.region.value,
+        edition: selections.edition.value,
       });
-
-      // Update previous values with latest state
-      Object.assign(prevSnapValues.current, newState);
 
       console.log(
         `Successfully updated state with:\n` +
-          `Title: ${newState.title}\n` +
-          `Platform: ${newState.platform}\n` +
-          `Region: ${newState.region}\n` +
-          `Edition: ${newState.edition}\n`
+          `Title: ${state.title}\n` +
+          `Platform: ${state.platform}\n` +
+          `Region: ${state.region}\n` +
+          `Edition: ${state.edition}\n`
       );
     } catch (error) {
       console.error("Error updating state:", error);
@@ -252,7 +355,7 @@ export default function MetaDataHandler() {
 
   const CloseButton = () => {
     const handleClose = () => {
-      state.isMetaDataHandlerOpened = !snap.isMetaDataHandlerOpened;
+      state.isMetaDataHandlerOpened = false;
     };
 
     return (
@@ -273,15 +376,15 @@ export default function MetaDataHandler() {
         <button
           className="buttonText"
           onClick={handleView}
-          disabled={!areAllSelectionsChosen()}
-          style={!areAllSelectionsChosen ? disabledButtonStyle : {}}
+          disabled={!isAllSelectionChosen()}
+          style={!isAllSelectionChosen ? disabledButtonStyle : {}}
         >
           View
         </button>
       );
     };
 
-    // Whenever state changes, cache and previous store need to be automatically updated to match
+    // Whenever state changes, cache and previous store need to be automatically updated to match external changes
     useEffect(() => {
       // Skip if the change was from user interaction
       if (isUserInteraction.current) {
@@ -289,7 +392,7 @@ export default function MetaDataHandler() {
         return;
       }
 
-      // Check if any values changed from previous state
+      // Only update cache when MetadataHandler is opened or when there are external changes
       const hasExternalChanges = [
         "title",
         "platform",
@@ -297,10 +400,15 @@ export default function MetaDataHandler() {
         "edition",
       ].some((key) => snap[key] !== prevSnapValues.current[key]);
 
+      if (!hasExternalChanges && selectionsCache.title) {
+        return;
+      }
+
       if (!hasExternalChanges) {
         return;
       }
 
+      // Only update selections that haven't been modified by the user
       const newSelections = {
         title: getCurrentOption(titleOptions, snap.title),
         platform: getCurrentOption(platformOptions, snap.platform),
@@ -308,7 +416,12 @@ export default function MetaDataHandler() {
         edition: getCurrentOption(editionOptions, snap.edition),
       };
 
-      setSelectionsCache(newSelections);
+      setSelectionsCache((prev) => ({
+        title: prev.title || newSelections.title,
+        platform: prev.platform || newSelections.platform,
+        region: prev.region || newSelections.region,
+        edition: prev.edition || newSelections.edition,
+      }));
 
       // Update previous values with latest state
       Object.assign(prevSnapValues.current, {
@@ -328,12 +441,12 @@ export default function MetaDataHandler() {
             name="title"
             onChange={handleSelectionChange}
             options={titleOptions}
-            value={selectionsCache.title}
+            value={selections.title}
             menuPlacement="auto"
-            isDisabled={isLoading}
+            isDisabled={isLoadingTitleData}
           />
         </div>
-        {isLoading && (
+        {isLoadingTitleData && (
           <div className="loadingRow">
             Loading game titles... Please wait...
           </div>
@@ -346,12 +459,12 @@ export default function MetaDataHandler() {
             name="platform"
             onChange={handleSelectionChange}
             options={platformOptions}
-            value={selectionsCache.platform}
+            value={selections.platform}
             menuPlacement="auto"
-            isDisabled={isLoading || isLoadingOptions || !selectionsCache.title}
+            isDisabled={isLoadingGameReleases || !selections.title}
           />
         </div>
-        {isLoadingOptions && (
+        {isLoadingGameReleases && (
           <div className="loadingRow">Loading options... Please wait...</div>
         )}
 
@@ -362,9 +475,9 @@ export default function MetaDataHandler() {
             name="region"
             onChange={handleSelectionChange}
             options={regionOptions}
-            value={selectionsCache.region}
+            value={selections.region}
             menuPlacement="auto"
-            isDisabled={isLoading || !selectionsCache.platform}
+            isDisabled={!selections.platform}
           />
         </div>
 
@@ -375,9 +488,9 @@ export default function MetaDataHandler() {
             name="edition"
             onChange={handleSelectionChange}
             options={editionOptions}
-            value={selectionsCache.edition}
+            value={selections.edition}
             menuPlacement="auto"
-            isDisabled={isLoading || !selectionsCache.region}
+            isDisabled={!selections.region}
           />
         </div>
 
