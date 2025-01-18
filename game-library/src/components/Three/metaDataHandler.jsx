@@ -347,19 +347,34 @@ export default function MetaDataHandler() {
 
     // Update global state
     try {
-      Object.assign(state, {
-        title: selections.title.value,
-        platform: selections.platform.value,
-        region: selections.region.value,
-        edition: selections.edition.value,
-      });
+      const selectedItemInfo = state.metadataCache.gameReleases.find(
+        (release) =>
+          release.game_id === selections.title.gameId &&
+          release.platform === selections.platform.value &&
+          release.region === selections.region.value &&
+          release.edition === selections.edition.value
+      );
 
+      if (selectedItemInfo) {
+        Object.assign(state, {
+          title: selections.title.value,
+          platform: selections.platform.value,
+          region: selections.region.value,
+          edition: selections.edition.value,
+          coverText: selectedItemInfo.cover_text,
+          coverWidth: selectedItemInfo.cover_width,
+          coverHeight: selectedItemInfo.cover_height,
+        });
+      }
       console.log(
         `Successfully updated state with:\n` +
           `Title: ${state.title}\n` +
           `Platform: ${state.platform}\n` +
           `Region: ${state.region}\n` +
-          `Edition: ${state.edition}\n`
+          `Edition: ${state.edition}\n` +
+          `Cover Text: ${state.coverText?.slice(0, 10) || ""}\n` +
+          `Cover Width: ${state.coverWidth}\n` +
+          `Cover Height: ${state.coverHeight}\n`
       );
 
       state.isMetaDataHandlerOpened = false;
