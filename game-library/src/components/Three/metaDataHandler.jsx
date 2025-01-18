@@ -129,6 +129,14 @@ export default function MetaDataHandler() {
             label: mapItemToLabel(platform, PlatformTypes),
           }))
         );
+
+        console.log(
+          "Available options: ",
+          platformOptions,
+          regionOptions,
+          editionOptions
+        );
+
         setIsLoadingGameReleases(false);
         return;
       }
@@ -159,6 +167,13 @@ export default function MetaDataHandler() {
           value: platform,
           label: mapItemToLabel(platform, PlatformTypes),
         }))
+      );
+
+      console.log(
+        "Available options: ",
+        platformOptions,
+        regionOptions,
+        editionOptions
       );
     } catch (error) {
       setPlatformOptions(null);
@@ -192,13 +207,6 @@ export default function MetaDataHandler() {
         value: region,
         label: mapItemToLabel(region, RegionTypes),
       }))
-    );
-
-    console.log(
-      "Available options: ",
-      platformOptions,
-      regionOptions,
-      editionOptions
     );
   }, [selections.platform]);
 
@@ -262,7 +270,7 @@ export default function MetaDataHandler() {
   }, [platformOptions]);
 
   useEffect(() => {
-    if (snap.region !== "default" && regionOptions) {
+    if (!isTitleChange.current && snap.region !== "default" && regionOptions) {
       const currentRegion = getCurrentOption(regionOptions, snap.region);
       if (currentRegion) {
         console.log(`Setting current region: ${currentRegion}`);
@@ -272,7 +280,11 @@ export default function MetaDataHandler() {
   }, [regionOptions]);
 
   useEffect(() => {
-    if (snap.edition !== "default" && editionOptions) {
+    if (
+      !isTitleChange.current &&
+      snap.edition !== "default" &&
+      editionOptions
+    ) {
       const currentEdition = getCurrentOption(editionOptions, snap.edition);
       if (currentEdition) {
         console.log(`Setting current edition: ${currentEdition}`);
