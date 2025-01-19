@@ -39,20 +39,38 @@ export default function CoverViewer() {
     return data.publicUrl.replace(/\/$/, "");
   }
 
-  function useSupabaseImage(path) {
-    const [baseUrl, setBaseUrl] = useState("");
-
-    useEffect(() => {
-      getStorageBaseUrl().then(setBaseUrl);
-    }, []);
-
-    return baseUrl ? `${baseUrl}/${path}` : null;
-  }
-
   // Optimize image loading
   function preloadImage(url) {
     const img = new Image();
     img.src = url;
+  }
+
+  function useValidatedSupabaseImage(path) {
+    const [baseUrl, setBaseUrl] = useState("");
+    const [isValid, setIsValid] = useState(false);
+
+    useEffect(() => {
+      const validateAndSetUrl = async () => {
+        const url = await getStorageBaseUrl();
+        const fullUrl = `${url}/${path}`;
+
+        // Validate image loads correctly
+        const img = new Image();
+        img.onload = () => {
+          setIsValid(true);
+          setBaseUrl(url);
+        };
+        img.onerror = () => {
+          setIsValid(false);
+          setBaseUrl("");
+        };
+        img.src = fullUrl;
+      };
+
+      validateAndSetUrl();
+    }, [path]);
+
+    return baseUrl && isValid ? `${baseUrl}/${path}` : null;
   }
 
   // function to toggle text viewer
@@ -70,17 +88,48 @@ export default function CoverViewer() {
 
   // function to toggle front and reverse covers
   const handleCoverFlip = () => {
-    setIsFrontCover((isFrontCover) => !isFrontCover);
-    coverFlipAudio.volume = 0.3;
-    coverFlipAudio.play();
+    if (backCoverImageUrl) {
+      console.log(backCoverImageUrl);
+      setIsFrontCover((isFrontCover) => !isFrontCover);
+      coverFlipAudio.volume = 0.3;
+      coverFlipAudio.play();
+    }
   };
 
-  // function to display image based on state
-  const handleCoverDisplay = () => {
-    return isFrontCover
-      ? "models/ps4_fallout4.jpg"
-      : "models/ps4_mafia_de_reverse_cover.jpg";
-  };
+  const frontCoverImageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/cover/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}.${JPG}`
+  );
+
+  const backCoverImageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/cover/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}_reverse_cover.${JPG}`
+  );
+
+  useEffect(() => {
+    if (frontCoverImageUrl) {
+      preloadImage(frontCoverImageUrl);
+    }
+
+    if (backCoverImageUrl) {
+      preloadImage(backCoverImageUrl);
+    }
+  }, [frontCoverImageUrl, backCoverImageUrl]);
+
+  // text dependent on front or back cover
+  useEffect(() => {
+    if (isFrontCover) {
+      setTextSourcePath("/textData/ps4_fallout4_cover_text.txt");
+    } else {
+      setTextSourcePath("/textData/ps4_mafia_de_cover_reverse_text.txt");
+    }
+  });
+
+  useEffect(() => {
+    fetch(textSourcePath)
+      .then((response) => response.text())
+      .then((text) => {
+        setText(text);
+      });
+  });
 
   /* buttons for cover viewer
   View Current Cover Text - View text
@@ -163,14 +212,18 @@ export default function CoverViewer() {
           {isTextViewerOpen ? "Close Cover Text" : "View Cover Text"}
         </button>
 
-        <img
-          src={keyboardIconE}
-          className="coverViewercontrolsKeys"
-          alt="E key"
-        />
-        <button className="buttonText" onClick={handleCoverFlip}>
-          Flip Cover
-        </button>
+        {backCoverImageUrl && (
+          <>
+            <img
+              src={keyboardIconE}
+              className="coverViewercontrolsKeys"
+              alt="E key"
+            />
+            <button className="buttonText" onClick={handleCoverFlip}>
+              Flip Cover
+            </button>
+          </>
+        )}
 
         <img
           src={keyboardIconArrowUp}
@@ -212,33 +265,6 @@ export default function CoverViewer() {
     );
   };
 
-  const frontCoverImageUrl = useSupabaseImage(
-    `images/${snap.platform}/${snap.region}/cover/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}.${JPG}`
-  );
-
-  useEffect(() => {
-    if (frontCoverImageUrl) {
-      preloadImage(frontCoverImageUrl);
-    }
-  }, [frontCoverImageUrl]);
-
-  // text dependent on front or back cover
-  useEffect(() => {
-    if (isFrontCover) {
-      setTextSourcePath("/textData/ps4_fallout4_cover_text.txt");
-    } else {
-      setTextSourcePath("/textData/ps4_mafia_de_cover_reverse_text.txt");
-    }
-  });
-
-  useEffect(() => {
-    fetch(textSourcePath)
-      .then((response) => response.text())
-      .then((text) => {
-        setText(text);
-      });
-  });
-
   return (
     <div className="coverViewer">
       {/* text viewer */}
@@ -264,9 +290,9 @@ export default function CoverViewer() {
           <TransformComponent>
             <img
               src={
-                isFrontCover
+                isFrontCover || !backCoverImageUrl
                   ? frontCoverImageUrl
-                  : "models/ps4_mafia_de_reverse_cover.jpg"
+                  : backCoverImageUrl
               }
               className="coverPage"
             />
