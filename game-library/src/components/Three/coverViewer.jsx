@@ -6,6 +6,7 @@ import {
   TransformComponent,
   useControls,
 } from "react-zoom-pan-pinch";
+import parse from "html-react-parser";
 import supabase from "../../config/supabase";
 
 import coverFlipSound from "../../assets/sound/page-flip-01a.mp3";
@@ -17,19 +18,17 @@ import keyboardIconArrowUp from "../../assets/icons/icons8-page-up-button-96.png
 import keyboardIconArrowDown from "../../assets/icons/icons8-page-down-button-96.png";
 
 export default function CoverViewer() {
-  const COVER_WIDTH = "1065";
-  const COVER_HEIGHT = "631";
+  const snap = useSnapshot(state);
+  const COVER_TEXT = snap.coverText;
+  const COVER_WIDTH = snap.coverWidth;
+  const COVER_HEIGHT = snap.coverHeight;
   const JPG = "jpg";
   const [isFrontCover, setIsFrontCover] = useState(true);
   // View Current Cover Text
   const [isTextViewerOpen, setIsTextViewerOpen] = useState(false);
-  const [textSourcePath, setTextSourcePath] = useState("");
-  const [text, setText] = useState("");
   const textViewerOpenAudio = new Audio(textViewerOpenSound);
   // Flip Cover
   const coverFlipAudio = new Audio(coverFlipSound);
-
-  const snap = useSnapshot(state);
 
   // Utility to get base URL pattern
   async function getStorageBaseUrl() {
@@ -113,23 +112,6 @@ export default function CoverViewer() {
       preloadImage(backCoverImageUrl);
     }
   }, [frontCoverImageUrl, backCoverImageUrl]);
-
-  // text dependent on front or back cover
-  useEffect(() => {
-    if (isFrontCover) {
-      setTextSourcePath("/textData/ps4_fallout4_cover_text.txt");
-    } else {
-      setTextSourcePath("/textData/ps4_mafia_de_cover_reverse_text.txt");
-    }
-  });
-
-  useEffect(() => {
-    fetch(textSourcePath)
-      .then((response) => response.text())
-      .then((text) => {
-        setText(text);
-      });
-  });
 
   /* buttons for cover viewer
   View Current Cover Text - View text
@@ -270,10 +252,7 @@ export default function CoverViewer() {
       {/* text viewer */}
       {isTextViewerOpen && (
         <div className="coverTextViewerBackground">
-          <div
-            className="coverTextViewerTextArea"
-            dangerouslySetInnerHTML={{ __html: text }}
-          />
+          <div className="coverTextViewerTextArea">{parse(COVER_TEXT)}</div>;
         </div>
       )}
 
@@ -294,7 +273,8 @@ export default function CoverViewer() {
                   ? frontCoverImageUrl
                   : backCoverImageUrl
               }
-              className="coverPage"
+              width={COVER_WIDTH}
+              height={COVER_HEIGHT}
             />
           </TransformComponent>
 
