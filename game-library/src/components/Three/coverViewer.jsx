@@ -72,6 +72,11 @@ export default function CoverViewer() {
     return baseUrl && isValid ? `${baseUrl}/${path}` : null;
   }
 
+  // Process front and reverse (if any) cover(s) text
+  const coverText = COVER_TEXT.split("--***--");
+  const frontCoverText = coverText[0].trim();
+  const reverseCoverText = coverText.length > 1 ? coverText[1].trim() : null;
+
   // function to toggle text viewer
   const handleTextViewer = () => {
     setIsTextViewerOpen((isTextViewerOpen) => {
@@ -88,7 +93,6 @@ export default function CoverViewer() {
   // function to toggle front and reverse covers
   const handleCoverFlip = () => {
     if (backCoverImageUrl) {
-      console.log(backCoverImageUrl);
       setIsFrontCover((isFrontCover) => !isFrontCover);
       coverFlipAudio.volume = 0.3;
       coverFlipAudio.play();
@@ -252,7 +256,11 @@ export default function CoverViewer() {
       {/* text viewer */}
       {isTextViewerOpen && (
         <div className="coverTextViewerBackground">
-          <div className="coverTextViewerTextArea">{parse(COVER_TEXT)}</div>;
+          <div className="coverTextViewerTextArea">
+            {isFrontCover && parse(frontCoverText)}
+            {!isFrontCover && reverseCoverText && parse(reverseCoverText)}
+          </div>
+          ;
         </div>
       )}
 
