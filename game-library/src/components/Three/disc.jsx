@@ -1,14 +1,14 @@
-import React from "react";
+import React, { Suspense } from "react";
+import { useSnapshot } from "valtio";
+import { state } from "./store";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { SUBTRACTION, Brush, Evaluator } from "three-bvh-csg";
+import { useValidatedSupabaseImage, preloadImage } from "../utils/imageUtils";
 
-export default function Model() {
-  // disc cover
-  const [discFrontImage, discBackImage] = useTexture([
-    "/models/ps4_fallout4_disc.jpg",
-    "/models/blu_ray_back.jpg",
-  ]);
+function DiscContent({ frontImageUrl, backImageUrl }) {
+  const loadTextures = useTexture([frontImageUrl, backImageUrl]);
+  const [discFrontImage, discBackImage] = loadTextures;
 
   discFrontImage.repeat.set(1, 1);
   discBackImage.repeat.set(1, 1);
@@ -68,5 +68,38 @@ export default function Model() {
         <meshStandardMaterial map={discBackImage} />
       </mesh>
     </group>
+  );
+}
+
+export default function Model() {
+  const snap = useSnapshot(state);
+  const JPG = "jpg";
+
+  const frontImageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/disc/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}_disc.${JPG}`
+  );
+
+  const backImageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/disc/${snap.platform}_back.${JPG}`
+  );
+
+  // Placeholder while loading
+  if (!frontImageUrl || !backImageUrl) {
+    return (
+      <mesh>
+        <cylinderGeometry
+          args={[1, 1, 0.01, 64]}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <meshStandardMaterial color="white" />
+      </mesh>
+    );
+  }
+
+  preloadImage(frontImageUrl);
+  preloadImage(backImageUrl);
+
+  return (
+    <DiscContent frontImageUrl={frontImageUrl} backImageUrl={backImageUrl} />
   );
 }

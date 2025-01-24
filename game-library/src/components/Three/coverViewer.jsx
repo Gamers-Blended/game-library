@@ -7,7 +7,7 @@ import {
   useControls,
 } from "react-zoom-pan-pinch";
 import parse from "html-react-parser";
-import supabase from "../../config/supabase";
+import { useValidatedSupabaseImage, preloadImage } from "../utils/imageUtils";
 
 import coverFlipSound from "../../assets/sound/page-flip-01a.mp3";
 import textViewerOpenSound from "../../assets/sound/open-textviewer.mp3";
@@ -29,48 +29,6 @@ export default function CoverViewer() {
   const textViewerOpenAudio = new Audio(textViewerOpenSound);
   // Flip Cover
   const coverFlipAudio = new Audio(coverFlipSound);
-
-  // Utility to get base URL pattern
-  async function getStorageBaseUrl() {
-    const { data } = await supabase.storage.from("game_data").getPublicUrl("");
-
-    // Remove the trailing slash if any
-    return data.publicUrl.replace(/\/$/, "");
-  }
-
-  // Optimize image loading
-  function preloadImage(url) {
-    const img = new Image();
-    img.src = url;
-  }
-
-  function useValidatedSupabaseImage(path) {
-    const [baseUrl, setBaseUrl] = useState("");
-    const [isValid, setIsValid] = useState(false);
-
-    useEffect(() => {
-      const validateAndSetUrl = async () => {
-        const url = await getStorageBaseUrl();
-        const fullUrl = `${url}/${path}`;
-
-        // Validate image loads correctly
-        const img = new Image();
-        img.onload = () => {
-          setIsValid(true);
-          setBaseUrl(url);
-        };
-        img.onerror = () => {
-          setIsValid(false);
-          setBaseUrl("");
-        };
-        img.src = fullUrl;
-      };
-
-      validateAndSetUrl();
-    }, [path]);
-
-    return baseUrl && isValid ? `${baseUrl}/${path}` : null;
-  }
 
   // Process front and reverse (if any) cover(s) text
   const coverText = COVER_TEXT.split("--***--");
