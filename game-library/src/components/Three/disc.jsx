@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { useSnapshot } from "valtio";
 import { state } from "./store";
 import { useTexture } from "@react-three/drei";

@@ -9,20 +9,23 @@ import { useSpring, a } from "@react-spring/three";
 import * as THREE from "three";
 import { state } from "./store";
 import { useSnapshot } from "valtio";
+import { useValidatedSupabaseImage, preloadImage } from "../utils/imageUtils";
 
 // sounds
 import caseOpenSound from "../../assets/sound/open-case.mp3";
 import caseCloseSound from "../../assets/sound/close-case.mp3";
 
-export default function Model() {
+function CaseContent({ frontImageUrl, backImageUrl, spineImageUrl }) {
   const snap = useSnapshot(state);
-
-  // model
-  const { nodes, materials } = useGLTF("../../../models/case.glb");
-
-  // case open and close audio
   const openCase = new Audio(caseOpenSound);
   const closeCase = new Audio(caseCloseSound);
+  const { nodes, materials } = useGLTF("../../../models/case.glb");
+  const loadTextures = useTexture([frontImageUrl, backImageUrl, spineImageUrl]);
+  const [coverFrontImage, coverBackImage, coverSpineImage] = loadTextures;
+
+  coverFrontImage.colorSpace = THREE.SRGBColorSpace;
+  coverBackImage.colorSpace = THREE.SRGBColorSpace;
+  coverSpineImage.colorSpace = THREE.SRGBColorSpace;
 
   const handleAnimation = () => {
     state.open = !state.open;
@@ -49,17 +52,6 @@ export default function Model() {
     position: snap.open ? [-1, -0.05, 0] : [-0.942, 0, 0],
   });
 
-  // game cover
-  const [foFront, foBack, foSpine] = useTexture([
-    "/models/ps4_fallout4_front.jpg",
-    "/models/ps4_fallout4_back.jpg",
-    "/models/ps4_fallout4_spine.jpg",
-  ]);
-  foFront.colorSpace = THREE.SRGBColorSpace;
-  foBack.colorSpace = THREE.SRGBColorSpace;
-  foSpine.colorSpace = THREE.SRGBColorSpace;
-
-  // 3D model
   return (
     <group dispose={null} rotation-x={Math.PI / 2}>
       {/* top case */}
@@ -77,7 +69,7 @@ export default function Model() {
           position={[0.92, 0.105, 0]}
           scale={[0.9, 1, -0.97]}
         >
-          <meshStandardMaterial map={foFront} />
+          <meshStandardMaterial map={coverFrontImage} />
         </mesh>
       </a.group>
 
@@ -99,7 +91,7 @@ export default function Model() {
           rotation={[0, 0, -Math.PI / 2]}
           scale={[-0.104, -1, -0.97]}
         >
-          <meshStandardMaterial map={foSpine} />
+          <meshStandardMaterial map={coverSpineImage} />
         </mesh>
       </a.group>
 
@@ -119,10 +111,44 @@ export default function Model() {
           position={[-0.08, -0.103, 0]}
           scale={[-0.9, -1, -0.97]}
         >
-          <meshStandardMaterial map={foBack} />
+          <meshStandardMaterial map={coverBackImage} />
         </mesh>
       </group>
     </group>
+  );
+}
+
+export default function Model() {
+  const snap = useSnapshot(state);
+  const JPG = "jpg";
+
+  const frontImageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/cover/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}_front_cover.${JPG}`
+  );
+
+  const backImageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/cover/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}_back_cover.${JPG}`
+  );
+
+  const spineImageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/cover/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}_spine_cover.${JPG}`
+  );
+
+  // Placeholder while loading
+  if (!frontImageUrl || !backImageUrl || !spineImageUrl) {
+    return;
+  }
+
+  preloadImage(frontImageUrl);
+  preloadImage(backImageUrl);
+  preloadImage(spineImageUrl);
+
+  return (
+    <CaseContent
+      frontImageUrl={frontImageUrl}
+      backImageUrl={backImageUrl}
+      spineImageUrl={spineImageUrl}
+    />
   );
 }
 
