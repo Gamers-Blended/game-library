@@ -364,6 +364,7 @@ export default function MetaDataHandler() {
           coverText: selectedItemInfo.cover_text,
           coverWidth: selectedItemInfo.cover_width,
           coverHeight: selectedItemInfo.cover_height,
+          additional: selectedItemInfo.included_items,
         });
       }
       console.log(
@@ -374,8 +375,27 @@ export default function MetaDataHandler() {
           `Edition: ${state.edition}\n` +
           `Cover Text: ${state.coverText?.slice(0, 10) || ""}\n` +
           `Cover Width: ${state.coverWidth}\n` +
-          `Cover Height: ${state.coverHeight}\n`
+          `Cover Height: ${state.coverHeight}\n` +
+          `Additional Items: ${state.additional}`
       );
+
+      // For additional items
+      selectedItemInfo.included_items.forEach((material) => {
+        if (material.item === "manual") {
+          Object.assign(state, {
+            manualWidth: material.page_width,
+            manualHeight: material.page_height,
+            manualPageNumber: material.number_of_pages,
+          });
+
+          console.log(
+            `Successfully updated state with manual-related data:\n` +
+              `Manual Width: ${state.manualWidth}\n` +
+              `Manual Height: ${state.manualHeight}\n` +
+              `Manual Page Number: ${state.manualPageNumber}\n`
+          );
+        }
+      });
 
       state.isMetaDataHandlerOpened = false;
     } catch (error) {

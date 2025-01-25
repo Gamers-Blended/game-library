@@ -13,6 +13,8 @@ const state = proxy({
   open: false,
   manualPageNumber: 0,
   manualCurrentPage: 1,
+  manualWidth: 0,
+  manualHeight: 0,
   isImageViewerOpened: false,
   isMetaDataHandlerOpened: false,
   metadataCache: {

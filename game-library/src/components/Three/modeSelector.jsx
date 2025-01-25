@@ -124,8 +124,8 @@ function ExtraButtons() {
   }, []);
 
   additionalMaterials.forEach((material, index) => {
-    switch (material) {
-      case "Manual":
+    switch (material.item) {
+      case "manual":
         additionalMaterialsToRender.push(
           <div className="modelSelectorRow" key={index}>
             <img
