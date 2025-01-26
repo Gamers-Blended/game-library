@@ -97,6 +97,7 @@ function ExtraButtons() {
 
   const handleModeManual = () => {
     state.currentMode = MANUAL_MODE;
+    state.isImageViewerOpened = false;
   };
 
   const handleModeAdditional = () => {

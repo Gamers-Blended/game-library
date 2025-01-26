@@ -278,7 +278,7 @@ export default function UI() {
         </motion.section>
       </AnimatePresence>
       <div className="subHeader">{getHeaderText()}</div>
-      {shouldRenderInfoBox && snap.currentMode == "CASE" && <InformationBox />}
+      {shouldRenderInfoBox && snap.currentMode === "CASE" && <InformationBox />}
       {snap.currentMode != "COVER" && !snap.isImageViewerOpened && (
         <UIControls />
       )}
