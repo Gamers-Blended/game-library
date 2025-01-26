@@ -100,6 +100,7 @@ Shortcut to import libraries Ctrl + Space
 - Unable to persist y-positions of each Manual Page upon a page flip (unresolved)
 - The number of pages a manual will not tally with the last page number in the UI (e.g. manual has page 1-4, UI will only have 3 states [pg1, pg2-pg3, pg4])
 - Selected value in Dropdown box in MetaDataHandler does not persist upon selection (only persists when same option selected twice)
+- Rendered more hooks than during the previous render.
 
 ## Tried
 
@@ -112,3 +113,4 @@ Shortcut to import libraries Ctrl + Space
 - Adding a `side="THREE.FrontSide / THREE.BackSide"` to material components
 - Using (number of pages/2 + 1) to get the number of states the UI will have for a manual
 - Use the value prop of Select to get the current selected option based on the value from Valtio state
+- According to the Rules of Hooks, Hooks must be called at the top level of a React function component or a custom Hook. They cannot be called inside loops, conditions, or nested functions, including inside useEffect, useMemo, or other Hooks.

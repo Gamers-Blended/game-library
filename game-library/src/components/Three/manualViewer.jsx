@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSnapshot } from "valtio";
 import { state } from "./store";
 import {
@@ -12,6 +12,7 @@ import {
   ChevronRight,
   ChevronsRight,
 } from "lucide-react";
+import { useValidatedSupabaseImage, preloadImage } from "../utils/imageUtils";
 
 import keyboardIconA from "../../assets/icons/icons8-a-key-96.png";
 import keyboardIconD from "../../assets/icons/icons8-d-key-96.png";
@@ -57,7 +58,7 @@ const PageNavigation = ({ totalPages }) => {
           </option>
         ))}
       </select>
-      <span className="text-gray-600">of {totalPages}</span>
+      <span>of {totalPages}</span>
 
       <button
         onClick={() => handlePageChange(snap.manualCurrentPage + 1)}
@@ -80,55 +81,59 @@ const PageNavigation = ({ totalPages }) => {
 
 export default function ManualViewer() {
   const snap = useSnapshot(state);
+  const JPG = "jpg";
   const manualPageUpperLimit = snap.manualPageNumber / 2 + 1;
 
-  const manualPages = [];
-  // 1st and last page should only have 1 page displayed
-  // 1st page
-  if (snap.manualCurrentPage == 1) {
-    manualPages.push(
-      "models/" +
-        snap.platform +
-        "_" +
-        snap.title +
-        "_manual_" +
-        snap.manualCurrentPage +
-        ".jpg"
-    );
-    // last page
-  } else if (snap.manualCurrentPage == manualPageUpperLimit) {
-    manualPages.push(
-      "models/" +
-        snap.platform +
-        "_" +
-        snap.title +
-        "_manual_" +
-        (snap.manualCurrentPage + 1) +
-        ".jpg"
-    );
-  }
-  // 2 pages displayed
-  if (
-    snap.manualCurrentPage != 1 &&
-    snap.manualCurrentPage != manualPageUpperLimit
-  ) {
-    manualPages.push(
-      "models/" +
-        snap.platform +
-        "_" +
-        snap.title +
-        "_manual_" +
-        snap.manualCurrentPage +
-        ".jpg",
-      "models/" +
-        snap.platform +
-        "_" +
-        snap.title +
-        "_manual_" +
-        (snap.manualCurrentPage + 1) +
-        ".jpg"
-    );
-  }
+  // Precompute page URLs at the top level for all possible pages
+  const currentPageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/manual/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}_manual_${snap.manualCurrentPage}.${JPG}`
+  );
+
+  const nextPageUrl = useValidatedSupabaseImage(
+    `images/${snap.platform}/${snap.region}/manual/${snap.platform}_${
+      snap.title
+    }_${snap.region}_${snap.edition}_manual_${
+      snap.manualCurrentPage + 1
+    }.${JPG}`
+  );
+
+  // Compute manualPages consistently
+  const manualPages = useMemo(() => {
+    const pages = [];
+
+    // First and last page should only have 1 page displayed
+    // First page
+    if (snap.manualCurrentPage === 1) {
+      preloadImage(currentPageUrl);
+      pages.push(currentPageUrl);
+    }
+    // Last page
+    else if (snap.manualCurrentPage === manualPageUpperLimit) {
+      preloadImage(nextPageUrl);
+      pages.push(nextPageUrl);
+    }
+    // Display two middle pages (only if they exist)
+    else {
+      if (currentPageUrl) {
+        preloadImage(currentPageUrl);
+        pages.push(currentPageUrl);
+      }
+      if (nextPageUrl) {
+        preloadImage(nextPageUrl);
+        pages.push(nextPageUrl);
+      }
+    }
+
+    return pages;
+  }, [
+    snap.manualCurrentPage,
+    snap.platform,
+    snap.title,
+    snap.region,
+    snap.edition,
+    currentPageUrl,
+    nextPageUrl,
+  ]);
 
   /* buttons for cover viewer
   Previous Page - Flip back 1 page
@@ -311,6 +316,7 @@ export default function ManualViewer() {
                 key={index}
                 src={manualPages[index]}
                 className="manualPage"
+                alt={`Manual Page ${index + 1}`}
               />
             ))}
           </TransformComponent>
