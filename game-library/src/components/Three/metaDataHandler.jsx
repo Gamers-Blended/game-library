@@ -15,7 +15,6 @@ export default function MetaDataHandler() {
   const CASE_MODE = "CASE";
   const snap = useSnapshot(state);
 
-  const [textSourcePath, setTextSourcePath] = useState("");
   const [isLoadingTitleData, setIsLoadingTitleData] = useState(false);
   const [isLoadingGameReleases, setIsLoadingGameReleases] = useState(false);
   const [fetchError, setFetchError] = useState(null);
@@ -570,38 +569,6 @@ export default function MetaDataHandler() {
       </div>
     );
   };
-
-  useEffect(() => {
-    if (textSourcePath) {
-      fetch(textSourcePath)
-        .then((response) => response.text())
-        .then((text) => {
-          return JSON.parse(text);
-        })
-        .then((textParsed) => {
-          state.platform = textParsed.platforms[0];
-          state.additional = textParsed.additional;
-          state.manualPageNumber = textParsed.manualPageNumber
-            ? textParsed.manualPageNumber
-            : 0;
-          console.log(
-            "Successfully set additional materials for " +
-              snap.title +
-              ": \n" +
-              snap.additional +
-              "\nNumber of pages for manual: " +
-              snap.manualPageNumber +
-              "\nPlatform: " +
-              snap.platform
-          );
-        })
-        .catch((jsonError) => {
-          console.error(
-            "Error in parsing JSON for " + textSourcePath + ": " + jsonError
-          );
-        });
-    }
-  }, [textSourcePath]);
 
   return (
     <div className="metadataHandlerContainer">

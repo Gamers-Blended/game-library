@@ -61,10 +61,14 @@ Be whoever you want. Choose from hundreds of Perks and develop your own playstyl
 
 --***--
 
-Test reverse cover', 1065, 631, '{"items": []}', '2015-11-10');
+Test reverse cover', 1065, 631, '{"item": []}', '2015-11-10');
 
-INSERT INTO game_releases (game_id, platform, region, edition, included_items) VALUES 
-(2, 'ps4', 'us', 'std', '{"items": []}');
+INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
+(2, 'ps4', 'us', 'std', 'MAFIA: DEFINITIVE EDITION <br> --***-- <b>
+See import health and safety warnings in the system Settings menu.</b>
+<br>
+<br>
+<b>WARNING: PHOTOSENSITIVITY/EPILEPSY/SEIZURES</b>', 1065, 631, '[{"item": []}]', '2020-09-25');
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
 (3, 'ps4', 'asia', 'std', 'WOLFENSTEIN: YOUNGBLOOD <br>
