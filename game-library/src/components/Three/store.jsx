@@ -16,7 +16,7 @@ const state = proxy({
   manualWidth: 0,
   manualHeight: 0,
   isImageViewerOpened: false,
-  isMetaDataHandlerOpened: false,
+  isMetaDataHandlerOpened: true,
   metadataCache: {
     titleInfo: null,
     gameReleases: null,
