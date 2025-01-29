@@ -1,5 +1,5 @@
 import { useCursor, useTexture } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useSpring, animated } from "@react-spring/three";
 import { useMemo, useRef, useEffect, useState } from "react";
 import { state } from "./store";
 import { useSnapshot } from "valtio";
@@ -16,7 +16,6 @@ import {
   Vector3,
 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
-import { easing } from "maath";
 import supabase from "../../config/supabase";
 import { preloadImage } from "../utils/imageUtils";
 
@@ -93,9 +92,6 @@ const Page = ({
   const PAGE_DEPTH = 0.003;
   const PAGE_SEGMENTS = 30;
   const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
-
-  // page open animation speed
-  const easingFactor = 0.5;
 
   // texture and material of a page
   const whiteColor = new Color("white");
@@ -237,27 +233,19 @@ const Page = ({
     }
   };
 
-  useFrame((_, delta) => {
-    if (!skinnedMeshRef.current) return;
+  let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
+  if (!manualClosed) {
+    targetRotation += degToRad(number * 0.8);
+  } else if (pageNumber == snap.manualPageNumber / 2 + 1) {
+    targetRotation = -Math.PI / 2 + degToRad(number);
+  } else {
+    targetRotation = Math.PI / 2 + degToRad(number);
+  }
 
-    let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
-    if (!manualClosed) {
-      targetRotation += degToRad(number * 0.8);
-    } else if (pageNumber == snap.manualPageNumber / 2 + 1) {
-      targetRotation = -Math.PI / 2 + degToRad(number);
-    } else {
-      targetRotation = Math.PI / 2 + degToRad(number);
-    }
-
-    const bones = skinnedMeshRef.current.skeleton.bones;
-
-    easing.dampAngle(
-      bones[0].rotation,
-      "y",
-      targetRotation,
-      easingFactor,
-      delta
-    );
+  // animate page flipping rotation
+  const { rotation } = useSpring({
+    rotation: targetRotation,
+    config: { mass: 1, tension: 100, friction: 26 },
   });
 
   // cursor icon changes when hovering over Pages
@@ -278,11 +266,12 @@ const Page = ({
         setHighlighted(false);
       }}
     >
-      <primitive
+      <animated.primitive
         object={manualSkinnedMesh}
         ref={skinnedMeshRef}
         position-z={-number * PAGE_DEPTH + pageNumber * PAGE_DEPTH}
         onClick={handleClickPage}
+        rotation-y={rotation}
       />
     </group>
   );
