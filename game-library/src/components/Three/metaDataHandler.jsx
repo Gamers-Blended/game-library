@@ -409,6 +409,11 @@ export default function MetaDataHandler() {
             );
           }
         });
+      } else {
+        console.log(
+          "Selected game title does not have additional items! Resetting additional state..."
+        );
+        state.additional = "";
       }
 
       state.isMetaDataHandlerOpened = false;
