@@ -87,9 +87,9 @@ const Page = ({
   const [pictureFront, pictureBack] = useTexture([front, back]);
   pictureFront.colorSpace = pictureBack.colorSpace = SRGBColorSpace;
 
-  // page geometry
-  const PAGE_WIDTH = 1.28;
-  const PAGE_HEIGHT = 1.71; // 4:3 aspect ratio
+  // page geometry 4:3 aspect ratio
+  const PAGE_WIDTH = snap.manualWidth;
+  const PAGE_HEIGHT = snap.manualHeight;
   const PAGE_DEPTH = 0.003;
   const PAGE_SEGMENTS = 30;
   const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
@@ -198,7 +198,7 @@ const Page = ({
       new MeshStandardMaterial({
         color: whiteColor,
         map: pictureFront,
-        roughness: 0.1, // 0 for glossy surfaces
+        roughness: 1, // 0 for glossy surfaces
       }),
       // back page
       new MeshStandardMaterial({
