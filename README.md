@@ -99,27 +99,22 @@ Shortcut to import libraries Ctrl + Space
 
 ## Problems
 
-| Issues Faced                                                                                                  | Solutions                                               |
-| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Figuring out how to rotate the edge of a mesh instead of its origin                                           | Shift origin point to be at the edge                    |
-| Learning how glfx works (coverting a .glb file into separate mesh components)                                 | Refer to glfx documentation                             |
-| Unable to use mouse scroll for zooming in/out while maintaining button active condition when limit is reached | Remove mouse scroll function and use arrow keys instead |
-
-| Unable to map a .jpg file to a circular geometry exported from a .glb file <br>
-Unable to save material into exported .glb file inside Blender <br>
-Using a plane geometry and converting it into a circular plane, export it to glfx <br>
-Using `discFrontImage.wrapS = discFrontImage.wrapT = THREE.ClampToEdgeWrapping` <br>
-Passing an array of jpgs to `material` parameter in `geometry` <br>
-Adding a `side="THREE.FrontSide / THREE.BackSide"` to material components <br>
-Using `attach = "material-n"` inside `geometry` component (works in normal threejs geometries, but not those from bvh) <br>
-Difficulty in finding a suitable library to subtract geometries (`ThreeBSP`, `three-js-csg`, `THREE-CSGMESH`) | Use subtraction method from `three-bvh-csg` |
-| Unable to map each face of CylinderGeometry created from `three-bvh-csg` | Use 3 different CylinderGeometries with their own textures |
-| Unable to persist y-positions of each Manual Page upon a page flip | Place Page Component outside main Model() function |
-| The number of pages a manual will not tally with the last page number in the UI (e.g. manual has page 1-4, UI will only have 3 states [pg1, pg2-pg3, pg4]) | Using (number of pages/2 + 1) to get the number of states the UI will have for a manual |
-| Selected value in Dropdown box in MetaDataHandler does not persist upon selection (only persists when same option selected twice) | Use the value prop of Select to get the current selected option based on the value from Valtio state |
-| Rendered more hooks than during the previous render | Call Hooks at the top level of the component |
-| Selection in metadata handler takes awhile to update state | Use `Object.assign()` |
-| How to keep current selections from disappearing | |
-| How to display current state selection when view isn't clicked | |
-| Calls to Supabase are async, need to wait for images to be ready before rendering the mesh objects using them as textures | Refactor as separate Component |
-| Manual page will rotate anti-clockwise instead | Replace `useFrame()` with `useSpring` |
+| Issues Faced                                                                                                                                               | Solutions                                                                                            |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Figuring out how to rotate the edge of a mesh instead of its origin                                                                                        | Shift origin point to be at the edge                                                                 |
+| Learning how glfx works (coverting a .glb file into separate mesh components)                                                                              | Refer to glfx documentation                                                                          |
+| Unable to use mouse scroll for zooming in/out while maintaining button active condition when limit is reached                                              | Remove mouse scroll function and use arrow keys instead                                              |
+| Unable to map a .jpg file to a circular geometry exported from a .glb file                                                                                 |                                                                                                      |
+| Unable to save material into exported .glb file inside Blender                                                                                             |                                                                                                      |
+| Using `attach = "material-n"` inside `geometry` component (works in normal threejs geometries, but not those from bvh)                                     |                                                                                                      |
+| Difficulty in finding a suitable library to subtract geometries (`ThreeBSP`, `three-js-csg`, `THREE-CSGMESH`)                                              | Use subtraction method from `three-bvh-csg`                                                          |
+| Unable to map each face of CylinderGeometry created from `three-bvh-csg`                                                                                   | Use 3 different CylinderGeometries with their own textures                                           |
+| Unable to persist y-positions of each Manual Page upon a page flip                                                                                         | Place Page Component outside main Model() function                                                   |
+| The number of pages a manual will not tally with the last page number in the UI (e.g. manual has page 1-4, UI will only have 3 states [pg1, pg2-pg3, pg4]) | Using (number of pages/2 + 1) to get the number of states the UI will have for a manual              |
+| Selected value in Dropdown box in MetaDataHandler does not persist upon selection (only persists when same option selected twice)                          | Use the value prop of Select to get the current selected option based on the value from Valtio state |
+| Rendered more hooks than during the previous render                                                                                                        | Call Hooks at the top level of the component                                                         |
+| Selection in metadata handler takes awhile to update state                                                                                                 | Use `Object.assign()`                                                                                |
+| How to keep current selections from disappearing                                                                                                           |                                                                                                      |
+| How to display current state selection when view isn't clicked                                                                                             |                                                                                                      |
+| Calls to Supabase are async, need to wait for images to be ready before rendering the mesh objects using them as textures                                  | Refactor as separate Component                                                                       |
+| Manual page will rotate anti-clockwise instead                                                                                                             | Replace `useFrame()` with `useSpring`                                                                |

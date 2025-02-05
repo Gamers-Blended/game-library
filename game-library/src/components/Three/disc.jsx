@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useSnapshot } from "valtio";
 import { state } from "./store";
 import { useTexture } from "@react-three/drei";
-import { useFrame } from "react-three-fiber";
 import * as THREE from "three";
 import { SUBTRACTION, Brush, Evaluator } from "three-bvh-csg";
 import { useValidatedSupabaseImage, preloadImage } from "../utils/imageUtils";
+import Placeholder from "./placeholder.jsx";
 
 function DiscContent({ frontImageUrl, backImageUrl }) {
   const loadTextures = useTexture([frontImageUrl, backImageUrl]);
@@ -75,13 +75,6 @@ function DiscContent({ frontImageUrl, backImageUrl }) {
 export default function Model() {
   const snap = useSnapshot(state);
   const JPG = "jpg";
-  const placeholderRef = useRef();
-
-  useFrame(() => {
-    if (placeholderRef.current) {
-      placeholderRef.current.rotation.y += 0.01;
-    }
-  });
 
   const frontImageUrl = useValidatedSupabaseImage(
     `images/${snap.platform}/${snap.region}/disc/${snap.platform}_${snap.title}_${snap.region}_${snap.edition}_disc.${JPG}`
@@ -93,16 +86,7 @@ export default function Model() {
 
   // Placeholder while loading
   if (!frontImageUrl || !backImageUrl) {
-    return (
-      <mesh ref={placeholderRef} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[1, 1, 0.01, 64]} />
-        <meshBasicMaterial
-          color="#34495e"
-          wireframe={true}
-          wireframeLinewidth={2}
-        />
-      </mesh>
-    );
+    return <Placeholder />;
   }
 
   preloadImage(frontImageUrl);
