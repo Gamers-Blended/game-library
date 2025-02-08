@@ -57,18 +57,28 @@ Collect, upgrade, and build thousands of items in the most advanced crafting sys
 <br>
 Be whoever you want. Choose from hundreds of Perks and develop your own playstyle.
 <br>
-<br>
-
---***--
-
-Test reverse cover', 1065, 631, '{"item": []}', '2015-11-10');
+<br>', 1065, 631, '{"item": []}', '2015-11-10');
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
-(2, 'ps4', 'us', 'std', 'MAFIA: DEFINITIVE EDITION <br> --***-- <b>
+(2, 'ps4', 'us', 'std', 'MAFIA: DEFINITIVE EDITION <br>
+A LIFE OF REWARD TOO BIG TO IGNORE <br>
+PART ONE OF THE MAFIA CRIME SAGA - 1930''S, LOST HEAVEN, IL <br>
+The classic 1930''s crime drama remade from the ground up. Rise through the ranks of the Mafia during the Prohibition <br>
+era of organized crime. After a run-in with the mob, cab driver Tommy Angelo is thrust into a deadly underworld. <br>
+Initially uneasy about falling in with the Salieri crime family, Tommy soon finds that the rewards are too big to ignore. <br>
+<br>
+<b>THRUST INTO THE WORLD OF ORGANIZED CRIME</b>
+<br>
+<b>1930''S AMERICAN PROHIBITION SETTING</b>
+<br>
+<b>RISE THROUGH THE RANKS OF THE SALIERI FAMILY</b>
+
+ --***-- <b>
 See import health and safety warnings in the system Settings menu.</b>
 <br>
 <br>
-<b>WARNING: PHOTOSENSITIVITY/EPILEPSY/SEIZURES</b>', 1065, 631, '[{"item": []}]', '2020-09-25');
+<b>WARNING: PHOTOSENSITIVITY/EPILEPSY/SEIZURES</b>
+<br>', 1065, 631, '[{"item": []}]', '2020-09-25');
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
 (3, 'ps4', 'asia', 'std', 'WOLFENSTEIN: YOUNGBLOOD <br>
@@ -79,8 +89,17 @@ Play as one of BJ Blazkowicz''s twin daughters and undertake a do-or-die mission
 Wield an arsenal of new weapons, gadgets, and power armour abilities in a fight to kick Nazis out of the city of lights. <br>
 ', 1065, 631, '[{"item": "manual", "page_width": 1.28, "page_height": 1.71, "number_of_pages": 4}]', '2019-07-26');
 
-INSERT INTO game_releases (game_id, platform, region, edition, included_items) VALUES 
-(4, 'ps4', 'eur', 'std', '[{"item": "manual", "page_width": 1.28, "page_height": 1.71, "number_of_pages": 4}]');
-
-INSERT INTO game_releases (game_id, platform, region, edition, included_items) VALUES 
-(4, 'xboxone', 'us', 'std', '{"items": ["Manual"]}');
+INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
+(4, 'ps4', 'eur', 'std', 'ATELIER LULUA: THE SCION OF ARLAND <br>
+<br>
+Time''s ticking in the world of Arland. <br>
+The future of Arland is entrusted to this yound girl. <br>
+<ul>
+<li>Lulua discovers a mysterious book and uncovers the hidden truth of Arland.</li>
+<li>Learn alchemy while discovering the mysteries of Lulua''s homeland.</li>
+<li>Fan-favourite characters rejoin the fun.</li>
+<li>An enjoyable story and easy-to-learn mechanics welcome new and returning fans alike.</li>
+</ul>
+*Game features Japanese voice only. <br>
+<b>http://www.ateliergames.eu/lulua/</b>
+', 1065, 631, '[{"item": []}]', '2019-05-24');
