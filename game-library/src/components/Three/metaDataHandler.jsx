@@ -573,13 +573,14 @@ export default function MetaDataHandler() {
   return (
     <div className="metadataHandlerContainer">
       <div className="metadataContent">
+        <div className="closeButtonContainer">
+          <CloseButton />
+        </div>
+        <h1>VIDEO GAME 3D LIBRARY</h1>
         <div className="instructionText">
           Welcome to the Game Library! <br />
           Please select the title you wish to view.
           {fetchError && <p>{fetchError}</p>}
-          <div className="closeButtonContainer">
-            <CloseButton />
-          </div>
         </div>
         <Selector />
       </div>

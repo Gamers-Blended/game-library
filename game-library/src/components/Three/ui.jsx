@@ -256,9 +256,7 @@ export default function UI() {
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={transition}
-      >
-        <h1>Video Game 3D Library</h1>
-      </motion.header>
+      ></motion.header>
       <AnimatePresence>
         <motion.section key="main" {...config}>
           <div className="section--container">
