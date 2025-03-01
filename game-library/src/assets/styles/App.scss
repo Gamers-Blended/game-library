@@ -1,5 +1,16 @@
+@font-face {
+  font-family: 'AdventPro';
+  src: url('/fonts/AdventPro-Regular.woff2') format('woff2'),
+       url('/fonts/AdventPro-Regular.woff') format('woff'),
+       url('/fonts/AdventPro-Regular.ttf') format('truetype'),
+       url('/fonts/AdventPro-Regular.eot') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 html {
-  font-family: 'Inter', sans-serif;
+  font-family: 'AdventPro', 'Inter', sans-serif;
 }
 
 html,
