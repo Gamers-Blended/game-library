@@ -478,6 +478,11 @@ export default function MetaDataHandler() {
     );
   };
 
+  // Update state with selected row data
+  const handleRowClick = (item) => {
+    console.log("Row clicked:", item);
+  };
+
   const handleView = () => {
     if (!isAllSelectionChosen) return;
 
@@ -771,7 +776,11 @@ export default function MetaDataHandler() {
               <tbody className="gameTableTitleTableBody">
                 {paginatedData.length > 0 ? (
                   paginatedData.map((item, index) => (
-                    <tr key={index} className="gameTableTitleTableRow">
+                    <tr
+                      key={index}
+                      className="gameTableTitleTableRow"
+                      onClick={() => handleRowClick(item)}
+                    >
                       {headers.map((header) => (
                         <td
                           key={`${index}-${header.key}`}
