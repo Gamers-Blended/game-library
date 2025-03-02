@@ -16,6 +16,7 @@ export default function MetaDataHandler() {
 
   const [isLoadingTitleData, setIsLoadingTitleData] = useState(false);
   const [isLoadingGameReleases, setIsLoadingGameReleases] = useState(false);
+  const [isLoadingTableData, setIsLoadingTableData] = useState(false);
   const [fetchError, setFetchError] = useState(null);
 
   const [titleOptions, setTitleOptions] = useState(null);
@@ -46,52 +47,8 @@ export default function MetaDataHandler() {
     edition: null,
   });
 
-  // table
-  const initialData = [
-    {
-      title: "The Legend of Zelda: Breath of the Wild",
-      platform: "Nintendo Switch",
-      region: "Global",
-      edition: "Standard",
-      releaseDate: "2017-03-03",
-      genres: "Action, Adventure",
-    },
-    {
-      title: "God of War",
-      platform: "PlayStation 4",
-      region: "North America",
-      edition: "Standard",
-      releaseDate: "2018-04-20",
-      genres: "Action, Adventure",
-    },
-    {
-      title: "Red Dead Redemption 2",
-      platform: "PlayStation 4",
-      region: "Europe",
-      edition: "Ultimate",
-      releaseDate: "2018-10-26",
-      genres: "Action, Adventure, Open World",
-    },
-    {
-      title: "Halo Infinite",
-      platform: "Xbox Series X",
-      region: "Global",
-      edition: "Limited",
-      releaseDate: "2021-12-08",
-      genres: "FPS, Action",
-    },
-    {
-      title: "Animal Crossing: New Horizons",
-      platform: "Nintendo Switch",
-      region: "Japan",
-      edition: "Standard",
-      releaseDate: "2020-03-20",
-      genres: "Life Simulation",
-    },
-  ];
-
-  const [data, setData] = useState(initialData);
-  const [filteredData, setFilteredData] = useState(initialData);
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({
@@ -138,6 +95,74 @@ export default function MetaDataHandler() {
     setCurrentPage(1); // Reset to first page when changing page size
   };
 
+  // Fetch table data from Supabase database
+  useEffect(() => {
+    const fetchTableData = async () => {
+      setIsLoadingTableData(true);
+
+      // Check if table data is cached
+      if (state.metadataCache.tableData) {
+        console.log(
+          "Table data has been retrieved before, using cache instead of calling database..."
+        );
+        setData(state.metadataCache.tableData);
+        setFilteredData(state.metadataCache.tableData);
+        setIsLoadingTableData(false);
+        return;
+      }
+
+      try {
+        console.log(
+          "Table data cache is empty, retrieving data from database..."
+        );
+
+        // Join games with game_releases tables
+        const { data, error } = await supabase.from("game_releases").select(
+          `
+          game_id,
+          platform,
+          region,
+          edition,
+          release_date,
+          genres,
+          games(title_text)`
+        );
+
+        if (error) throw error;
+
+        // Transform data to match table structure
+        const formattedData = data.map((item) => ({
+          title: item.games.title_text,
+          platform: mapItemToLabel(item.platform, PlatformTypes),
+          region: mapItemToLabel(item.region, RegionTypes),
+          edition: mapItemToLabel(item.edition, EditionTypes),
+          releaseDate: item.release_date
+            ? new Date(item.release_date).toISOString().split("T")[0]
+            : "N/A",
+          genres: Array.isArray(item.genres)
+            ? item.genres.join(", ")
+            : item.genres || "N/A",
+        }));
+
+        // Update cache and state
+        state.metadataCache.tableData = formattedData;
+        setData(formattedData);
+        setFilteredData(formattedData);
+      } catch (error) {
+        setFetchError("Unable to fetch table data");
+        console.error("Error fetching table data from database: ", error);
+
+        // Fallback to empty array if fetch fails
+        setData([]);
+        setFilteredData([]);
+      } finally {
+        setIsLoadingTableData(false);
+      }
+    };
+
+    fetchTableData();
+  }, []);
+
   // Apply filters and sorting
   useEffect(() => {
     let result = [...data]; // Create a copy of data array, this copy will be modified
@@ -172,8 +197,8 @@ export default function MetaDataHandler() {
   // Pagination logic
   const totalPages = Math.ceil(filteredData.length / pageSize); // Round up to nearest integer
   const paginatedData = filteredData.slice(
-    (currentPage - 1) * pageSize, // start inclusive
-    currentPage * pageSize // end exclusive
+    (currentPage - 1) * pageSize, // Start inclusive
+    currentPage * pageSize // End exclusive
   );
 
   // Initial title data load
