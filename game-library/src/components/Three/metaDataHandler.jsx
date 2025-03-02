@@ -11,7 +11,6 @@ import Select from "react-select";
 import supabase from "../../config/supabase";
 
 export default function MetaDataHandler() {
-  const TXT_EXT = ".txt";
   const CASE_MODE = "CASE";
   const snap = useSnapshot(state);
 
@@ -46,6 +45,136 @@ export default function MetaDataHandler() {
     region: null,
     edition: null,
   });
+
+  // table
+  const initialData = [
+    {
+      title: "The Legend of Zelda: Breath of the Wild",
+      platform: "Nintendo Switch",
+      region: "Global",
+      edition: "Standard",
+      releaseDate: "2017-03-03",
+      genres: "Action, Adventure",
+    },
+    {
+      title: "God of War",
+      platform: "PlayStation 4",
+      region: "North America",
+      edition: "Standard",
+      releaseDate: "2018-04-20",
+      genres: "Action, Adventure",
+    },
+    {
+      title: "Red Dead Redemption 2",
+      platform: "PlayStation 4",
+      region: "Europe",
+      edition: "Ultimate",
+      releaseDate: "2018-10-26",
+      genres: "Action, Adventure, Open World",
+    },
+    {
+      title: "Halo Infinite",
+      platform: "Xbox Series X",
+      region: "Global",
+      edition: "Limited",
+      releaseDate: "2021-12-08",
+      genres: "FPS, Action",
+    },
+    {
+      title: "Animal Crossing: New Horizons",
+      platform: "Nintendo Switch",
+      region: "Japan",
+      edition: "Standard",
+      releaseDate: "2020-03-20",
+      genres: "Life Simulation",
+    },
+  ];
+
+  const [data, setData] = useState(initialData);
+  const [filteredData, setFilteredData] = useState(initialData);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState({
+    key: "title",
+    direction: "asc",
+  });
+  const [filters, setFilters] = useState({
+    title: "",
+    platform: "",
+    region: "",
+    edition: "",
+    releaseDate: "",
+    genres: "",
+  });
+
+  const headers = [
+    { key: "title", label: "Title" },
+    { key: "platform", label: "Platform" },
+    { key: "region", label: "Region" },
+    { key: "edition", label: "Edition" },
+    { key: "releaseDate", label: "Release Date" },
+    { key: "genres", label: "Genres" },
+  ];
+
+  // Toggle asc and desc for input key
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      // If already sorted by key in asc, change to desc
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Update filter for input key
+  const handleFilterChange = (e, key) => {
+    const value = e.target.value;
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  // Update page size
+  const handlePageSizeChange = (e) => {
+    setPageSize(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
+
+  // Apply filters and sorting
+  useEffect(() => {
+    let result = [...data]; // Create a copy of data array, this copy will be modified
+
+    // Apply filters
+    result = result.filter((item) => {
+      return Object.keys(filters).every((key) => {
+        if (!filters[key]) return true; // Skip empty filters
+        return item[key].toLowerCase().includes(filters[key].toLowerCase());
+      });
+    });
+
+    // Apply sorting
+    result.sort((a, b) => {
+      // Compare 2 elements, a & b
+      // -1: a < b
+      // 1: b < a
+      // 0: a == b
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? -1 : 1; // a < b (asc) : b < a (desc)
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? 1 : -1; // b < a (asc) : a < b (desc)
+      }
+      return 0; // a & b have equal order
+    });
+
+    setFilteredData(result);
+    setCurrentPage(1); // Reset to first page when filters/sort change
+  }, [filters, sortConfig, data]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredData.length / pageSize); // Round up to nearest integer
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * pageSize, // start inclusive
+    currentPage * pageSize // end exclusive
+  );
 
   // Initial title data load
   useEffect(() => {
@@ -293,17 +422,6 @@ export default function MetaDataHandler() {
       );
     }
   }, [platformOptions, regionOptions, editionOptions]);
-
-  const createMetaDataPath = async (newState) => {
-    try {
-      const metaDataPath = `/textData/metadata_${newState.title}_${newState.platform}_${newState.region}_${newState.edition}${TXT_EXT}`;
-      console.log("MetaData path created: " + metaDataPath);
-      return metaDataPath;
-    } catch (error) {
-      console.error("Error creating metaDataPath:", error);
-      throw error;
-    }
-  };
 
   // Handle selection changes
   const handleSelectionChange = (selectedOption, { name }) => {
@@ -566,6 +684,124 @@ export default function MetaDataHandler() {
         <div className="viewButtonContainer">
           <ViewButton />
         </div>
+
+        <div className="gameTable">
+          {/* Page Size Controls */}
+          <div className="gameTablePageSizeContainer">
+            <div className="gameTablePageSize">
+              <label className="gameTablePageSizeLabel">Rows per page:</label>
+              <select
+                value={pageSize}
+                onChange={handlePageSizeChange}
+                className="gameTableSelectBox"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="gameTableTitleTableContainer">
+            <table className="gameTableTitleTable">
+              {/* Table Headers */}
+              <thead className="gameTableTitleTableHeaderContainer">
+                <tr>
+                  {headers.map((header) => (
+                    <th
+                      key={header.key}
+                      onClick={() => requestSort(header.key)}
+                      className="gameTableTitleTableHeader"
+                    >
+                      <div className="gameTableTitleTableHeaderText">
+                        <span>{header.label}</span>
+                        {sortConfig.key === header.key && (
+                          <span className="gameTableTitleTableHeaderTextOrder">
+                            {sortConfig.direction === "asc" ? "↑" : "↓"}
+                          </span>
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+                <tr>
+                  {/* Filter Input Row */}
+                  {headers.map((header) => (
+                    <th
+                      key={`filter-${header.key}`}
+                      className="gameTableTitleTableFilterHeader"
+                    >
+                      <input
+                        type="text"
+                        placeholder={`Filter ${header.label}`}
+                        value={filters[header.key]}
+                        onChange={(e) => handleFilterChange(e, header.key)}
+                        className="gameTableTitleTableFilterBox"
+                      />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              {/* Title Table Rows */}
+              <tbody className="gameTableTitleTableBody">
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((item, index) => (
+                    <tr key={index} className="gameTableTitleTableRow">
+                      {headers.map((header) => (
+                        <td
+                          key={`${index}-${header.key}`}
+                          className="gameTableTitleTableRowText"
+                        >
+                          {item[header.key]}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={headers.length}
+                      className="gameTableTitleTableRowTextEmpty"
+                    >
+                      No results found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination controls */}
+          <div className="gameTablePaginationContainer">
+            <div>
+              Showing{" "}
+              {filteredData.length > 0 ? (currentPage - 1) * pageSize + 1 : 0}{" "}
+              to {Math.min(currentPage * pageSize, filteredData.length)} of{" "}
+              {filteredData.length} entries
+            </div>
+            <div className="gameTablePaginationButtonContainer">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="gameTablePaginationButton"
+              >
+                Previous
+              </button>
+              <span className="PaginationPageText">
+                Page {currentPage} of {totalPages || 1}
+              </span>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages || totalPages === 0}
+                className="gameTablePaginationButton"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
@@ -576,7 +812,7 @@ export default function MetaDataHandler() {
         <div className="closeButtonContainer">
           <CloseButton />
         </div>
-        <h1>VIDEO GAME 3D LIBRARY</h1>
+        <h1 className="metadataHandlerHeader">VIDEO GAME 3D LIBRARY</h1>
         <div className="instructionText">
           Welcome to the Game Library! <br />
           Please select the title you wish to view.

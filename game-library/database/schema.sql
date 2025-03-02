@@ -17,6 +17,7 @@ CREATE TABLE game_releases (
     cover_height DECIMAL(10,2),
     included_items JSONB,  -- Stores array of items included in this edition
     release_date DATE,
+    genres TEXT[],
     UNIQUE(game_id, platform, region, edition)
 );
 
@@ -33,7 +34,7 @@ INSERT INTO games (title, title_text) VALUES ('atelier_lulua_the_scion_of_arland
 
 
 -- Insert different releases
-INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
+INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
 (1, 'ps4', 'us', 'std', 'FALLOUT 4 <br>
 <br>
 Welcome Home <br>
@@ -57,9 +58,9 @@ Collect, upgrade, and build thousands of items in the most advanced crafting sys
 <br>
 Be whoever you want. Choose from hundreds of Perks and develop your own playstyle.
 <br>
-<br>', 1065, 631, '{"item": []}', '2015-11-10');
+<br>', 1065, 631, '{"item": []}', '2015-11-10', ARRAY['RPG', 'FPS']);
 
-INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
+INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
 (2, 'ps4', 'us', 'std', 'MAFIA: DEFINITIVE EDITION <br>
 A LIFE OF REWARD TOO BIG TO IGNORE <br>
 PART ONE OF THE MAFIA CRIME SAGA - 1930''S, LOST HEAVEN, IL <br>
@@ -78,18 +79,18 @@ See import health and safety warnings in the system Settings menu.</b>
 <br>
 <br>
 <b>WARNING: PHOTOSENSITIVITY/EPILEPSY/SEIZURES</b>
-<br>', 1065, 631, '[{"item": []}]', '2020-09-25');
+<br>', 1065, 631, '[{"item": []}]', '2020-09-25', ARRAY['ACTION', 'TPS']);
 
-INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
+INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
 (3, 'ps4', 'asia', 'std', 'WOLFENSTEIN: YOUNGBLOOD <br>
 <br>
 Wolves Hunt Together <br>
 Team up with a friend or play solo with an AI companion to take on the Nazis in this brand new co-op adventure. <br>
 Play as one of BJ Blazkowicz''s twin daughters and undertake a do-or-die mission to find their missing father in 1980s Paris. <br>
 Wield an arsenal of new weapons, gadgets, and power armour abilities in a fight to kick Nazis out of the city of lights. <br>
-', 1065, 631, '[{"item": "manual", "page_width": 1.28, "page_height": 1.71, "number_of_pages": 4}]', '2019-07-26');
+', 1065, 631, '[{"item": "manual", "page_width": 1.28, "page_height": 1.71, "number_of_pages": 4}]', '2019-07-26', ARRAY['FPS']);
 
-INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date) VALUES 
+INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
 (4, 'ps4', 'eur', 'std', 'ATELIER LULUA: THE SCION OF ARLAND <br>
 <br>
 Time''s ticking in the world of Arland. <br>
@@ -102,4 +103,4 @@ The future of Arland is entrusted to this yound girl. <br>
 </ul>
 *Game features Japanese voice only. <br>
 <b>http://www.ateliergames.eu/lulua/</b>
-', 1065, 631, '[{"item": []}]', '2019-05-24');
+', 1065, 631, '[{"item": []}]', '2019-05-24', ARRAY['JRPG']);
