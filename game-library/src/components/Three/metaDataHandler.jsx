@@ -45,6 +45,22 @@ export default function MetaDataHandler() {
   const loadGameReleasesData = async (gameId) => {
     setIsLoadingGameReleases(true);
 
+    // If cache contains data for gameId, skip database call
+    const existingReleases = state.metadataCache.gameReleases;
+    if (existingReleases && existingReleases.length > 0) {
+      const hasGameIdData = existingReleases.some(
+        (release) => release.game_id === gameId
+      );
+
+      if (hasGameIdData) {
+        console.log(
+          `Game releases for gameId ${gameId} already in cache. Skipping database fetch.`
+        );
+        return existingReleases;
+      }
+    }
+
+    // If no existing data, proceed with database fetch
     try {
       console.log(
         `Retrieving game releases for gameId = ${gameId} from database...`
