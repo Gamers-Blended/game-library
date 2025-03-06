@@ -5,19 +5,10 @@ import {
   EditionTypes,
   mapItemToLabel,
 } from "./optionMapper";
+import TableLoadingOverlay from "./tableLoadingOverlay";
 import { state } from "./store";
 import { useSnapshot } from "valtio";
 import supabase from "../../config/supabase";
-
-const LoadingBar = () => {
-  return (
-    <div className="loadingBarContainer">
-      <div className="loadingBar">
-        <div className="loadingBarFill"></div>
-      </div>
-    </div>
-  );
-};
 
 export default function MetaDataHandler() {
   const CASE_MODE = "CASE";
@@ -362,8 +353,6 @@ export default function MetaDataHandler() {
 
         <div className="gameTable">
           {/* Page Size Controls */}
-          {isLoadingRowData && <LoadingBar />}
-
           <div className="gameTablePageSizeContainer">
             <div className="gameTablePageSize">
               <label className="gameTablePageSizeLabel">Rows per page:</label>
@@ -383,6 +372,11 @@ export default function MetaDataHandler() {
               isLoadingRowData ? "disabled" : ""
             }`}
           >
+            {/* Loading overlay positioned inside the table container */}
+            {(isLoadingRowData ||
+              isLoadingGameReleases ||
+              isLoadingTableData) && <TableLoadingOverlay />}
+
             <table className="gameTableTitleTable">
               {/* Table Headers */}
               <thead className="gameTableTitleTableHeaderContainer">
