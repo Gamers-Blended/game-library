@@ -6,11 +6,24 @@ import {
   mapItemToLabel,
 } from "./optionMapper";
 import { state } from "./store";
+import { useSnapshot } from "valtio";
 import supabase from "../../config/supabase";
+
+const LoadingBar = () => {
+  return (
+    <div className="loadingBarContainer">
+      <div className="loadingBar">
+        <div className="loadingBarFill"></div>
+      </div>
+    </div>
+  );
+};
 
 export default function MetaDataHandler() {
   const CASE_MODE = "CASE";
+  const snap = useSnapshot(state);
 
+  const [isLoadingRowData, setIsLoadingRowData] = useState(false);
   const [isLoadingGameReleases, setIsLoadingGameReleases] = useState(false);
   const [isLoadingTableData, setIsLoadingTableData] = useState(false);
   const [fetchError, setFetchError] = useState(null);
@@ -44,6 +57,7 @@ export default function MetaDataHandler() {
   // Get game release data from database
   const loadGameReleasesData = async (gameId) => {
     setIsLoadingGameReleases(true);
+    setIsLoadingRowData(true);
 
     // If cache contains data for gameId, skip database call
     const existingReleases = state.metadataCache.gameReleases;
@@ -91,6 +105,7 @@ export default function MetaDataHandler() {
       return [];
     } finally {
       setIsLoadingGameReleases(false);
+      setIsLoadingRowData(false);
     }
   };
 
@@ -225,9 +240,15 @@ export default function MetaDataHandler() {
 
   // Update state with selected row data
   const handleRowClick = async (item) => {
+    if (isLoadingRowData) return;
+
     console.log("Row clicked - item values:", JSON.stringify(item));
 
+    setIsLoadingRowData(true);
+
+    // Ensure cache is updated
     await loadGameReleasesData(item.gameId);
+
     console.log(
       "Retrieved gameReleases data:",
       JSON.stringify(state.metadataCache.gameReleases[0])
@@ -309,6 +330,8 @@ export default function MetaDataHandler() {
       state.currentMode = CASE_MODE; // Always start from case
     } catch (error) {
       console.error("Error updating state:", error);
+    } finally {
+      setIsLoadingRowData(false);
     }
   };
 
@@ -336,8 +359,11 @@ export default function MetaDataHandler() {
           Please select the title you wish to view.
           {fetchError && <p>{fetchError}</p>}
         </div>
+
         <div className="gameTable">
           {/* Page Size Controls */}
+          {isLoadingRowData && <LoadingBar />}
+
           <div className="gameTablePageSizeContainer">
             <div className="gameTablePageSize">
               <label className="gameTablePageSizeLabel">Rows per page:</label>
@@ -352,7 +378,11 @@ export default function MetaDataHandler() {
             </div>
           </div>
 
-          <div className="gameTableTitleTableContainer">
+          <div
+            className={`gameTableTitleTableContainer ${
+              isLoadingRowData ? "disabled" : ""
+            }`}
+          >
             <table className="gameTableTitleTable">
               {/* Table Headers */}
               <thead className="gameTableTitleTableHeaderContainer">
@@ -399,7 +429,10 @@ export default function MetaDataHandler() {
                   paginatedData.map((item, index) => (
                     <tr
                       key={index}
-                      className="gameTableTitleTableRow"
+                      className={`gameTableTitleTableRow ${
+                        isLoadingRowData ? "non-clickable" : ""
+                      }`}
+                      // className="gameTableTitleTableRow"
                       onClick={() => handleRowClick(item)}
                     >
                       {headers.map((header) => (
