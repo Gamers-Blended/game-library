@@ -7,12 +7,10 @@ import {
 } from "./optionMapper";
 import TableLoadingOverlay from "./tableLoadingOverlay";
 import { state } from "./store";
-import { useSnapshot } from "valtio";
 import supabase from "../../config/supabase";
 
 export default function MetaDataHandler() {
   const CASE_MODE = "CASE";
-  const snap = useSnapshot(state);
 
   const [isLoadingRowData, setIsLoadingRowData] = useState(false);
   const [isLoadingGameReleases, setIsLoadingGameReleases] = useState(false);
@@ -332,7 +330,11 @@ export default function MetaDataHandler() {
     };
 
     return (
-      <button className="buttonText" onClick={handleClose}>
+      <button
+        className={"gameTableButton"}
+        onClick={handleClose}
+        disabled={state.title === "default"}
+      >
         Close
       </button>
     );
@@ -426,7 +428,6 @@ export default function MetaDataHandler() {
                       className={`gameTableTitleTableRow ${
                         isLoadingRowData ? "non-clickable" : ""
                       }`}
-                      // className="gameTableTitleTableRow"
                       onClick={() => handleRowClick(item)}
                     >
                       {headers.map((header) => (
@@ -465,7 +466,7 @@ export default function MetaDataHandler() {
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="gameTablePaginationButton"
+                className="gameTableButton"
               >
                 Previous
               </button>
@@ -477,7 +478,7 @@ export default function MetaDataHandler() {
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
                 disabled={currentPage === totalPages || totalPages === 0}
-                className="gameTablePaginationButton"
+                className="gameTableButton"
               >
                 Next
               </button>
