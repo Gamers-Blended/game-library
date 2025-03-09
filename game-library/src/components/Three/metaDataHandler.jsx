@@ -393,7 +393,7 @@ export default function MetaDataHandler() {
                         <span>{header.label}</span>
                         {sortConfig.key === header.key && (
                           <span className="gameTableTitleTableHeaderTextOrder">
-                            {sortConfig.direction === "asc" ? "↑" : "↓"}
+                            {sortConfig.direction === "asc" ? "▲" : "▼"}
                           </span>
                         )}
                       </div>
