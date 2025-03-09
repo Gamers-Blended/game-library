@@ -55,11 +55,14 @@ button {
 }
 
 .metadataContent {
-  background-color: rgba(255, 255, 255, 0.904);
-  width: 80%;
-  max-width: 800px; // Prevents content from becoming too wide on large screens
-  margin: 0 auto; // Centers content horizontally
-  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  width: 90vw;      // 90% of viewport width
+  max-width: 90%;    // Don't exceed viewport
+  box-sizing: border-box, // padding won't add to width
 }
 
 .instructionText {
