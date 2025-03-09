@@ -5,6 +5,12 @@ import {
   EditionTypes,
   mapItemToLabel,
 } from "./optionMapper";
+import {
+  ChevronsLeft,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsRight,
+} from "lucide-react";
 import TableLoadingOverlay from "./tableLoadingOverlay";
 import { state } from "./store";
 import supabase from "../../config/supabase";
@@ -227,6 +233,12 @@ export default function MetaDataHandler() {
     currentPage * pageSize // End exclusive
   );
 
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
   // Update state with selected row data
   const handleRowClick = async (item) => {
     if (isLoadingRowData) return;
@@ -374,7 +386,6 @@ export default function MetaDataHandler() {
               isLoadingRowData ? "disabled" : ""
             }`}
           >
-            {/* Loading overlay positioned inside the table container */}
             {(isLoadingRowData ||
               isLoadingGameReleases ||
               isLoadingTableData) && <TableLoadingOverlay />}
@@ -462,25 +473,40 @@ export default function MetaDataHandler() {
               to {Math.min(currentPage * pageSize, filteredData.length)} of{" "}
               {filteredData.length} entries
             </div>
+
             <div className="gameTablePaginationButtonContainer">
               <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
+                onClick={() => handlePageChange(1)}
                 className="gameTableButton"
+                disabled={currentPage === 1}
               >
-                Previous
+                <ChevronsLeft size={20} />
+              </button>
+              <button
+                onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                className="gameTableButton"
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft size={20} />
               </button>
               <span className="PaginationPageText">
                 Page {currentPage} of {totalPages || 1}
               </span>
               <button
                 onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  handlePageChange(Math.min(currentPage + 1, totalPages))
                 }
-                disabled={currentPage === totalPages || totalPages === 0}
                 className="gameTableButton"
+                disabled={currentPage === totalPages || totalPages === 0}
               >
-                Next
+                <ChevronRight size={20} />
+              </button>
+              <button
+                onClick={() => handlePageChange(totalPages)}
+                className="gameTableButton"
+                disabled={currentPage === totalPages || totalPages === 0}
+              >
+                <ChevronsRight size={20} />
               </button>
             </div>
           </div>
