@@ -11,6 +11,7 @@ import {
   ChevronRight,
   ChevronsRight,
 } from "lucide-react";
+import Select from "react-select";
 import TableLoadingOverlay from "./tableLoadingOverlay";
 import { state } from "./store";
 import supabase from "../../config/supabase";
@@ -27,6 +28,10 @@ export default function MetaDataHandler() {
   const [filteredData, setFilteredData] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedPage, setSelectedPage] = useState({
+    value: currentPage,
+    label: String(currentPage),
+  });
   const [sortConfig, setSortConfig] = useState({
     key: "title",
     direction: "asc",
@@ -228,10 +233,22 @@ export default function MetaDataHandler() {
 
   // Pagination logic
   const totalPages = Math.ceil(filteredData.length / pageSize); // Round up to nearest integer
+
   const paginatedData = filteredData.slice(
     (currentPage - 1) * pageSize, // Start inclusive
     currentPage * pageSize // End exclusive
   );
+
+  // Options for page select dropdown box
+  const pageOptions = Array.from({ length: totalPages }, (_, i) => ({
+    value: i + 1,
+    label: String(i + 1),
+  }));
+
+  const handleSelectChange = (option) => {
+    setSelectedPage(option);
+    handlePageChange(option.value);
+  };
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -335,6 +352,11 @@ export default function MetaDataHandler() {
       setIsLoadingRowData(false);
     }
   };
+
+  // Update selectedPage whenever currentPage changes
+  useEffect(() => {
+    setSelectedPage({ value: currentPage, label: String(currentPage) });
+  }, [currentPage]);
 
   const CloseButton = () => {
     const handleClose = () => {
@@ -489,9 +511,32 @@ export default function MetaDataHandler() {
               >
                 <ChevronLeft size={20} />
               </button>
-              <span className="PaginationPageText">
-                Page {currentPage} of {totalPages || 1}
-              </span>
+
+              <span className="PaginationPageText">Page</span>
+
+              <Select
+                value={selectedPage}
+                onChange={handleSelectChange}
+                options={pageOptions}
+                isSearchable={true}
+                menuPlacement="auto" // dropdown auto position above or below the input
+                openMenuOnFocus={true} // dropdown auto opens when input is clicked/tabbed
+                styles={{
+                  container: (base) => ({
+                    ...base,
+                    width: "80px",
+                  }),
+                  // Ensure the value stays visible after selection
+                  singleValue: (base) => ({
+                    ...base,
+                    position: "relative",
+                    overflow: "visible",
+                  }),
+                }}
+              />
+
+              <span className="PaginationPageText">of {totalPages || 1}</span>
+
               <button
                 onClick={() =>
                   handlePageChange(Math.min(currentPage + 1, totalPages))
