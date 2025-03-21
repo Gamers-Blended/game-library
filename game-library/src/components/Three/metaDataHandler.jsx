@@ -5,6 +5,7 @@ import {
   EditionTypes,
   mapItemToLabel,
 } from "./optionMapper";
+import GenreColors from "./genreColors";
 import {
   ChevronsLeft,
   ChevronLeft,
@@ -170,15 +171,15 @@ export default function MetaDataHandler() {
         const formattedData = data.map((item) => ({
           gameId: item.game_id,
           title: item.games.title_text,
-          platform: mapItemToLabel(item.platform, PlatformTypes),
-          region: mapItemToLabel(item.region, RegionTypes),
-          edition: mapItemToLabel(item.edition, EditionTypes),
+          platform: mapItemToLabel(item.platform, PlatformTypes), // e.g. PS4 -> PlayStation 4
+          region: mapItemToLabel(item.region, RegionTypes), // e.g. US -> United States
+          edition: mapItemToLabel(item.edition, EditionTypes), // e.g. std -> Standard
           releaseDate: item.release_date
             ? new Date(item.release_date).toISOString().split("T")[0]
             : "N/A",
           genres: Array.isArray(item.genres)
-            ? item.genres.join(", ")
-            : item.genres || "N/A",
+            ? item.genres
+            : [item.genres ?? "N/A"],
         }));
 
         // Update cache and state
@@ -208,7 +209,16 @@ export default function MetaDataHandler() {
     result = result.filter((item) => {
       return Object.keys(filters).every((key) => {
         if (!filters[key]) return true; // Skip empty filters
-        return item[key].toLowerCase().includes(filters[key].toLowerCase());
+
+        if (key === "genres" && Array.isArray(item[key])) {
+          // Check if any genre in the array includes the filter text
+          return item[key].some((genre) =>
+            genre.toLowerCase().includes(filters[key].toLowerCase())
+          );
+        }
+        return String(item[key])
+          .toLowerCase()
+          .includes(filters[key].toLowerCase());
       });
     });
 
@@ -468,7 +478,33 @@ export default function MetaDataHandler() {
                           key={`${index}-${header.key}`}
                           className="gameTableTitleTableRowText"
                         >
-                          {item[header.key]}
+                          {/* for genres, text will be displayed as badges */}
+                          {header.key === "genres" ? (
+                            <div className="genreBadgeContainer">
+                              {item[header.key][0] === "N/A"
+                                ? "N/A"
+                                : item[header.key].map((genre, i) => {
+                                    const color =
+                                      GenreColors[genre.toUpperCase()] ||
+                                      "#777777";
+
+                                    return (
+                                      <span
+                                        key={i}
+                                        className="genreBadge"
+                                        style={{
+                                          borderColor: color,
+                                          backgroundColor: `${color}30`, // Add 30 hex for 30% opacity
+                                        }}
+                                      >
+                                        {genre}
+                                      </span>
+                                    );
+                                  })}
+                            </div>
+                          ) : (
+                            item[header.key]
+                          )}
                         </td>
                       ))}
                     </tr>

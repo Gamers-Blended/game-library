@@ -50,7 +50,7 @@ button {
   width: 100%;
   height: 100%;
   z-index: 20;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); // Slightly transparent black background
   margin: auto;
 }
 
@@ -386,6 +386,24 @@ button {
 /* Make sure the table container has a position relative for proper overlay sizing */
 .gameTableTitleTableContainer {
   position: relative;
+}
+
+// SUBPART - GENRE BADGES //
+.genreBadgeContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.genreBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 700; /* Bold text */
+  color: black; /* Black text */
+  border: 2px solid; /* Border takes color from borderColor */
+  background-color: transparent; /* Will be set with opacity in style */
 }
 
 ///////////////////
