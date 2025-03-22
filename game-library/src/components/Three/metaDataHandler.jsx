@@ -5,7 +5,7 @@ import {
   EditionTypes,
   mapItemToLabel,
 } from "./optionMapper";
-import { getGenreColor } from "./genreColors";
+import GenreColors, { getGenreColor } from "./genreColors";
 import {
   ChevronsLeft,
   ChevronLeft,
@@ -211,11 +211,12 @@ export default function MetaDataHandler() {
         if (!filters[key]) return true; // Skip empty filters
 
         if (key === "genres" && Array.isArray(item[key])) {
-          // Check if any genre in the array includes the filter text
-          return item[key].some((genre) =>
-            genre.toLowerCase().includes(filters[key].toLowerCase())
+          // For genres dropdown, check if any genre in the array matches (case-insensitive)
+          return item[key].some(
+            (genre) => genre.toLowerCase() === filters[key].toLowerCase()
           );
         }
+        // Use include for other filters
         return String(item[key])
           .toLowerCase()
           .includes(filters[key].toLowerCase());
@@ -450,13 +451,30 @@ export default function MetaDataHandler() {
                       key={`filter-${header.key}`}
                       className="gameTableTitleTableFilterHeader"
                     >
-                      <input
-                        type="text"
-                        placeholder={`Filter ${header.label}`}
-                        value={filters[header.key]}
-                        onChange={(e) => handleFilterChange(e, header.key)}
-                        className="gameTableTitleTableFilterBox"
-                      />
+                      {/* Genre filter is a dropdown */}
+                      {header.key === "genres" ? (
+                        <select
+                          value={filters[header.key]}
+                          onChange={(e) => handleFilterChange(e, header.key)}
+                          className="gameTableTitleTableFilterBox"
+                        >
+                          <option value="">All Genres</option>
+                          {Object.keys(GenreColors).map((genre) => (
+                            <option key={genre} value={genre.toLowerCase()}>
+                              {genre}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        // Rest of the filters are text inputs
+                        <input
+                          type="text"
+                          placeholder={`Filter ${header.label}`}
+                          value={filters[header.key]}
+                          onChange={(e) => handleFilterChange(e, header.key)}
+                          className="gameTableTitleTableFilterBox"
+                        />
+                      )}
                     </th>
                   ))}
                 </tr>

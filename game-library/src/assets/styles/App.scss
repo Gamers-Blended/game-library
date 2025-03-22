@@ -187,6 +187,7 @@ button {
   margin-left: 0.5rem; 
 }
 
+// SUBPART - FILTER HEADERS //
 .gameTableTitleTableFilterHeader {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem; 
@@ -195,8 +196,10 @@ button {
   background-color: #F3F4F6; 
 }
 
+// SUBPART - FILTER TEXT //
 .gameTableTitleTableFilterBox {
   padding: 0.25rem; 
+  border: 1px solid #ccc;
   border-radius: 0.25rem; 
   border-width: 1px; 
   width: 100%; 
@@ -404,6 +407,12 @@ button {
   color: black; /* Black text */
   border: 2px solid; /* Border takes color from borderColor */
   background-color: transparent; /* Will be set with opacity in style */
+}
+
+// SUBPART - GENRE DROPDOWN FILTER //
+select.gameTableTitleTableFilterBox {
+  background-color: white;
+  height: 28px; /* Match the height of text inputs */
 }
 
 ///////////////////
