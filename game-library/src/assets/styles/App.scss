@@ -391,6 +391,46 @@ button {
   position: relative;
 }
 
+// SUBPART - RELEASE DATE FILTER //
+.dateRangeContainer {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+        
+.datePickerContainer {
+  position: relative;
+  flex: 1;
+}
+
+.dateInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dateInput {
+  cursor: pointer;
+}
+
+.calendarIcon {
+  position: absolute;
+  right: 8px;
+  cursor: pointer;
+}
+
+.calendarDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+}
+
 // SUBPART - GENRE BADGES //
 .genreBadgeContainer {
   display: flex;

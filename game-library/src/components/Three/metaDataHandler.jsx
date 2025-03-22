@@ -11,7 +11,10 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsRight,
+  Calendar as CalendarIcon,
 } from "lucide-react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import Select from "react-select";
 import TableLoadingOverlay from "./tableLoadingOverlay";
 import { state } from "./store";
@@ -45,6 +48,8 @@ export default function MetaDataHandler() {
     releaseDate: "",
     genres: "",
   });
+  const [showStartCalendar, setShowStartCalendar] = useState(false);
+  const [showEndCalendar, setShowEndCalendar] = useState(false);
 
   const headers = [
     { key: "title", label: "Title" },
@@ -120,11 +125,56 @@ export default function MetaDataHandler() {
     setSortConfig({ key, direction });
   };
 
-  // Update filter for input key
+  // Update filter for input key (text inputs)
   const handleFilterChange = (e, key) => {
     const value = e.target.value;
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
+
+  // Handle date selection
+  const handleDateChange = (date, type) => {
+    const formattedDate = date ? date.toISOString().split("T")[0] : "";
+    setFilters((prev) => ({ ...prev, [type]: formattedDate }));
+
+    // Close the calendar after selection
+    if (type === "startDate") {
+      setShowStartCalendar(false);
+    } else {
+      setShowEndCalendar(false);
+    }
+  };
+
+  // Toggle calendar visibility
+  const toggleCalendar = (calendarType) => {
+    if (calendarType === "start") {
+      setShowStartCalendar(!showStartCalendar);
+      setShowEndCalendar(false);
+    } else {
+      setShowEndCalendar(!showEndCalendar);
+      setShowStartCalendar(false);
+    }
+  };
+
+  // Close calendars when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const isStartCalendarClick = event.target.closest(".startDatePicker");
+      const isEndCalendarClick = event.target.closest(".endDatePicker");
+
+      if (!isStartCalendarClick && showStartCalendar) {
+        setShowStartCalendar(false);
+      }
+
+      if (!isEndCalendarClick && showEndCalendar) {
+        setShowEndCalendar(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showStartCalendar, showEndCalendar]);
 
   // Update page size
   const handlePageSizeChange = (e) => {
@@ -207,20 +257,43 @@ export default function MetaDataHandler() {
 
     // Apply filters
     result = result.filter((item) => {
-      return Object.keys(filters).every((key) => {
-        if (!filters[key]) return true; // Skip empty filters
-
-        if (key === "genres" && Array.isArray(item[key])) {
-          // For genres dropdown, check if any genre in the array matches (case-insensitive)
-          return item[key].some(
-            (genre) => genre.toLowerCase() === filters[key].toLowerCase()
+      // Special handling for date range filter
+      const dateFilter = () => {
+        if (filters.startDate && filters.endDate) {
+          // Both start and end dates are provided
+          return (
+            item.releaseDate >= filters.startDate &&
+            item.releaseDate <= filters.endDate
           );
+        } else if (filters.startDate) {
+          // Only start date is provided
+          return item.releaseDate >= filters.startDate;
+        } else if (filters.endDate) {
+          // Only end date is provided
+          return item.releaseDate <= filters.endDate;
         }
-        // Use include for other filters
-        return String(item[key])
-          .toLowerCase()
-          .includes(filters[key].toLowerCase());
-      });
+        return true; // No date filters applied
+      };
+
+      // Check all non-date filters
+      const nonDateFilters = Object.keys(filters)
+        .filter((key) => key !== "startDate" && key !== "endDate")
+        .every((key) => {
+          if (!filters[key]) return true; // Skip empty filters
+
+          if (key === "genres" && Array.isArray(item[key])) {
+            // For genres dropdown, check if any genre in the array matches (case-insensitive)
+            return item[key].some(
+              (genre) => genre.toLowerCase() === filters[key].toLowerCase()
+            );
+          }
+          // Use include substring for other filters
+          return String(item[key])
+            .toLowerCase()
+            .includes(filters[key].toLowerCase());
+        });
+
+      return nonDateFilters && dateFilter();
     });
 
     // Apply sorting
@@ -451,8 +524,79 @@ export default function MetaDataHandler() {
                       key={`filter-${header.key}`}
                       className="gameTableTitleTableFilterHeader"
                     >
-                      {/* Genre filter is a dropdown */}
-                      {header.key === "genres" ? (
+                      {/* Date range picker for release date */}
+                      {header.key === "releaseDate" ? (
+                        <div className="dateRangeContainer">
+                          {/* Start date picker */}
+                          <div className="startDatePicker datePickerContainer">
+                            <div className="dateInputContainer">
+                              <input
+                                type="text"
+                                placeholder="Start Date"
+                                value={filters.startDate}
+                                readOnly
+                                onClick={() => toggleCalendar("start")}
+                                className="gameTableTitleTableFilterBox dateInput"
+                              />
+                              <CalendarIcon
+                                size={16}
+                                className="calendarIcon"
+                                onClick={() => toggleCalendar("start")}
+                              />
+                            </div>
+                            {showStartCalendar && (
+                              <div className="calendarDropdown">
+                                <Calendar
+                                  value={
+                                    filters.startDate
+                                      ? new Date(filters.startDate)
+                                      : null
+                                  }
+                                  onChange={(date) =>
+                                    handleDateChange(date, "startDate")
+                                  }
+                                  className="react-calendar"
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* End date picker */}
+                          <div className="endDatePicker datePickerContainer">
+                            <div className="dateInputContainer">
+                              <input
+                                type="text"
+                                placeholder="End Date"
+                                value={filters.endDate}
+                                readOnly
+                                onClick={() => toggleCalendar("end")}
+                                className="gameTableTitleTableFilterBox dateInput"
+                              />
+                              <CalendarIcon
+                                size={16}
+                                className="calendarIcon"
+                                onClick={() => toggleCalendar("end")}
+                              />
+                            </div>
+                            {showEndCalendar && (
+                              <div className="calendarDropdown">
+                                <Calendar
+                                  value={
+                                    filters.endDate
+                                      ? new Date(filters.endDate)
+                                      : null
+                                  }
+                                  onChange={(date) =>
+                                    handleDateChange(date, "endDate")
+                                  }
+                                  className="react-calendar"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : header.key === "genres" ? (
+                        // Genre filter is a dropdown
                         <select
                           value={filters[header.key]}
                           onChange={(e) => handleFilterChange(e, header.key)}
