@@ -5,7 +5,7 @@ import {
   EditionTypes,
   mapItemToLabel,
 } from "./optionMapper";
-import GenreColors from "./genreColors";
+import { getGenreColor } from "./genreColors";
 import {
   ChevronsLeft,
   ChevronLeft,
@@ -484,9 +484,7 @@ export default function MetaDataHandler() {
                               {item[header.key][0] === "N/A"
                                 ? "N/A"
                                 : item[header.key].map((genre, i) => {
-                                    const color =
-                                      GenreColors[genre.toUpperCase()] ||
-                                      "#777777";
+                                    const color = getGenreColor(genre);
 
                                     return (
                                       <span
