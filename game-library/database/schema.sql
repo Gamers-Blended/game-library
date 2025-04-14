@@ -28,7 +28,6 @@ CREATE INDEX idx_game_releases_region ON game_releases(region);
 CREATE INDEX idx_game_releases_edition ON game_releases(edition);
 
 INSERT INTO games (title, title_text) VALUES ('fallout4', 'Fallout 4');
-INSERT INTO games (title, title_text) VALUES ('mafia_de', 'Mafia: Definitive Edition');
 INSERT INTO games (title, title_text) VALUES ('wolfenstein_young_blood', 'Wolfenstein: Youngblood');
 INSERT INTO games (title, title_text) VALUES ('atelier_lulua_the_scion_of_arland', 'Atelier Lulua: Scion of Arland');
 
@@ -59,27 +58,6 @@ Collect, upgrade, and build thousands of items in the most advanced crafting sys
 Be whoever you want. Choose from hundreds of Perks and develop your own playstyle.
 <br>
 <br>', 1065, 631, '{"item": []}', '2015-11-10', ARRAY['RPG', 'FPS']);
-
-INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
-(2, 'ps4', 'us', 'std', 'MAFIA: DEFINITIVE EDITION <br>
-A LIFE OF REWARD TOO BIG TO IGNORE <br>
-PART ONE OF THE MAFIA CRIME SAGA - 1930''S, LOST HEAVEN, IL <br>
-The classic 1930''s crime drama remade from the ground up. Rise through the ranks of the Mafia during the Prohibition <br>
-era of organized crime. After a run-in with the mob, cab driver Tommy Angelo is thrust into a deadly underworld. <br>
-Initially uneasy about falling in with the Salieri crime family, Tommy soon finds that the rewards are too big to ignore. <br>
-<br>
-<b>THRUST INTO THE WORLD OF ORGANIZED CRIME</b>
-<br>
-<b>1930''S AMERICAN PROHIBITION SETTING</b>
-<br>
-<b>RISE THROUGH THE RANKS OF THE SALIERI FAMILY</b>
-
- --***-- <b>
-See import health and safety warnings in the system Settings menu.</b>
-<br>
-<br>
-<b>WARNING: PHOTOSENSITIVITY/EPILEPSY/SEIZURES</b>
-<br>', 1065, 631, '[{"item": []}]', '2020-09-25', ARRAY['ACTION', 'TPS']);
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
 (3, 'ps4', 'asia', 'std', 'WOLFENSTEIN: YOUNGBLOOD <br>
