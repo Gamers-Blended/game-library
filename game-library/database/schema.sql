@@ -30,6 +30,7 @@ CREATE INDEX idx_game_releases_edition ON game_releases(edition);
 INSERT INTO games (title, title_text) VALUES ('fallout4', 'Fallout 4');
 INSERT INTO games (title, title_text) VALUES ('wolfenstein_young_blood', 'Wolfenstein: Youngblood');
 INSERT INTO games (title, title_text) VALUES ('atelier_lulua_the_scion_of_arland', 'Atelier Lulua: Scion of Arland');
+INSERT INTO games (title, title_text) VALUES ('brothers_a_tale_of_two_sons', 'Brothers: A Tale of Two Sons');
 
 
 -- Insert different releases
@@ -82,3 +83,21 @@ The future of Arland is entrusted to this yound girl. <br>
 *Game features Japanese voice only. <br>
 <b>http://www.ateliergames.eu/lulua/</b>
 ', 1065, 631, '[{"item": []}]', '2019-05-24', ARRAY['JRPG']);
+
+INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
+(5, 'ps4', 'us', 'std', '## BROTHERS: A TALE OF TWO SONS
+
+### This is one journey you will never forgot.
+
+Guide two brothers on an epic fairy tale journey from visionary Swedish film director,
+Josef Fares and top-tier developer Starbreeze Studios.
+
+A man, clinging to life. His two sons, desperate to cure their ailing father, are left with but one option.
+They must set out upon a journey to find and bring back the "Water of Life" as they come to rely on one
+another to survive. One must be strong where the other is weak, brave where the other is fearful, they
+must be... Brothers.
+
+- Control both brothers at once as you experience co-op play in single player mode, like never before.
+- Solve puzzles, explore many locations and fight battles, controlling one brother with each thumbstick.
+', 1065, 631, '[{"item": "manual", "page_width": 1.28, "page_height": 1.71, "number_of_pages": 8}]', '2013-08-07', ARRAY['ADVENTURE', 'PUZZLE', 'PLATFORMER']);
+
