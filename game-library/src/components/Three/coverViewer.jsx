@@ -6,7 +6,7 @@ import {
   TransformComponent,
   useControls,
 } from "react-zoom-pan-pinch";
-import parse from "html-react-parser";
+import ReactMarkdown from "react-markdown";
 import { useValidatedSupabaseImage, preloadImage } from "../utils/imageUtils";
 
 import coverFlipSound from "../../assets/sound/page-flip-01a.mp3";
@@ -215,8 +215,16 @@ export default function CoverViewer() {
       {isTextViewerOpen && (
         <div className="coverTextViewerBackground">
           <div className="coverTextViewerTextArea">
-            {isFrontCover && parse(frontCoverText)}
-            {!isFrontCover && reverseCoverText && parse(reverseCoverText)}
+            {isFrontCover && (
+              <ReactMarkdown>
+                {frontCoverText.replace(/\'\'/g, "'")}
+              </ReactMarkdown>
+            )}
+            {!isFrontCover && reverseCoverText && (
+              <ReactMarkdown>
+                {reverseCoverText.replace(/\'\'/g, "'")}
+              </ReactMarkdown>
+            )}
           </div>
           ;
         </div>

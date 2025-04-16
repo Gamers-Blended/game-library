@@ -35,57 +35,56 @@ INSERT INTO games (title, title_text) VALUES ('brothers_a_tale_of_two_sons', 'Br
 
 -- Insert different releases
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
-(1, 'ps4', 'us', 'std', 'FALLOUT 4 <br>
-<br>
-Welcome Home <br>
-Bethesda Game Studios, the award winning creators of <b>Fallout 3</b> and <b>Skyrim</b>, <br>
-welcome you to their most ambitious game ever, and the next generation of open-world gaming. <br>
-<br>
-As the sole survivor of Vault 111, you enter a world destroyed by nuclear war. Every second is a fight <br>
-for survival, and every choice is yours. Only you can rebuild and determine the fate of the Wasteland. <br>
-<br>
-<b>FREEDOM & LIBERTY</b>
-<br>
+(1, 'ps4', 'us', 'std', '
+### FALLOUT 4
+
+**Welcome Home**\
+Bethesda Game Studios, the award winning creators of **Fallout 3** and **Skyrim**,\
+welcome you to their most ambitious game ever, and the next generation of open-world gaming. 
+
+As the sole survivor of Vault 111, you enter a world destroyed by nuclear war. Every second is a fight\
+for survival, and every choice is yours. Only you can rebuild and determine the fate of the Wasteland. 
+
+**FREEDOM & LIBERTY**\
 Do whatever you want in a massive open world with hundreds of locations.
-<br>
-<br>
-<b>COLLECT & BUILD</b>
-<br>
+
+**COLLECT & BUILD**\
 Collect, upgrade, and build thousands of items in the most advanced crafting system ever.
-<br>
-<br>
-<b>YOU''RE S.P.E.C.I.A.L.</b>
-<br>
+
+**YOU''RE S.P.E.C.I.A.L.**\
 Be whoever you want. Choose from hundreds of Perks and develop your own playstyle.
-<br>
-<br>', 1065, 631, '{"item": []}', '2015-11-10', ARRAY['RPG', 'FPS']);
+', 1065, 631, '{"item": []}', '2015-11-10', ARRAY['RPG', 'FPS']);
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
-(3, 'ps4', 'asia', 'std', 'WOLFENSTEIN: YOUNGBLOOD <br>
-<br>
-Wolves Hunt Together <br>
-Team up with a friend or play solo with an AI companion to take on the Nazis in this brand new co-op adventure. <br>
-Play as one of BJ Blazkowicz''s twin daughters and undertake a do-or-die mission to find their missing father in 1980s Paris. <br>
-Wield an arsenal of new weapons, gadgets, and power armour abilities in a fight to kick Nazis out of the city of lights. <br>
+(3, 'ps4', 'asia', 'std', '
+### WOLFENSTEIN: YOUNGBLOOD 
+
+**WOLVES HUNT TOGETHER.**\
+Team up with a friend or play solo with an AI companion to take on the Nazis in this brand new co-op adventure.\
+Play as one of BJ Blazkowicz''s twin daughters and undertake a do-or-die mission to find their missing father in 1980s Paris.\
+Wield an arsenal of new weapons, gadgets, and power armour abilities in a fight to kick Nazis out of the city of lights.
 ', 1065, 631, '[{"item": "manual", "page_width": 1.28, "page_height": 1.71, "number_of_pages": 4}]', '2019-07-26', ARRAY['FPS']);
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
-(4, 'ps4', 'eur', 'std', 'ATELIER LULUA: THE SCION OF ARLAND <br>
-<br>
-Time''s ticking in the world of Arland. <br>
-The future of Arland is entrusted to this yound girl. <br>
-<ul>
-<li>Lulua discovers a mysterious book and uncovers the hidden truth of Arland.</li>
-<li>Learn alchemy while discovering the mysteries of Lulua''s homeland.</li>
-<li>Fan-favourite characters rejoin the fun.</li>
-<li>An enjoyable story and easy-to-learn mechanics welcome new and returning fans alike.</li>
-</ul>
-*Game features Japanese voice only. <br>
-<b>http://www.ateliergames.eu/lulua/</b>
+(4, 'ps4', 'eur', 'std', '
+### ATELIER LULUA: THE SCION OF ARLAND 
+
+**Time''s ticking in the world of Arland.**\
+The future of Arland is entrusted to this young girl. 
+
+- Lulua discovers a mysterious book and uncovers the hidden truth of Arland.
+- Learn alchemy while discovering the mysteries of Lulua''s homeland.
+- Fan-favourite characters rejoin the fun.
+- An enjoyable story and easy-to-learn mechanics welcome new and returning fans alike.
+
+
+*Game features Japanese voice only.\
+**http://www.ateliergames.eu/lulua/**
 ', 1065, 631, '[{"item": []}]', '2019-05-24', ARRAY['JRPG']);
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
-(5, 'ps4', 'us', 'std', '## BROTHERS: A TALE OF TWO SONS
+(5, 'ps4', 'us', 'std', '
+### BROTHERS: A TALE OF TWO SONS
 
 ### This is one journey you will never forgot.
 
