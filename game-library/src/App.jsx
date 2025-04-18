@@ -18,7 +18,7 @@ function App() {
     <>
       {snap.isMetaDataHandlerOpened && <MetaDataHandler />}
       <ModeSelector />
-      <UI />
+      {!snap.isMetaDataHandlerOpened && <UI />}
       <Loader />
       {/* position: [x (left/right), y (up/down), z (forward/backward)] */}
       <Canvas shadows camera={{ position: [0, 1, 4], fov: 35 }}>
