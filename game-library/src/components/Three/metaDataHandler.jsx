@@ -397,13 +397,11 @@ export default function MetaDataHandler() {
 
       // Check if includedItems has a non-empty 'item' array
       const hasAdditionalItems =
-        includedItems &&
-        Array.isArray(includedItems.item) &&
-        includedItems.item.length > 0;
+        Array.isArray(includedItems) && includedItems.length > 0;
 
       if (hasAdditionalItems) {
         console.log("Selected game title has additional items!");
-        state.additional = state.metadataCache.gameReleases[0].included_items;
+        state.additional = includedItems;
 
         state.additional.forEach((material) => {
           if (material.item === "manual") {
