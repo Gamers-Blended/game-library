@@ -53,7 +53,7 @@ Collect, upgrade, and build thousands of items in the most advanced crafting sys
 
 **YOU''RE S.P.E.C.I.A.L.**\
 Be whoever you want. Choose from hundreds of Perks and develop your own playstyle.
-', 1065, 631, '{"item": []}', '2015-11-10', ARRAY['RPG', 'FPS']);
+', 1065, 631, '', '2015-11-10', ARRAY['RPG', 'FPS']);
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
 (3, 'ps4', 'asia', 'std', '
@@ -80,7 +80,7 @@ The future of Arland is entrusted to this young girl.
 
 *Game features Japanese voice only.\
 **http://www.ateliergames.eu/lulua/**
-', 1065, 631, '[{"item": []}]', '2019-05-24', ARRAY['JRPG']);
+', 1065, 631, '', '2019-05-24', ARRAY['JRPG']);
 
 INSERT INTO game_releases (game_id, platform, region, edition, cover_text, cover_width, cover_height, included_items, release_date, genres) VALUES 
 (5, 'ps4', 'us', 'std', '
